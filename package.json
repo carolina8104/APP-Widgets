@@ -1,0 +1,13 @@
+{
+  "scripts": {
+    "start": "electron main.js",
+    "server": "node server/server.js",
+    "seed": "node server/seed.js"
+  },
+  "dependencies": {
+    "mongodb": "^6.0.0"
+  },
+  "devDependencies": {
+    "electron": "^39.2.4"
+  }
+}
