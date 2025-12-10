@@ -1,8 +1,11 @@
 const { useState, useEffect } = React
 
 function Notes({ userId }) {
-  const [notes, setNotes] = useState([])
+  const [viewMode, setViewMode] = useState('list')
   const [loading, setLoading] = useState(true)
+  const [notes, setNotes] = useState([])
+  const [newTitle, setNewTitle] = useState('')
+  const [newContent, setNewContent] = useState('')
 
   useEffect(() => {
     fetchNotes()
@@ -22,6 +25,66 @@ function Notes({ userId }) {
       })
   }
 
+  function handleSaveNote() {
+    if (!newTitle.trim()) {
+      alert('Title is required!')
+      return
+    }
+
+    fetch('http://localhost:3001/api/notes', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        _id: `note-${Date.now()}`,
+        userId: userId,
+        title: newTitle,
+        content: newContent,
+        createdAt: new Date().toISOString(),
+        lastModified: new Date().toISOString()
+      })
+    })
+      .then(res => res.json())
+      .then(() => {
+        setNewTitle('')
+        setNewContent('')
+        setViewMode('list')
+        fetchNotes()
+      })
+      .catch(error => console.error('Error saving note:', error))
+  }
+
+  if (viewMode === 'create') {
+    return (
+      <div>
+        <button onClick={() => setViewMode('list')}>
+          🡧
+        </button>
+        <h2>Notes</h2>
+        <div>
+          <input
+            type="text"
+            placeholder="New note title"
+            value={newTitle}
+            onChange={e => setNewTitle(e.target.value)}
+          />
+          <textarea
+            placeholder="Write your note here..."
+            value={newContent}
+            onChange={e => setNewContent(e.target.value)}
+          />
+          <div>
+            <button onClick={handleSaveNote}>
+              Save
+            </button>
+            <button onClick={() => setViewMode('list')}>
+              Cancel
+            </button>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div>
       <h2>Notes</h2>
@@ -33,11 +96,20 @@ function Notes({ userId }) {
           {notes.slice(0, 4).map((note) => (
             <div key={note._id}>
               <p>{note.title}</p>
-              <p>{new Date(note.createdAt).toLocaleDateString('pt-PT')}</p>
+              <p>{new Date(note.createdAt).toLocaleDateString('en-EN')}</p>
             </div>
           ))}
         </div>
       )}
+      <div
+        onClick={() => {
+          setNewTitle('')
+          setNewContent('')
+          setViewMode('create')
+        }}
+      >
+        <h3>Start a New Note 🡥</h3>
+      </div>
     </div>
   )
 }
