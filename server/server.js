@@ -9,7 +9,9 @@ const PORT = process.env.PORT || 3001
 function sendJson(response, status, payload) {
   response.writeHead(status, {
     'Content-Type': 'application/json',
-    'Access-Control-Allow-Origin': '*'
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Methods': 'GET,POST,PUT,DELETE,OPTIONS',
+    'Access-Control-Allow-Headers': 'Content-Type'
   })
   response.end(JSON.stringify(payload))
 }
@@ -39,7 +41,7 @@ function serveStatic(url, response) {
       return response.end('File not found')
     }
 
-    response.writeHead(200, { 'Content-Type': 'text/html' })
+    response.writeHead(200, { 'Content-Type': contentType })
     response.end(data)
   })
 }
@@ -51,6 +53,7 @@ async function handleApi(message, response) {
 
   if (message.method === 'OPTIONS') {
     response.writeHead(204, {
+      'Content-Type': 'application/json',
       'Access-Control-Allow-Origin': '*',
       'Access-Control-Allow-Methods': 'GET,POST,PUT,DELETE,OPTIONS',
       'Access-Control-Allow-Headers': 'Content-Type'
@@ -72,7 +75,35 @@ async function handleApi(message, response) {
     const result = await notesCol.insertOne(body)
     return sendJson(response, 201, { insertedId: result.insertedId, ...body })
   }
-  sendJson(response, 404, { error: 'API route not found' })
+
+    const notesIdMatch = url.pathname.match(/^\/api\/notes\/([a-zA-Z0-9\-_]+)$/)
+  if (notesIdMatch) {
+    const id = notesIdMatch[1]
+    const notesCol = getCollection('notes')
+
+    if (message.method === 'GET') {
+      const note = await notesCol.findOne({ _id: id })
+      return sendJson(response, 200, note || {})
+    }
+
+    if (message.method === 'PUT') {
+      const body = await parseBody(message)
+      body.lastModified = new Date()
+      await notesCol.updateOne({ _id: id }, { $set: body })
+      return sendJson(response, 200, { updated: true })
+    }
+
+    if (message.method === 'DELETE') {
+      const result = await notesCol.deleteOne({ _id: id })
+      if (result.deletedCount === 0) {
+        return sendJson(response, 404, { error: 'Note not found' })
+      }
+      return sendJson(response, 200, { deleted: true })
+    }
+  }
+
+  sendJson(response, 404, { error: 'Not found' })
+
 }
 
 async function main() {
@@ -86,7 +117,9 @@ async function main() {
     }
   })
 
-  server.listen(PORT)
+  server.listen(PORT, () => {
+    console.log(`Server running at http://localhost:${PORT}`)
+  })
 }
 
 main()
