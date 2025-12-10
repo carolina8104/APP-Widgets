@@ -21,7 +21,7 @@ function parseBody(message) {
     message.on('end', () => {
       if (!body) return resolve({})
       try { resolve(JSON.parse(body)) }
-      catch (e) { reject(e); }
+      catch (e) { reject(e) }
     })
   })
 }
@@ -44,6 +44,8 @@ function serveStatic(url, response) {
   })
 }
 
+const { getCollection } = require('./db')
+
 async function handleApi(message, response) {
   const url = new URL(message.url, `http://${message.headers.host}`)
 
@@ -56,6 +58,20 @@ async function handleApi(message, response) {
     return response.end()
   }
 
+  if (url.pathname === '/api/notes' && message.method === 'GET') {
+    const notesCol = getCollection('notes')
+    const notes = await notesCol.find({}).toArray()
+    return sendJson(response, 200, notes)
+  }
+
+  if (url.pathname === '/api/notes' && message.method === 'POST') {
+    const body = await parseBody(message)
+    const notesCol = getCollection('notes')
+    body.createdAt = new Date()
+    body.lastModified = new Date()
+    const result = await notesCol.insertOne(body)
+    return sendJson(response, 201, { insertedId: result.insertedId, ...body })
+  }
   sendJson(response, 404, { error: 'API route not found' })
 }
 
