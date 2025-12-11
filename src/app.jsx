@@ -3,16 +3,9 @@ const { useState, useEffect } = React
 function App() {
 
     return (
-        <div>
-            <div>
-                <Widget
-                    w = "200px"
-                    h = "200px"
-                    color="red"
-                    content={<Notes />}
-                />
-            </div>
-        </div>
+      <div className="notes">
+        <Widget color="var(--accent-yellow)" content={<Notes userId="user123" />} />
+      </div>
     )
 }
 
