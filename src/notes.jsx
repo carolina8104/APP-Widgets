@@ -4,8 +4,11 @@ function Notes({ userId }) {
   const [viewMode, setViewMode] = useState('list')
   const [loading, setLoading] = useState(true)
   const [notes, setNotes] = useState([])
+  const [selectedNote, setSelectedNote] = useState(null)
   const [newTitle, setNewTitle] = useState('')
   const [newContent, setNewContent] = useState('')
+  const [editTitle, setEditTitle] = useState('')
+  const [editContent, setEditContent] = useState('')
 
   useEffect(() => {
     fetchNotes()
@@ -53,6 +56,59 @@ function Notes({ userId }) {
       .catch(error => console.error('Error saving note:', error))
   }
 
+  function handleSaveEdit() {
+    if (!editTitle.trim()) {
+      alert('Title is required!')
+      return
+    }
+
+    fetch(`http://localhost:3001/api/notes/${selectedNote._id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        title: editTitle,
+        content: editContent,
+        lastModified: new Date().toISOString()
+      })
+    })
+      .then(response => response.json())
+      .then(() => {
+        const updatedNotes = notes.map(note =>
+          note._id === selectedNote._id
+            ? { ...note, title: editTitle, content: editContent, lastModified: new Date().toISOString() }
+            : note
+        )
+        setNotes(updatedNotes)
+        setSelectedNote(null)
+        setViewMode('list')
+      })
+      .catch(error => {
+        console.error('Error updating note:', error)
+        alert('Error saving: ' + error.message)
+      })
+  }
+
+  function handleDeleteNote(noteId) {
+    if (!confirm('Delete this note?')) return
+
+    fetch(`http://localhost:3001/api/notes/${noteId}`, { method: 'DELETE' })
+      .then(response => {
+        if (!response.ok) throw new Error(`HTTP Error: ${response.status}`)
+        return response.json()
+      })
+      .then(() => {
+        fetchNotes()
+        if (viewMode === 'view') {
+          setSelectedNote(null)
+          setViewMode('list')
+        }
+      })
+      .catch(error => {
+        console.error('Error deleting note:', error)
+        alert('Error deleting note: ' + error.message)
+      })
+  }
+
   if (viewMode === 'create') {
     return (
       <div>
@@ -85,6 +141,92 @@ function Notes({ userId }) {
     )
   }
 
+  if (viewMode === 'view' && selectedNote) {
+    return (
+      <div>
+        <button onClick={() => setViewMode('list')}>
+          🡧
+        </button>
+        <div>
+          <h2>{selectedNote.title}</h2>
+          <small>
+            {new Date(selectedNote.createdAt).toLocaleDateString('en-EN', {
+              weekday: 'long',
+              year: 'numeric',
+              month: 'long',
+              day: 'numeric',
+              hour: '2-digit',
+              minute: '2-digit'
+            })}
+          </small>
+          <p>{selectedNote.content}</p>
+          <div>
+            <button onClick={() => {
+              setEditTitle(selectedNote.title)
+              setEditContent(selectedNote.content)
+              setViewMode('edit')
+            }}>
+              Edit
+            </button>
+            <button onClick={() => handleDeleteNote(selectedNote._id)}>
+              Delete
+            </button>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  if (viewMode === 'edit' && selectedNote) {
+    return (
+      <div>
+        <button onClick={() => setViewMode('view')}>
+          🡧
+        </button>
+        <div>
+          <h2>
+            <input
+              type="text"
+              placeholder="Note title"
+              value={editTitle}
+              onChange={e => setEditTitle(e.target.value)}
+              style={{
+                fontSize: 'inherit',
+                fontWeight: 'inherit',
+                width: '100%',
+                padding: 0,
+                margin: 0
+              }}
+            />
+          </h2>
+          <small>
+            {new Date(selectedNote.createdAt).toLocaleDateString('en-EN', {
+              weekday: 'long',
+              year: 'numeric',
+              month: 'long',
+              day: 'numeric',
+              hour: '2-digit',
+              minute: '2-digit'
+            })}
+          </small>
+          <textarea
+            placeholder="Write your note here..."
+            value={editContent}
+            onChange={e => setEditContent(e.target.value)}
+          />
+          <div>
+            <button onClick={handleSaveEdit}>
+              Save
+            </button>
+            <button onClick={() => setViewMode('view')}>
+              Cancel
+            </button>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div>
       <h2>Notes</h2>
@@ -94,7 +236,10 @@ function Notes({ userId }) {
       {!loading && notes.length > 0 && (
         <div>
           {notes.slice(0, 4).map((note) => (
-            <div key={note._id}>
+            <div key={note._id} onClick={() => {
+              setSelectedNote(note)
+              setViewMode('view')
+            }}>
               <p>{note.title}</p>
               <p>{new Date(note.createdAt).toLocaleDateString('en-EN')}</p>
             </div>
