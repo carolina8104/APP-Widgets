@@ -41,6 +41,12 @@ function serveStatic(url, response) {
       return response.end('File not found')
     }
 
+    let contentType = 'text/html'
+    if (filePath.endsWith('.js')) contentType = 'application/javascript'
+    if (filePath.endsWith('.css')) contentType = 'text/css'
+    if (filePath.endsWith('.json')) contentType = 'application/json'
+    if (filePath.endsWith('.jsx')) contentType = 'application/javascript'
+
     response.writeHead(200, { 'Content-Type': contentType })
     response.end(data)
   })
