@@ -1,0 +1,22 @@
+#top-bar {
+    position: fixed; 
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 32px; 
+    background-color: #2c2c2c; 
+    color: #d4d4d4;
+    display: flex;
+    align-items: center;
+    padding-left: 16px;
+    font-family: 'Jost', sans-serif;
+    font-size: 13px;
+    font-weight: 400;
+    -webkit-app-region: drag;
+    z-index: 100;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.3);
+}
+
+#root {
+    margin-top: 32px;
+}
