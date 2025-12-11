@@ -227,10 +227,52 @@ function Notes({ userId }) {
     )
   }
 
+  if (viewMode === 'all') {
+    return (
+      <div>
+        <button onClick={() => setViewMode('list')}>
+          🡧
+        </button>
+        <h2>All your Notes ({notes.length})</h2>
+        {loading && <p>Loading...</p>}
+        {!loading && notes.length === 0 && <p>No notes.</p>}
+        {!loading && notes.length > 0 && (
+          <div>
+            {notes.map((note) => (
+              <div
+                key={note._id}
+                onClick={() => {
+                  setSelectedNote(note)
+                  setViewMode('view')
+                }}
+              >
+                <h2>{note.title}</h2>
+                <small>{new Date(note.createdAt).toLocaleDateString('en-EN')}</small>
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    handleDeleteNote(note._id)
+                  }}
+                >
+                  🗑️
+                </button>
+                <p>
+                  {note.content.length > 400
+                    ? note.content.slice(0, 400) + '...'
+                    : note.content}
+                </p>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    )
+  }
+
   return (
     <div>
       <h2>Notes</h2>
-      <h3>Last Notes</h3>
+      <h3>Last Notes{!loading && notes.length > 4 && <button onClick={() => setViewMode('all')}>+</button>}</h3>
       {loading && <p>Loading...</p>}
       {!loading && notes.length === 0 && <p>No notes. Create your first one!</p>}
       {!loading && notes.length > 0 && (
