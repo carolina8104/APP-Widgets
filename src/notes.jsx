@@ -111,8 +111,8 @@ function Notes({ userId }) {
 
   if (viewMode === 'create') {
     return (
-      <div>
-        <button onClick={() => setViewMode('list')}>
+      <div className="notes-container notes-open-mode">
+        <button className="arrow-button" onClick={() => setViewMode('list')}>
           🡧
         </button>
         <h2>Notes</h2>
@@ -122,6 +122,7 @@ function Notes({ userId }) {
             placeholder="New note title"
             value={newTitle}
             onChange={e => setNewTitle(e.target.value)}
+            className="note-name-input"
           />
           <textarea
             placeholder="Write your note here..."
@@ -129,10 +130,10 @@ function Notes({ userId }) {
             onChange={e => setNewContent(e.target.value)}
           />
           <div>
-            <button onClick={handleSaveNote}>
+            <button className="regular-button" onClick={handleSaveNote}>
               Save
             </button>
-            <button onClick={() => setViewMode('list')}>
+            <button className="regular-button" onClick={() => setViewMode('list')}>
               Cancel
             </button>
           </div>
@@ -143,13 +144,13 @@ function Notes({ userId }) {
 
   if (viewMode === 'view' && selectedNote) {
     return (
-      <div>
-        <button onClick={() => setViewMode('list')}>
+      <div className="notes-container notes-open-mode">
+        <button className="arrow-button" onClick={() => setViewMode('list')}>
           🡧
         </button>
         <div>
           <h2>{selectedNote.title}</h2>
-          <small>
+          <small className="detail-date">
             {new Date(selectedNote.createdAt).toLocaleDateString('en-EN', {
               weekday: 'long',
               year: 'numeric',
@@ -160,15 +161,15 @@ function Notes({ userId }) {
             })}
           </small>
           <p>{selectedNote.content}</p>
-          <div>
-            <button onClick={() => {
+          <div className="detail-actions">
+            <button className="regular-button" onClick={() => {
               setEditTitle(selectedNote.title)
               setEditContent(selectedNote.content)
               setViewMode('edit')
             }}>
               Edit
             </button>
-            <button onClick={() => handleDeleteNote(selectedNote._id)}>
+            <button className="regular-button" onClick={() => handleDeleteNote(selectedNote._id)}>
               Delete
             </button>
           </div>
@@ -179,8 +180,8 @@ function Notes({ userId }) {
 
   if (viewMode === 'edit' && selectedNote) {
     return (
-      <div>
-        <button onClick={() => setViewMode('view')}>
+      <div className="notes-container notes-open-mode">
+        <button className="arrow-button" onClick={() => setViewMode('view')}>
           🡧
         </button>
         <div>
@@ -190,6 +191,7 @@ function Notes({ userId }) {
               placeholder="Note title"
               value={editTitle}
               onChange={e => setEditTitle(e.target.value)}
+              className="note-name-input"
               style={{
                 fontSize: 'inherit',
                 fontWeight: 'inherit',
@@ -199,7 +201,7 @@ function Notes({ userId }) {
               }}
             />
           </h2>
-          <small>
+          <small className="detail-date">
             {new Date(selectedNote.createdAt).toLocaleDateString('en-EN', {
               weekday: 'long',
               year: 'numeric',
@@ -215,10 +217,10 @@ function Notes({ userId }) {
             onChange={e => setEditContent(e.target.value)}
           />
           <div>
-            <button onClick={handleSaveEdit}>
+            <button className="regular-button" onClick={handleSaveEdit}>
               Save
             </button>
-            <button onClick={() => setViewMode('view')}>
+            <button className="regular-button" onClick={() => setViewMode('view')}>
               Cancel
             </button>
           </div>
@@ -229,13 +231,13 @@ function Notes({ userId }) {
 
   if (viewMode === 'all') {
     return (
-      <div>
-        <button onClick={() => setViewMode('list')}>
+      <div className="notes-container notes-open-mode">
+        <button className="arrow-button" onClick={() => setViewMode('list')}>
           🡧
         </button>
-        <h2>All your Notes ({notes.length})</h2>
-        {loading && <p>Loading...</p>}
-        {!loading && notes.length === 0 && <p>No notes.</p>}
+        <h2 className="notes-title">All your Notes ({notes.length})</h2>
+        {loading && <p className="loading-text">Loading...</p>}
+        {!loading && notes.length === 0 && <p className="text-muted">No notes.</p>}
         {!loading && notes.length > 0 && (
           <div>
             {notes.map((note) => (
@@ -270,15 +272,15 @@ function Notes({ userId }) {
   }
 
   return (
-    <div>
+    <div className="notes-container">
       <h2>Notes</h2>
       <h3>Last Notes{!loading && notes.length > 4 && <button onClick={() => setViewMode('all')}>+</button>}</h3>
       {loading && <p>Loading...</p>}
       {!loading && notes.length === 0 && <p>No notes. Create your first one!</p>}
       {!loading && notes.length > 0 && (
-        <div>
+        <div className="last-notes-grid">
           {notes.slice(0, 4).map((note) => (
-            <div key={note._id} onClick={() => {
+            <div className="last-note" key={note._id} onClick={() => {
               setSelectedNote(note)
               setViewMode('view')
             }}>
@@ -289,13 +291,14 @@ function Notes({ userId }) {
         </div>
       )}
       <div
+        className="note-card-new"
         onClick={() => {
           setNewTitle('')
           setNewContent('')
           setViewMode('create')
         }}
       >
-        <h3>Start a New Note 🡥</h3>
+        <h3 className="note-card-new-text">Start a New Note 🡥</h3>
       </div>
     </div>
   )

@@ -3,3 +3,271 @@
     height:30vh;
     border-radius: 20px;
 }
+
+.notes-open-mode {
+  position: relative;
+  width: 72vw;
+  height: 74vh;
+  margin-top: 2vh;
+}
+
+.last-notes-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 1vh;
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+  padding: 1vh;
+}
+
+.last-note {
+  background-color: var(--panel-2);
+  border-radius: 15px;
+  padding: 0.5vh;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  cursor: pointer;
+  box-sizing: border-box;
+  transition: transform 0.2s ease;
+}
+
+.last-note:hover {
+  transform: translateY(-3px);
+}
+
+.last-note p {
+  font-size: small;
+  line-height: 1.2;
+}
+
+.note-card-new-text {
+  width: 100%;
+  font-size: x-large;
+  line-height: 1.2;
+  transition: all 0.2s ease;
+}
+
+.note-card-new-text:hover {
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.note-card-title {
+  color: black;
+  font-weight: 500;
+  font-size: large;
+  word-break: break-word;
+  margin: 0;
+}
+
+.note-card-date {
+  color: black;
+  font-size: small;
+  margin: 0.5vh 0 0 0;
+}
+
+.notes-open-mode {
+  position: relative;
+  width: 72vw;
+  height: 74vh;
+  margin-top: 2vh;
+}
+
+.notes-open-mode h2 {
+  padding: 0;
+  margin-left: 1vh;
+}
+
+.notes-open-mode textarea,
+.notes-open-mode p {
+  width: 70vw;
+  height: 60vh;
+  resize: none;
+  font-size: medium;
+  line-height: 1.5;
+  overflow-y: auto;
+  white-space: pre-wrap;
+  margin: 1vh;
+}
+
+textarea::-webkit-scrollbar-track,
+.notes-open-mode p::-webkit-scrollbar-track,
+.notes-grid-all::-webkit-scrollbar-track {
+  background: var(--accent-yellow);
+}
+
+textarea::-webkit-scrollbar-thumb,
+.notes-grid-all::-webkit-scrollbar-thumb {
+  background: var(--bg);
+}
+
+textarea::-webkit-scrollbar-thumb:hover,
+.notes-open-mode p::-webkit-scrollbar-thumb:hover,
+.notes-grid-all::-webkit-scrollbar-thumb:hover {
+  background: var(--panel);
+}
+
+textarea,
+.notes-open-mode p,
+.notes-grid-all {
+  scrollbar-width: thin;
+  scrollbar-color: var(--bg) var(--accent-yellow);
+}
+
+.note-card button {
+  position: absolute;
+  left: 39vh;
+  top: 2vh;
+}
+
+.note-name-input {
+  position: relative;
+  top: -3.7vh;
+  right: -11vh;
+  text-decoration: underline var(--bg);
+  font-size: large;
+  width: 85%;
+}
+
+.h2-style {
+  font-weight: 600;
+  font-size: x-large;
+  padding: 0;
+  margin: 0 0 1vh 1vh;
+  width: 100%;
+  line-height: 1.2;
+}
+
+.detail-date {
+  color: var(--bg);
+  font-size: small;
+  line-height: 1.2;
+}
+
+.detail-content {
+  color: var(--bg);
+  font-size: medium;
+  line-height: 1.5;
+}
+
+.notes-grid-all {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 3vh;
+  width: 100%;
+  height: 88%;
+  box-sizing: border-box;
+  padding: 1vh;
+  margin-top: 4vh;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.notes-grid-all h2 {
+  margin: 0 0 2vh 0;
+  line-height: 1.2;
+  width: 100%;
+  word-break: break-word;
+}
+
+.note-card {
+  position: relative;
+  background-color: var(--panel-2);
+  border-radius: 15px;
+  padding: 1.5vh;
+  width: 100%;
+  min-height: 25vh;
+  max-height: 35vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  cursor: pointer;
+  box-sizing: border-box;
+  transition: transform 0.2s ease;
+  overflow: hidden;
+}
+
+.note-card:hover {
+  transform: translateY(-3px);
+}
+
+.note-card p {
+  line-height: 1.4;
+  margin: 0.5vh 0 0 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 8;
+  -webkit-box-orient: vertical;
+  width: 100%;
+}
+
+div input::placeholder,
+div textarea::placeholder {
+  color: var(--panel-2);
+}
+
+.last-notes-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 1vh;
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+  padding: 1vh;
+}
+
+.last-note {
+  background-color: var(--panel-2);
+  border-radius: 15px;
+  padding: 0.5vh;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  cursor: pointer;
+  box-sizing: border-box;
+  transition: transform 0.2s ease;
+}
+
+.last-note:hover {
+  transform: translateY(-3px);
+}
+
+.last-note p {
+  font-size: small;
+  line-height: 1.2;
+}
+
+.note-card-new-text {
+  width: 100%;
+  font-size: x-large;
+  line-height: 1.2;
+  transition: all 0.2s ease;
+}
+
+.note-card-new-text:hover {
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.note-card-title {
+  color: black;
+  font-weight: 500;
+  font-size: large;
+  word-break: break-word;
+  margin: 0;
+}
+
+.note-card-date {
+  color: black;
+  font-size: small;
+  margin: 0.5vh 0 0 0;
+}
