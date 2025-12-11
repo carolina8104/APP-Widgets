@@ -1,3 +1,32 @@
+.dashboard-grid {
+    display: grid;
+    height: calc(100vh - 32px);
+    padding: 1.2rem 12vw;
+    gap: 1.2rem;
+    background: var(--bg);
+    max-width: 1900px;
+    margin: 0 auto;
+    box-sizing: border-box;
+
+    grid-template-columns: 0.35fr 0.2fr 0.35fr 1.1fr; 
+    grid-template-rows: 0.7fr 0.7fr 1fr 1fr;
+    grid-template-areas:
+        "friends      friends      tasks      calendar"
+        "timeTracker  timeTracker  tasks      calendar"
+        "notes        notes        tasks      calendar"
+        "photo        photo        progress   calendar";
+}
+
+.friends      { grid-area: friends; }
+.timeTracker  { grid-area: timeTracker; }
+.notes        { grid-area: notes; }
+.tasks        { grid-area: tasks; }
+.photo        { grid-area: photo; }
+.progress     { grid-area: progress; }
+.calendar     { grid-area: calendar; }
+
+
+
 .widget {
     padding: 1rem 1rem;
     border-radius: 20px;
