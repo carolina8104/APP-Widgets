@@ -1,0 +1,27 @@
+.expand-arrow {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0.25rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    border-radius: 8px;
+    -webkit-app-region: no-drag;
+}
+
+.expand-arrow:hover {
+    background: rgba(0, 0, 0, 0.1);
+    transform: scale(1.1);
+}
+
+.expand-arrow:active {
+    transform: scale(0.95);
+}
+
+.expand-arrow svg {
+    width: 20px;
+    height: 20px;
+    transition: transform 0.3s ease;
+}

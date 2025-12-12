@@ -86,3 +86,9 @@ svg {
 .tt-circle:hover {
     background: var(--muted);
 }
+
+.tt-grid .expand-arrow {
+    grid-column: 2;
+    grid-row: 1;
+    justify-self: end;
+}

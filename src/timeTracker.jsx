@@ -1,6 +1,6 @@
 const { useState, useEffect } = React
 
-function TimeTracker({ userId}) {
+function TimeTracker({ userId, expanded, onToggleExpand }) {
     const [seconds, setSeconds] = useState(0)
     const [running, setRunning] = useState(false)
 
@@ -20,9 +20,10 @@ function TimeTracker({ userId}) {
     }
 
     return (
-        <div className="tt-container">
+        <div className={`tt-container ${expanded ? "tt-expanded" : ""}`}>
             <div className="tt-grid">
                 <div className="tt-title">Time tracker</div>
+                <ExpandArrow onClick={onToggleExpand} expanded={expanded} color="var(--accent-neon)" />
                 <div className="tt-blocks">
                     <div className="tt-block"><span>{h}</span><label>H</label></div>
                     <div className="tt-block"><span>{m}</span><label>M</label></div>
