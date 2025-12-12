@@ -25,3 +25,13 @@
     height: 20px;
     transition: transform 0.3s ease;
 }
+
+.expand-arrow.expanded svg {
+    transform: rotate(180deg);
+}
+
+.expand-arrow:focus {
+    outline: none;
+}
+
+

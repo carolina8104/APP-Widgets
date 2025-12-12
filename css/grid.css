@@ -36,3 +36,35 @@
     overflow: hidden;
     transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
+
+.dashboard-grid > div {
+    transition: opacity 0.7s cubic-bezier(0.68, -0.55, 0.265, 1.55), 
+                transform 0.7s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    opacity: 1;
+    transform: scale(1) rotate(0deg);
+}
+
+.widget-expanded {
+    width: 70vw !important;
+    max-width: 70vw !important;
+    position: fixed !important;
+    left: 15vw !important;
+    top: 50% !important;
+    transform: translateY(-50%) !important;
+    z-index: 10;
+    opacity: 1 !important;
+    transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.widget-hiding {
+    opacity: 0 !important;
+    transform: scale(0.7) rotate(8deg) !important;
+    pointer-events: none;
+}
+
+.dashboard-grid > div[style*="display: none"] {
+    display: block !important;
+    opacity: 0;
+    transform: scale(0.7) rotate(8deg);
+    pointer-events: none;
+}
