@@ -61,7 +61,7 @@ function App() {
                     <div className="widget-placeholder">
                         <h2 style={{color: 'var(--bg)', margin: 0, fontSize: '1.25rem'}}>Tasks</h2>
                         <p style={{color: 'var(--bg)', opacity: 0.6, fontSize: '0.9rem'}}>Today: 2/8 tasks</p>
-                        <p style={{color: 'var(--bg)', height: '59vh', opacity: 0.6, fontSize: '0.9rem'}}>This week: 123 tasks</p>
+                        <p style={{color: 'var(--bg)', height: '53vh', opacity: 0.6, fontSize: '0.9rem'}}>This week: 123 tasks</p>
                     </div>
                 } />
             </div>
@@ -69,9 +69,7 @@ function App() {
             <div className={getWidgetClassName('photo')} 
                  style={{ display: isWidgetVisible('photo') ? 'block' : 'none' }}>
                 <Widget color="var(--panel)" content={
-                    <div className="widget-placeholder" style={{minHeight: '120px', display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
-                        <p style={{color: '#fff', opacity: 0.5}}>Photo Widget</p>
-                    </div>
+                    <img src="./image.jpg" alt="Photo" style={{width: '100%', height: '100%', objectFit: 'cover'}} />
                 } />
             </div>
 
@@ -81,7 +79,7 @@ function App() {
                     <div className="widget-placeholder">
                         <h2 style={{color: 'var(--bg)', margin: 0, fontSize: '1.25rem'}}>Progress</h2>
                         <p style={{color: 'var(--bg)', opacity: 0.6, fontSize: '0.9rem'}}>Today: 1.2h</p>
-                        <p style={{color: 'var(--bg)', opacity: 0.6, fontSize: '0.9rem'}}>This week: 12.3h</p>
+                        <p style={{color: 'var(--bg)', height: '10vh', opacity: 0.6, fontSize: '0.9rem'}}>This week: 12.3h</p>
                     </div>
                 } />
             </div>

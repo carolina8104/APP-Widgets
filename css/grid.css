@@ -8,20 +8,20 @@
     margin: 0 auto;
     box-sizing: border-box;
 
-    grid-template-columns: 0.35fr 0.1fr 0.15fr 0.35fr 1.1fr; 
-    grid-template-rows: 0.7fr 0.7fr 1fr 1fr;
+    grid-template-columns: 0.35fr 0.1fr 0.1fr 0.5fr 1.1fr; 
+    grid-template-rows: 0.7fr 0.7fr 0.7fr 3fr;
     grid-template-areas:
         "friends      friends      tasks      tasks      calendar"
         "timeTracker  timeTracker  tasks      tasks      calendar"
         "notes        notes        tasks      tasks      calendar"
-        "photo        photo        photo           progress   calendar";
+        "photo        photo        photo      progress   calendar";
 }
 
 .friends      { grid-area: friends; }
 .timeTracker  { grid-area: timeTracker; }
 .notes        { grid-area: notes; }
 .tasks        { grid-area: tasks; }
-.photo        { grid-area: photo; }
+.photo        { grid-area: photo; overflow: hidden; }
 .progress     { grid-area: progress; }
 .calendar     { grid-area: calendar; }
 
@@ -35,6 +35,11 @@
     flex-direction: column;
     overflow: hidden;
     transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.photo .widget {
+    padding: 0;
+    height: 100%;
 }
 
 .dashboard-grid > div {
