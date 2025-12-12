@@ -1,0 +1,25 @@
+.tt-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.tt-grid {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    grid-template-rows: auto auto;
+    row-gap: 0.7rem;
+    column-gap: 1rem;
+    width: 100%;
+    min-width: 0;
+    align-items: center;
+}
+
+.tt-title {
+    line-height: 100%;
+    grid-column: 1;
+    grid-row: 1;
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: var(--accent-neon);
+}
