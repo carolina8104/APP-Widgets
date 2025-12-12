@@ -10,7 +10,7 @@ function App() {
             </div>
 
             <div className="timeTracker">
-                <Widget color="var(--accent-neon)" content={""} />
+                <Widget color="var(--accent-neon)" content={<TimeTracker userId="user123" />} />
             </div>
 
              <div className="notes">
