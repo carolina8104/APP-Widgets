@@ -1,6 +1,8 @@
 const { useState } = React
 
 function Login({ onLoginSuccess }) {
+    const [isRegister, setIsRegister] = useState(false)
+    const [username, setUsername] = useState('')
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const [error, setError] = useState('')
@@ -11,11 +13,16 @@ function Login({ onLoginSuccess }) {
         setError('')
         setLoading(true)
 
+        const endpoint = isRegister ? '/api/register' : '/api/login'
+        const body = isRegister 
+            ? { username, email, password }
+            : { email, password }
+
         try {
-            const response = await fetch('http://localhost:3001/api/login', {
+            const response = await fetch('http://localhost:3001' + endpoint, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email, password })
+                body: JSON.stringify(body)
             })
 
             const data = await response.json()
@@ -35,8 +42,19 @@ function Login({ onLoginSuccess }) {
 
     return (
         <div>
-            <h1>Sign in</h1>
+            <h1>{isRegister ? 'Create Account' : 'Log In'}</h1>
             <form onSubmit={handleSubmit}>
+                {isRegister && (
+                    <div>
+                        <label>Username:</label>
+                        <input 
+                            type="text" 
+                            value={username}
+                            onChange={(e) => setUsername(e.target.value)}
+                            required
+                        />
+                    </div>
+                )}
                 <div>
                     <label>Email:</label>
                     <input 
@@ -57,9 +75,18 @@ function Login({ onLoginSuccess }) {
                 </div>
                 {error && <p style={{color: 'red'}}>{error}</p>}
                 <button type="submit" disabled={loading}>
-                    {loading ? 'Signing in...' : 'Sign in'}
+                    {loading 
+                        ? (isRegister ? 'Creating account...' : 'Logging in...') 
+                        : (isRegister ? 'Create Account' : 'Log In')
+                    }
                 </button>
             </form>
+            <p>
+                {isRegister ? 'Already have an account? ' : "Don't have an account yet? "}
+                <button onClick={() => setIsRegister(!isRegister)}>
+                    {isRegister ? 'Log in' : 'Create an account'}
+                </button>
+            </p>
         </div>
     )
 }

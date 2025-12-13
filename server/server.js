@@ -68,6 +68,45 @@ async function handleApi(message, response) {
     return response.end()
   }
 
+  if (url.pathname === '/api/register' && message.method === 'POST') {
+    const body = await parseBody(message)
+    const usersCol = getCollection('users')
+    
+    const existingEmail = await usersCol.findOne({ email: body.email })
+    if (existingEmail) {
+      return sendJson(response, 400, { error: 'Email already registered' })
+    }
+    
+    const existingUsername = await usersCol.findOne({ username: body.username })
+    if (existingUsername) {
+      return sendJson(response, 400, { error: 'Username already exists' })
+    }
+    
+    const passwordHash = await bcrypt.hash(body.password, 10)
+    
+    const newUser = {
+      _id: 'user' + Date.now(),
+      username: body.username,
+      email: body.email,
+      passwordHash: passwordHash,
+      level: 1,
+      xp: 0,
+      stickersUnlocked: [],
+      themesUnlocked: [],
+      photos: [],
+      settings: {},
+      createdAt: new Date().toISOString()
+    }
+    
+    await usersCol.insertOne(newUser)
+    
+    return sendJson(response, 201, { 
+      userId: newUser._id,
+      email: newUser.email,
+      name: newUser.username 
+    })
+  }
+
   if (url.pathname === '/api/login' && message.method === 'POST') {
     const body = await parseBody(message)
     const usersCol = getCollection('users')
