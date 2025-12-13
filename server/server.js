@@ -67,6 +67,27 @@ async function handleApi(message, response) {
     return response.end()
   }
 
+  if (url.pathname === '/api/login' && message.method === 'POST') {
+    const body = await parseBody(message)
+    const usersCol = getCollection('users')
+    
+    const user = await usersCol.findOne({ email: body.email })
+    
+    if (!user) {
+      return sendJson(response, 401, { error: 'Email não encontrado' })
+    }
+    
+    if (user.password !== body.password) {
+      return sendJson(response, 401, { error: 'Palavra-passe errada' })
+    }
+    
+    return sendJson(response, 200, { 
+      userId: user._id,
+      email: user.email,
+      name: user.name 
+    })
+  }
+
   if (url.pathname === '/api/notes' && message.method === 'GET') {
     const notesCol = getCollection('notes')
     const notes = await notesCol.find({}).toArray()
