@@ -2,6 +2,7 @@ const http = require('http')
 const fs = require('fs')
 const path = require('path')
 const { URL } = require('url')
+const bcrypt = require('bcrypt')
 const { connect } = require('./db')
 
 const PORT = process.env.PORT || 3001
@@ -77,14 +78,16 @@ async function handleApi(message, response) {
       return sendJson(response, 401, { error: 'Email not found' })
     }
     
-    if (user.password !== body.password) {
+    const isPasswordValid = await bcrypt.compare(body.password, user.passwordHash)
+    
+    if (!isPasswordValid) {
       return sendJson(response, 401, { error: 'Incorrect password' })
     }
     
     return sendJson(response, 200, { 
       userId: user._id,
       email: user.email,
-      name: user.name 
+      name: user.username || user.name 
     })
   }
 
