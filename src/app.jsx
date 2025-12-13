@@ -7,8 +7,20 @@ function App() {
 
     const allWidgets = ['friends', 'timeTracker', 'notes', 'tasks', 'photo', 'progress', 'calendar']
 
+    useEffect(() => {
+        const savedUser = localStorage.getItem('currentUser')
+        if (savedUser) {
+            try {
+                setCurrentUser(JSON.parse(savedUser))
+            } catch (e) {
+                localStorage.removeItem('currentUser')
+            }
+        }
+    }, [])
+
     const handleLoginSuccess = (userData) => {
         setCurrentUser(userData)
+        localStorage.setItem('currentUser', JSON.stringify(userData))
     }
 
     if (!currentUser) {
@@ -17,6 +29,7 @@ function App() {
 
     function handleLogout() {
         setCurrentUser(null)
+        localStorage.removeItem('currentUser')
     }
 
      const toggleWidget = (widgetName) => {
