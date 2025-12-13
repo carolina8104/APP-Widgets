@@ -73,7 +73,7 @@ function Login({ onLoginSuccess }) {
                         required
                     />
                 </div>
-                {error && <p style={{color: 'red'}}>{error}</p>}
+                {error && <p style={{color: 'white'}}>{error}</p>}
                 <button type="submit" disabled={loading}>
                     {loading 
                         ? (isRegister ? 'Creating account...' : 'Logging in...') 

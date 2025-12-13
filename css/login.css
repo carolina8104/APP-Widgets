@@ -1,3 +1,10 @@
+.login-container input[type="email"]:focus,
+.login-container input[type="password"]:focus,
+.login-container input[type="text"]:focus {
+  outline: none;
+  border: 1.5px solid #fff;
+  box-shadow: 0 0 0 2px rgba(255,255,255,0.15);
+}
 .login-container {
   max-width: 350px;
   min-height: 0;
@@ -15,10 +22,20 @@
 }
 
 .login-container h1 {
-  color: var(--accent-yellow, #ffd600);
   margin-bottom: 1.5rem;
   text-align: center;
   font-size: 2rem;
+  color: var(--accent-yellow, #ffd600);
+  animation: yellow-to-blue 6s infinite alternate;
+  transition: color 0.5s;
+}
+
+@keyframes login-gradient {
+  0% { background-position: 0% 50%; }
+  25% { background-position: 50% 100%; }
+  50% { background-position: 100% 50%; }
+  75% { background-position: 50% 0%; }
+  100% { background-position: 0% 50%; }
 }
 
 .login-container form > div {
@@ -49,15 +66,29 @@
 .login-container button[type="submit"] {
   width: 100%;
   padding: 0.7rem;
+  color: #111;
   background: var(--accent-yellow, #ffd600);
-  color: var(--bg, #181a20);
-  border: none;
-  border-radius: 6px;
-  font-size: 1.1rem;
-  font-weight: bold;
-  cursor: pointer;
-  margin-top: 0.5rem;
-  transition: background 0.2s;
+  animation: yellow-to-blue-bg 6s infinite alternate;
+  transition: background 0.5s;
+   border: none;
+   border-radius: 6px;
+   font-size: 1.1rem;
+   font-weight: bold;
+   cursor: pointer;
+   margin-top: 0.5rem;
+   transition: background 0.2s;
+   position: relative;
+   overflow: hidden;
+  }
+  .login-container button[type="submit"] span {
+   display: inline-block;
+   background: linear-gradient(270deg, #ffd600, #00e0ff, #ff4d4f, #7cffb2, #ffd600);
+   background-size: 800% 800%;
+   -webkit-background-clip: text;
+   -webkit-text-fill-color: transparent;
+   background-clip: text;
+   color: transparent;
+   animation: login-gradient 18s ease-in-out infinite;
 }
 
 .login-container button[type="submit"]:hover {
@@ -77,12 +108,23 @@
 }
 
 .login-container button:not([type="submit"]) {
-  background: none;
-  border: none;
-  color: var(--accent-yellow, #ffd600);
-  cursor: pointer;
-  font-size: 1rem;
-  text-decoration: underline;
-  margin-left: 0.2rem;
-  padding: 0;
+  animation: yellow-to-blue 6s infinite alternate;
+  transition: color 0.5s;
+}
+@keyframes yellow-to-blue {
+  0%   { color: var(--accent-yellow, #ffd600); }
+  20%  { color: #ff9800; }  
+  40%  { color: #00e676; }   
+  60%  { color: #e040fb; }  
+  80%  { color: #00bfff; }   
+  100% { color: var(--accent-yellow, #ffd600); }
+}
+
+@keyframes yellow-to-blue-bg {
+  0%   { background: var(--accent-yellow, #ffd600); }
+  20%  { background: #ff9800; }
+  40%  { background: #00e676; }
+  60%  { background: #e040fb; }
+  80%  { background: #00bfff; }
+  100% { background: var(--accent-yellow, #ffd600); }
 }
