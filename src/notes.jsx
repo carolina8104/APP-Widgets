@@ -15,7 +15,7 @@ function Notes({ userId }) {
   }, [userId])
 
   function fetchNotes() {
-    fetch('http://localhost:3001/api/notes')
+    fetch('http://localhost:3001/api/notes?userId=' + encodeURIComponent(userId))
       .then(response => response.json())
       .then(data => {
         const sorted = data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))

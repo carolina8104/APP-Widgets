@@ -90,7 +90,9 @@ async function handleApi(message, response) {
 
   if (url.pathname === '/api/notes' && message.method === 'GET') {
     const notesCol = getCollection('notes')
-    const notes = await notesCol.find({}).toArray()
+    const userId = url.searchParams.get('userId')
+    const filter = userId ? { userId } : {}
+    const notes = await notesCol.find(filter).toArray()
     return sendJson(response, 200, notes)
   }
 

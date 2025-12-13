@@ -15,6 +15,10 @@ function App() {
         return <Login onLoginSuccess={handleLoginSuccess} />
     }
 
+    function handleLogout() {
+        setCurrentUser(null)
+    }
+
      const toggleWidget = (widgetName) => {
         if (expandedWidget === widgetName) {
             setExpandedWidget(null)
@@ -41,7 +45,9 @@ function App() {
     }
 
     return (
-        <div className="dashboard-grid">
+        <>
+            <button onClick={handleLogout}>Logout</button>
+            <div className="dashboard-grid">
 
             <div className={getWidgetClassName('friends')} 
                  style={{ display: isWidgetVisible('friends') ? 'block' : 'none' }}>
@@ -103,7 +109,8 @@ function App() {
                 } />
             </div>
 
-        </div>
+            </div>
+        </>
     )
 }
 
