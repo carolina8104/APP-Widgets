@@ -41,7 +41,7 @@ function Login({ onLoginSuccess }) {
     }
 
     return (
-        <div>
+        <div className="login-container">
             <h1>{isRegister ? 'Create Account' : 'Log In'}</h1>
             <form onSubmit={handleSubmit}>
                 {isRegister && (
