@@ -1,10 +1,19 @@
 const { useState, useEffect } = React
 
 function App() {
+    const [currentUser, setCurrentUser] = useState(null)
     const [expandedWidget, setExpandedWidget] = useState(null)
     const [hiddenWidgets, setHiddenWidgets] = useState([])
 
     const allWidgets = ['friends', 'timeTracker', 'notes', 'tasks', 'photo', 'progress', 'calendar']
+
+    const handleLoginSuccess = (userData) => {
+        setCurrentUser(userData)
+    }
+
+    if (!currentUser) {
+        return <Login onLoginSuccess={handleLoginSuccess} />
+    }
 
      const toggleWidget = (widgetName) => {
         if (expandedWidget === widgetName) {
@@ -43,7 +52,7 @@ function App() {
                  style={{ display: isWidgetVisible('timeTracker') ? 'block' : 'none' }}>
                 <Widget color="var(--panel)" content={
                     <TimeTracker 
-                        userId="user123" 
+                        userId={currentUser.userId} 
                         expanded={expandedWidget === 'timeTracker'}
                         onToggleExpand={() => toggleWidget('timeTracker')}
                     />} 
@@ -52,7 +61,7 @@ function App() {
 
             <div className={getWidgetClassName('notes')} 
                  style={{ display: isWidgetVisible('notes') ? 'block' : 'none' }}>
-                <Widget color="var(--accent-yellow)" content={<Notes userId="user123" />} />
+                <Widget color="var(--accent-yellow)" content={<Notes userId={currentUser.userId} />} />
             </div>
 
             <div className={getWidgetClassName('tasks')} 
