@@ -74,11 +74,11 @@ async function handleApi(message, response) {
     const user = await usersCol.findOne({ email: body.email })
     
     if (!user) {
-      return sendJson(response, 401, { error: 'Email não encontrado' })
+      return sendJson(response, 401, { error: 'Email not found' })
     }
     
     if (user.password !== body.password) {
-      return sendJson(response, 401, { error: 'Palavra-passe errada' })
+      return sendJson(response, 401, { error: 'Incorrect password' })
     }
     
     return sendJson(response, 200, { 
