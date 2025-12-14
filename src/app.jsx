@@ -64,7 +64,13 @@ function App() {
 
             <div className={getWidgetClassName('friends')} 
                  style={{ display: isWidgetVisible('friends') ? 'block' : 'none' }}>
-                <Widget color="var(--accent-neon)" content={""} />
+                <Widget color="var(--accent-neon)" content={
+                    <Friends
+                        userId={currentUser.userId} 
+                        expanded={expandedWidget === 'friends'}
+                        onToggleExpand={() => toggleWidget('friends')}
+                    />
+                } />
             </div>
 
             <div className={getWidgetClassName('timeTracker')} 
