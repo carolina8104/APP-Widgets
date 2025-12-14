@@ -147,7 +147,7 @@ async function handleApi(message, response) {
     return sendJson(response, 201, { insertedId: result.insertedId, ...body })
   }
 
-    const notesIdMatch = url.pathname.match(/^\/api\/notes\/([a-zA-Z0-9\-_]+)$/)
+  const notesIdMatch = url.pathname.match(/^\/api\/notes\/([a-zA-Z0-9\-_]+)$/)
   if (notesIdMatch) {
     const id = notesIdMatch[1]
     const notesCol = getCollection('notes')
@@ -172,6 +172,44 @@ async function handleApi(message, response) {
       return sendJson(response, 200, { deleted: true })
     }
   }
+
+  if (pathname === '/api/friendship' && req.method === 'GET') {
+      const friendshipCol = getCollection('friendship')
+      const friendships = await friendshipCol.find({}).toArray()
+      return sendJson(res, 200, friendships)
+    }
+
+    const friendsMatch = pathname.match(/^\/api\/users\/([a-zA-Z0-9\-_]+)\/friends$/)
+    if (friendsMatch && req.method === 'GET') {
+      const userId = friendsMatch[1]
+      const friendshipCol = getCollection('friendship')
+      const usersCol = getCollection('users')
+      
+      const friendships = await friendshipCol.find({
+        $or: [
+          { user1: userId, status: 'accepted' },
+          { user2: userId, status: 'accepted' }
+        ]
+      }).toArray()
+      
+      const friendIds = friendships.map(f => 
+        f.user1 === userId ? f.user2 : f.user1
+      )
+      
+      const friends = await usersCol.find({
+        _id: { $in: friendIds }
+      }).toArray()
+      
+      const friendsData = friends.map(friend => ({
+        _id: friend._id,
+        name: friend.username,
+        level: friend.level,
+        email: friend.email,
+        xp: friend.xp
+      }))
+      
+      return sendJson(res, 200, friendsData)
+    }
 
   sendJson(response, 404, { error: 'Not found' })
 
