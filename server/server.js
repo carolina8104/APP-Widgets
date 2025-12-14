@@ -173,14 +173,14 @@ async function handleApi(message, response) {
     }
   }
 
-  if (pathname === '/api/friendship' && req.method === 'GET') {
+  if (url.pathname === '/api/friendship' && message.method === 'GET') {
       const friendshipCol = getCollection('friendship')
       const friendships = await friendshipCol.find({}).toArray()
-      return sendJson(res, 200, friendships)
+      return sendJson(response, 200, friendships)
     }
 
-    const friendsMatch = pathname.match(/^\/api\/users\/([a-zA-Z0-9\-_]+)\/friends$/)
-    if (friendsMatch && req.method === 'GET') {
+    const friendsMatch = url.pathname.match(/^\/api\/users\/([a-zA-Z0-9\-_]+)\/friends$/)
+    if (friendsMatch && message.method === 'GET') {
       const userId = friendsMatch[1]
       const friendshipCol = getCollection('friendship')
       const usersCol = getCollection('users')
@@ -208,7 +208,7 @@ async function handleApi(message, response) {
         xp: friend.xp
       }))
       
-      return sendJson(res, 200, friendsData)
+      return sendJson(response, 200, friendsData)
     }
 
   sendJson(response, 404, { error: 'Not found' })
