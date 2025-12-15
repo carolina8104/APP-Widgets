@@ -35,21 +35,30 @@ function serveStatic(url, response) {
   if (url === '/') {
     filePath = path.join(__dirname, '..', 'index.html')
   }
-
-  fs.readFile(filePath, 'utf8', (err, data) => {
-    if (err) {
+  fs.stat(filePath, (err, stats) => {
+    if (err || !stats.isFile()) {
       response.writeHead(404, { 'Content-Type': 'text/plain' })
       return response.end('File not found')
     }
 
     let contentType = 'text/html'
     if (filePath.endsWith('.js')) contentType = 'application/javascript'
-    if (filePath.endsWith('.css')) contentType = 'text/css'
-    if (filePath.endsWith('.json')) contentType = 'application/json'
-    if (filePath.endsWith('.jsx')) contentType = 'application/javascript'
+    else if (filePath.endsWith('.css')) contentType = 'text/css'
+    else if (filePath.endsWith('.json')) contentType = 'application/json'
+    else if (filePath.endsWith('.jsx')) contentType = 'application/javascript'
+    else if (filePath.endsWith('.png')) contentType = 'image/png'
+    else if (filePath.endsWith('.jpg') || filePath.endsWith('.jpeg')) contentType = 'image/jpeg'
+    else if (filePath.endsWith('.gif')) contentType = 'image/gif'
+    else if (filePath.endsWith('.webp')) contentType = 'image/webp'
+    else if (filePath.endsWith('.svg')) contentType = 'image/svg+xml'
 
     response.writeHead(200, { 'Content-Type': contentType })
-    response.end(data)
+    const stream = fs.createReadStream(filePath)
+    stream.on('error', () => {
+      response.writeHead(500, { 'Content-Type': 'text/plain' })
+      response.end('Server error')
+    })
+    stream.pipe(response)
   })
 }
 

@@ -48,8 +48,16 @@ function Friends({ userId, expanded, onToggleExpand }) {
           <div className="fw-loading">Loading...</div>
         ) : filteredFriends.length > 0 ? (
           filteredFriends.map((f, i) => {
-            const photoPath = f.photos && f.photos.length > 0 ? f.photos[0] : null
-            const photoUrl = photoPath ? `${window.location.origin}${photoPath}` : null
+            const photoPathRaw = f.photos && f.photos.length > 0 ? f.photos[0] : null
+            let photoUrl = null
+            if (photoPathRaw) {
+              if (photoPathRaw.startsWith('http://') || photoPathRaw.startsWith('https://')) {
+                photoUrl = photoPathRaw
+              } else {
+                const prefix = photoPathRaw.startsWith('/') ? '' : '/'
+                photoUrl = `${window.location.origin}${prefix}${photoPathRaw}`
+              }
+            }
             return (
               <div className="fw-item" key={f._id} role="listitem" tabIndex={0}>
                 {photoUrl ? (
