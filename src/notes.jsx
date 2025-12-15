@@ -1,6 +1,6 @@
 const { useState, useEffect } = React
 
-function Notes({ userId }) {
+function Notes({ userId, expanded, onToggleExpand }) {
   const [viewMode, setViewMode] = useState('list')
   const [loading, setLoading] = useState(true)
   const [notes, setNotes] = useState([])
@@ -51,6 +51,7 @@ function Notes({ userId }) {
         setNewTitle('')
         setNewContent('')
         setViewMode('list')
+        onToggleExpand()
         fetchNotes()
       })
       .catch(error => console.error('Error saving note:', error))
@@ -81,6 +82,7 @@ function Notes({ userId }) {
         setNotes(updatedNotes)
         setSelectedNote(null)
         setViewMode('list')
+        onToggleExpand()
       })
       .catch(error => {
         console.error('Error updating note:', error)
@@ -101,6 +103,7 @@ function Notes({ userId }) {
         if (viewMode === 'view') {
           setSelectedNote(null)
           setViewMode('list')
+          onToggleExpand()
         }
       })
       .catch(error => {
@@ -112,10 +115,10 @@ function Notes({ userId }) {
   if (viewMode === 'create') {
     return (
       <div className="notes-container notes-open-mode">
-        <button className="arrow-button" onClick={() => setViewMode('list')}>
-          🡧
-        </button>
-        <h2>Notes</h2>
+        <div className="notes-open-header">
+          <h2>Notes</h2>
+          <ExpandArrow onClick={() => { setViewMode('list'); onToggleExpand(); }} expanded={true} color="var(--bg)" />
+        </div>
         <div>
           <input
             type="text"
@@ -130,12 +133,8 @@ function Notes({ userId }) {
             onChange={e => setNewContent(e.target.value)}
           />
           <div>
-            <button className="regular-button" onClick={handleSaveNote}>
-              Save
-            </button>
-            <button className="regular-button" onClick={() => setViewMode('list')}>
-              Cancel
-            </button>
+            <button className="regular-button" onClick={handleSaveNote}>Save</button>
+            <button className="regular-button" onClick={() => { setViewMode('list'); onToggleExpand(); }}>Cancel</button>
           </div>
         </div>
       </div>
@@ -145,11 +144,11 @@ function Notes({ userId }) {
   if (viewMode === 'view' && selectedNote) {
     return (
       <div className="notes-container notes-open-mode">
-        <button className="arrow-button" onClick={() => setViewMode('list')}>
-          🡧
-        </button>
-        <div>
+        <div className="notes-open-header">
           <h2>{selectedNote.title}</h2>
+          <ExpandArrow onClick={() => { setViewMode('list'); onToggleExpand(); }} expanded={true} color="var(--bg)" />
+        </div>
+        <div>
           <small className="detail-date">
             {new Date(selectedNote.createdAt).toLocaleDateString('en-EN', {
               weekday: 'long',
@@ -162,16 +161,12 @@ function Notes({ userId }) {
           </small>
           <p>{selectedNote.content}</p>
           <div className="detail-actions">
-            <button className="regular-button" onClick={() => {
+            <button className="regular-button\" onClick={() => {
               setEditTitle(selectedNote.title)
               setEditContent(selectedNote.content)
               setViewMode('edit')
-            }}>
-              Edit
-            </button>
-            <button className="regular-button" onClick={() => handleDeleteNote(selectedNote._id)}>
-              Delete
-            </button>
+            }}>Edit</button>
+            <button className="regular-button" onClick={() => handleDeleteNote(selectedNote._id)}>Delete</button>
           </div>
         </div>
       </div>
@@ -181,9 +176,10 @@ function Notes({ userId }) {
   if (viewMode === 'edit' && selectedNote) {
     return (
       <div className="notes-container notes-open-mode">
-        <button className="arrow-button" onClick={() => setViewMode('view')}>
-          🡧
-        </button>
+        <div className="notes-open-header">
+          <h2>Edit Note</h2>
+          <ExpandArrow onClick={() => { setViewMode('list'); onToggleExpand(); }} expanded={true} color="var(--bg)" />
+        </div>
         <div>
           <h2>
             <input
@@ -217,12 +213,8 @@ function Notes({ userId }) {
             onChange={e => setEditContent(e.target.value)}
           />
           <div>
-            <button className="regular-button" onClick={handleSaveEdit}>
-              Save
-            </button>
-            <button className="regular-button" onClick={() => setViewMode('view')}>
-              Cancel
-            </button>
+            <button className="regular-button" onClick={handleSaveEdit}>Save</button>
+            <button className="regular-button" onClick={() => { setViewMode('list'); onToggleExpand(); }}>Cancel</button>
           </div>
         </div>
       </div>
@@ -232,10 +224,10 @@ function Notes({ userId }) {
   if (viewMode === 'all') {
     return (
       <div className="notes-container notes-open-mode">
-        <button className="arrow-button" onClick={() => setViewMode('list')}>
-          🡧
-        </button>
-        <h2 className="notes-title">All your Notes ({notes.length})</h2>
+        <div className="notes-open-header">
+          <h2 className="notes-title">All your Notes ({notes.length})</h2>
+          <ExpandArrow onClick={() => { setViewMode('list'); onToggleExpand(); }} expanded={true} color="var(--bg)" />
+        </div>
         {loading && <p className="loading-text">Loading...</p>}
         {!loading && notes.length === 0 && <p className="text-muted">No notes.</p>}
         {!loading && notes.length > 0 && (
@@ -274,13 +266,14 @@ function Notes({ userId }) {
   return (
     <div className="notes-container">
       <h2>Notes</h2>
-      <h3>Last Notes{!loading && notes.length > 4 && <button onClick={() => setViewMode('all')}>+</button>}</h3>
+      <h3>Last Notes{!loading && notes.length > 4 && <button onClick={() => { if (!expanded) onToggleExpand(); setViewMode('all'); }}>+</button>}</h3>
       {loading && <p>Loading...</p>}
       {!loading && notes.length === 0 && <p>No notes. Create your first one!</p>}
       {!loading && notes.length > 0 && (
         <div className="last-notes-grid">
           {notes.slice(0, 4).map((note) => (
             <div className="last-note" key={note._id} onClick={() => {
+              if (!expanded) onToggleExpand();
               setSelectedNote(note)
               setViewMode('view')
             }}>
@@ -293,6 +286,7 @@ function Notes({ userId }) {
       <div
         className="note-card-new"
         onClick={() => {
+          if (!expanded) onToggleExpand();
           setNewTitle('')
           setNewContent('')
           setViewMode('create')

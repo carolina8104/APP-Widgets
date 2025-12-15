@@ -1,8 +1,19 @@
 .notes-open-mode {
   position: relative;
-  width: 72vw;
+  width: 67vw;
   height: 74vh;
   margin-top: 2vh;
+}
+
+.notes-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1vh;
+}
+
+.notes-header h2 {
+  margin: 0;
 }
 
 .last-notes-grid {
@@ -65,10 +76,36 @@
   margin: 0.5vh 0 0 0;
 }
 
+/* Button styles */
+.regular-button {
+  background-color: var(--accent-yellow);
+  color: var(--bg);
+  border: none;
+  border-radius: 8px;
+  padding: 0.8vh 2vh;
+  font-size: medium;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-right: 1vh;
+}
+
+.regular-button:hover {
+  background-color: var(--accent-neon);
+  transform: translateY(-2px);
+}
+
+.detail-actions {
+  display: flex;
+  gap: 1vh;
+  margin-top: 2vh;
+  margin-left: 1vh;
+}
+
 .notes-open-mode {
   position: relative;
-  width: 72vw;
-  height: 74vh;
+  width: 75vw;
+  height: 80vh;
   margin-top: 2vh;
 }
 
@@ -77,9 +114,21 @@
   margin-left: 1vh;
 }
 
+.notes-open-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1vh;
+  padding: 0 1vh;
+}
+
+.notes-open-header h2 {
+  margin: 0;
+}
+
 .notes-open-mode textarea,
 .notes-open-mode p {
-  width: 70vw;
+  width: 65vw;
   height: 60vh;
   resize: none;
   font-size: medium;
@@ -87,6 +136,11 @@
   overflow-y: auto;
   white-space: pre-wrap;
   margin: 1vh;
+  background: transparent;
+  color: var(--white, #fff);
+  border: 1px solid #333;
+  padding: 0.5rem;
+  border-radius: 4px;
 }
 
 textarea::-webkit-scrollbar-track,
@@ -120,12 +174,15 @@ textarea,
 }
 
 .note-name-input {
-  position: relative;
-  top: -3.7vh;
-  right: -11vh;
-  text-decoration: underline var(--bg);
-  font-size: large;
-  width: 85%;
+    position: relative;
+    top: -3.7vh;
+    right: -11vh;
+    text-decoration: underline var(--bg);
+    font-size: large;
+    width: 38%;
+    background: transparent;
+    color: var(--white, #fff);
+    border: none;
 }
 
 .h2-style {
