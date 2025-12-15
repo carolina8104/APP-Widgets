@@ -129,3 +129,93 @@
   background: rgba(0,0,0,0.06);
   outline: none;
 }
+
+
+
+.fw-avatar{
+  width: 1.6rem;
+  height: 1.6rem;
+  border-radius: 50%;
+  background: #0f0f0f;
+  border: 2px solid rgba(0,0,0,0.25);
+  flex-shrink: 0;
+  box-shadow: 0 6px 12px rgba(0,0,0,0.18) inset;
+}
+
+.fw-meta{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-width: 0;         
+}
+
+.fw-name{
+  font-size: 0.9rem; 
+  font-weight: 700;
+  color: #06210a;      
+  line-height: 1.05; 
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.fw-level{
+  font-size: 0.85rem;
+  color: #06210a;
+  opacity: 0.85;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.fw-list::-webkit-scrollbar{ width: 8px; height: 8px; }
+.fw-list::-webkit-scrollbar-thumb{
+  background: rgba(0,0,0,0.15);
+  border-radius: 8px;
+}
+
+.fw-loading,
+.fw-no-results {
+  text-align: center;
+  padding: 1rem;
+  color: #06210a;
+  opacity: 0.7;
+  font-size: 0.9rem;
+}
+
+.fw-no-results{
+  /* fill the widget height (not the viewport) when there are no friends */
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 1rem;
+  box-sizing: border-box;
+}
+
+/* Ensure the grid cell and inner .widget keep full height so the
+   widget doesn't shrink when content is small */
+.friends {
+  height: 100%;
+  min-height: 0;
+}
+
+.friends > .widget,
+.friends .widget {
+  height: 100%;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.friends-widget {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.fw-list{
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+}
