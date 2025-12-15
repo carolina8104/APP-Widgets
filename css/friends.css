@@ -183,5 +183,9 @@
 }
 
 .fw-no-results{
-  height: 100vh;
+    height: 100vh;
+}
+
+.blank-space {
+    height: 100vh; 
 }

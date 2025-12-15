@@ -59,6 +59,7 @@ function Friends({ userId, expanded, onToggleExpand }) {
         ) : (
           <div className="fw-no-results">No friends found</div>
         )}
+        <div className="blank-space"></div>
       </div>
     </div>
   )
