@@ -205,7 +205,8 @@ async function handleApi(message, response) {
         name: friend.username,
         level: friend.level,
         email: friend.email,
-        xp: friend.xp
+        xp: friend.xp,
+        photos: friend.photos || []
       }))
       
       return sendJson(response, 200, friendsData)

@@ -47,15 +47,25 @@ function Friends({ userId, expanded, onToggleExpand }) {
         {loading ? (
           <div className="fw-loading">Loading...</div>
         ) : filteredFriends.length > 0 ? (
-          filteredFriends.map((f, i) => (
-            <div className="fw-item" key={f._id} role="listitem" tabIndex={0}>
-              <div className="fw-avatar" aria-hidden>{}</div>
-              <div className="fw-meta">
-                <div className="fw-name">{f.name}</div>
+          filteredFriends.map((f, i) => {
+            const photoPath = f.photos && f.photos.length > 0 ? f.photos[0] : null
+            const photoUrl = photoPath ? `${window.location.origin}${photoPath}` : null
+            return (
+              <div className="fw-item" key={f._id} role="listitem" tabIndex={0}>
+                {photoUrl ? (
+                  <div className="fw-avatar">
+                    <img src={photoUrl} alt={`${f.name} avatar`} />
+                  </div>
+                ) : (
+                  <div className="fw-avatar" aria-hidden></div>
+                )}
+                <div className="fw-meta">
+                  <div className="fw-name">{f.name}</div>
+                </div>
+                <div className="fw-level">lvl {f.level}</div>
               </div>
-              <div className="fw-level">lvl {f.level}</div>
-            </div>
-          ))
+            )
+          })
         ) : (
           <div className="fw-no-results">No friends found</div>
         )}
