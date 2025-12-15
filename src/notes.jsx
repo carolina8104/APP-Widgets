@@ -161,7 +161,7 @@ function Notes({ userId, expanded, onToggleExpand }) {
           </small>
           <p>{selectedNote.content}</p>
           <div className="detail-actions">
-            <button className="regular-button\" onClick={() => {
+            <button className="regular-button" onClick={() => {
               setEditTitle(selectedNote.title)
               setEditContent(selectedNote.content)
               setViewMode('edit')
@@ -266,23 +266,26 @@ function Notes({ userId, expanded, onToggleExpand }) {
   return (
     <div className="notes-container">
       <h2>Notes</h2>
-      <h3>Last Notes{!loading && notes.length > 4 && <button onClick={() => { if (!expanded) onToggleExpand(); setViewMode('all'); }}>+</button>}</h3>
+      <div className="notes-header-row">
+        <h3>Last Notes</h3>
+        {!loading && notes.length > 2 && (
+          <button className="notes-plus-btn" onClick={() => { if (!expanded) onToggleExpand(); setViewMode('all'); }}>+</button>
+        )}
+      </div>
       {loading && <p>Loading...</p>}
       {!loading && notes.length === 0 && <p>No notes. Create your first one!</p>}
-      {!loading && notes.length > 0 && (
-        <div className="last-notes-grid">
-          {notes.slice(0, 4).map((note) => (
-            <div className="last-note" key={note._id} onClick={() => {
-              if (!expanded) onToggleExpand();
-              setSelectedNote(note)
-              setViewMode('view')
-            }}>
-              <p>{note.title}</p>
-              <p>{new Date(note.createdAt).toLocaleDateString('en-EN')}</p>
-            </div>
-          ))}
-        </div>
-      )}
+      <div className="last-notes-grid">
+        {!loading && notes.slice(0, 2).map((note) => (
+          <div className="last-note" key={note._id} onClick={() => {
+            if (!expanded) onToggleExpand();
+            setSelectedNote(note)
+            setViewMode('view')
+          }}>
+            <p>{note.title.length > 23 ? note.title.slice(0, 23) + '...' : note.title}</p>
+            <p>{new Date(note.createdAt).toLocaleDateString('en-EN')}</p>
+          </div>
+        ))}
+      </div>
       <div
         className="note-card-new"
         onClick={() => {
