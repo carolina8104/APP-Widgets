@@ -183,39 +183,5 @@
 }
 
 .fw-no-results{
-  /* fill the widget height (not the viewport) when there are no friends */
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0 1rem;
-  box-sizing: border-box;
-}
-
-/* Ensure the grid cell and inner .widget keep full height so the
-   widget doesn't shrink when content is small */
-.friends {
-  height: 100%;
-  min-height: 0;
-}
-
-.friends > .widget,
-.friends .widget {
-  height: 100%;
-  min-height: 0;
-  display: flex;
-  flex-direction: column;
-}
-
-.friends-widget {
-  flex: 1 1 auto;
-  min-height: 0;
-  display: flex;
-  flex-direction: column;
-}
-
-.fw-list{
-  flex: 1 1 auto;
-  min-height: 0;
-  overflow-y: auto;
+  height: 100vh;
 }
