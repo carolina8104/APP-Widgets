@@ -86,7 +86,13 @@ function App() {
 
             <div className={getWidgetClassName('notes')} 
                  style={{ display: isWidgetVisible('notes') ? 'block' : 'none' }}>
-                <Widget color="var(--accent-yellow)" content={<Notes userId={currentUser.userId} />} />
+                <Widget color="var(--accent-yellow)" content={
+                    <Notes 
+                        userId={currentUser.userId}
+                        expanded={expandedWidget === 'notes'}
+                        onToggleExpand={() => toggleWidget('notes')}
+                    />
+                } />
             </div>
 
             <div className={getWidgetClassName('tasks')} 
