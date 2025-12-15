@@ -28,9 +28,10 @@
   grid-template-columns: repeat(2, 1fr);
   gap: 1vh;
   width: 100%;
-  min-height: 10vh;
+  min-height: 8vh;
   box-sizing: border-box;
-  padding: 1vh;
+  padding-top: 0.5vh;
+  padding-bottom: 0.5vh;
   align-items: stretch;
 }
 
