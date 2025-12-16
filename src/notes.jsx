@@ -115,24 +115,25 @@ function Notes({ userId, expanded, onToggleExpand }) {
   if (viewMode === 'create') {
     return (
       <div className="notes-container notes-open-mode">
-        <div className="notes-open-header">
+        <div className="notes-open-header" style={{ display: 'flex'}}>
           <h2>Notes</h2>
-          <ExpandArrow onClick={() => { setViewMode('list'); onToggleExpand(); }} expanded={true} color="var(--bg)" />
-        </div>
-        <div>
           <input
             type="text"
             placeholder="New note title"
             value={newTitle}
             onChange={e => setNewTitle(e.target.value)}
             className="note-name-input"
+            style={{ marginLeft: '1vw', flex: 1 }}
           />
+          <ExpandArrow onClick={() => { setViewMode('list'); onToggleExpand(); }} expanded={true} color="var(--bg)" />
+        </div>
+        <div>
           <textarea
             placeholder="Write your note here..."
             value={newContent}
             onChange={e => setNewContent(e.target.value)}
           />
-          <div>
+          <div className="notes-open-actions-buttons">
             <button className="regular-button" onClick={handleSaveNote}>Save</button>
             <button className="regular-button" onClick={() => { setViewMode('list'); onToggleExpand(); }}>Cancel</button>
           </div>
