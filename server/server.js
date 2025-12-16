@@ -222,11 +222,31 @@ async function handleApi(message, response) {
     }
 
   if (url.pathname === '/api/todos' && message.method === 'GET') {
-    const todosCol = getCollection('todo')
+    const todosCol = getCollection('todos')
     const userId = url.searchParams.get('userId')
     const filter = userId ? { userId: userId } : {}
     const todos = await todosCol.find(filter).toArray()
     return sendJson(response, 200, todos)
+  }
+
+  const userMatch = url.pathname.match(/^\/api\/users\/([a-zA-Z0-9\-_]+)$/)
+  if (userMatch && message.method === 'GET') {
+    const userId = userMatch[1]
+    const usersCol = getCollection('users')
+    const user = await usersCol.findOne({ _id: userId })
+    if (!user) return sendJson(response, 404, { error: 'User not found' })
+
+    const User = {
+      _id: user._id,
+      username: user.username,
+      email: user.email,
+      level: user.level,
+      xp: user.xp,
+      photos: user.photos || [],
+      settings: user.settings || {}
+    }
+
+    return sendJson(response, 200, User)
   }
 
   sendJson(response, 404, { error: 'Not found' })

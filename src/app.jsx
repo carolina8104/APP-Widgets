@@ -109,7 +109,11 @@ function App() {
             <div className={getWidgetClassName('photo')} 
                  style={{ display: isWidgetVisible('photo') ? 'block' : 'none' }}>
                 <Widget color="var(--panel)" content={
-                    <img src={`./uploads/${currentUser.userId}/image.jpg`} alt="Photo" style={{width: '100%', height: '100%', objectFit: 'cover'}} />
+                    <Photos 
+                        userId={currentUser.userId}
+                        expanded={expandedWidget === 'photo'}
+                        onToggleExpand={() => toggleWidget('photo')}
+                    />
                 } />
             </div>
 
