@@ -109,7 +109,11 @@ function App() {
             <div className={getWidgetClassName('photo')} 
                  style={{ display: isWidgetVisible('photo') ? 'block' : 'none' }}>
                 <Widget color="var(--panel)" content={
-                    <Photos userId={currentUser.userId} expanded={expandedWidget === 'photo'} onToggleExpand={() => toggleWidget('photo')} />
+                    <Photos 
+                        userId={currentUser.userId}
+                        expanded={expandedWidget === 'photo'}
+                        onToggleExpand={() => toggleWidget('photo')}
+                    />
                 } />
             </div>
 
