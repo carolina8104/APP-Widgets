@@ -29,9 +29,36 @@ function Notifications({ userId }) {
   }
 
   const handleAccept = async (requestId, fromUserId) => {
+    setLoading(true)
+    try {
+      const res = await fetch(`http://localhost:3001/api/friend-requests/${requestId}/accept`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' }
+      })
+      const data = await res.json()
+      if (!data.error) {
+        await fetchNotifications()
+      }
+    } catch (err) {
+      console.error('Error accepting request:', err)
+    }
+    setLoading(false)
   }
 
   const handleReject = async (requestId) => {
+    setLoading(true)
+    try {
+      const res = await fetch(`http://localhost:3001/api/friend-requests/${requestId}/reject`, {
+        method: 'DELETE'
+      })
+      const data = await res.json()
+      if (!data.error) {
+        await fetchNotifications()
+      }
+    } catch (err) {
+      console.error('Error rejecting request:', err)
+    }
+    setLoading(false)
   }
 
   const toggleOpen = () => {
@@ -87,6 +114,22 @@ function Notifications({ userId }) {
                       <div className="notification-text">
                         <strong>{notif.fromUser.username}</strong> sent a friends request
                       </div>
+                    </div>
+                    <div className="notification-actions">
+                      <button 
+                        className="notification-btn accept"
+                        onClick={() => handleAccept(notif._id, notif.fromUser._id)}
+                        disabled={loading}
+                      >
+                        Accept
+                      </button>
+                      <button 
+                        className="notification-btn reject"
+                        onClick={() => handleReject(notif._id)}
+                        disabled={loading}
+                      >
+                        Decline
+                      </button>
                     </div>
                   </div>
                 ))
