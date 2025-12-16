@@ -81,20 +81,6 @@
   text-decoration: underline;
 }
 
-.note-card-title {
-  color: black;
-  font-weight: 500;
-  font-size: large;
-  word-break: break-word;
-  margin: 0;
-}
-
-.note-card-date {
-  color: black;
-  font-size: small;
-  margin: 0.5vh 0 0 0;
-}
-
 .regular-button {
   border-radius: 8px;
   padding: 0.8vh 2.2vh;
@@ -149,10 +135,6 @@
   border-radius: 10px;
   box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.04);
   margin: 1vh 0 1vh 0
-}
-
-.notes-open-mode p{
-  font-size: medium;
 }
 
 .notes-open-mode textarea:focus {
@@ -265,12 +247,6 @@ textarea,
   scrollbar-color: var(--bg) var(--accent-yellow);
 }
 
-.note-card button {
-  position: absolute;
-  left: 39vh;
-  top: 2vh;
-}
-
 .note-name-input {
   text-decoration: underline var(--bg);
   font-size: large;
@@ -281,43 +257,10 @@ textarea,
   margin-left: 0.5vh;
 }
 
-.h2-style {
-  font-weight: 600;
-  font-size: x-large;
-  padding: 0;
-  margin: 0 0 1vh 1vh;
-  width: 100%;
-  line-height: 1.2;
-}
-
 .detail-date {
   color: var(--bg);
   font-size: small;
   line-height: 1.2;
-}
-
-.detail-content {
-  color: var(--bg);
-  background: linear-gradient(90deg, var(--accent-yellow) 60%, var(--accent-neon) 100%);
-  color: var(--bg);
-  border: none;
-  border-radius: 12px;
-  padding: 0.9em 2.2em;
-  font-size: 1.08em;
-  font-weight: 600;
-  cursor: pointer;
-  box-shadow: 0 2px 8px 0 rgba(0,0,0,0.04);
-  transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
-  margin-right: 1vw;
-  margin-bottom: 0.5vh;
-  letter-spacing: 0.02em;
-}
-
-.notes-grid-all h2 {
-  margin: 0 0 2vh 0;
-  line-height: 1.2;
-  width: 100%;
-  word-break: break-word;
 }
 
 .note-card {
