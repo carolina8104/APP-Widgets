@@ -216,34 +216,43 @@ function Notes({ userId, expanded, onToggleExpand }) {
 
   if (viewMode === 'all') {
     return (
-      <div className="notes-container notes-open-mode">
+      <div className="notes-container notes-open-mode notes-all-container">
         <div className="notes-open-header">
-          <h2 className="notes-title">All your Notes ({notes.length})</h2>
+          <h2 className="notes-title">All your notes ({notes.length})</h2>
           <ExpandArrow onClick={() => { setViewMode('list'); onToggleExpand(); }} expanded={true} color="var(--bg)" />
         </div>
+
         {loading && <p className="loading-text">Loading...</p>}
         {!loading && notes.length === 0 && <p className="text-muted">No notes.</p>}
+
         {!loading && notes.length > 0 && (
-          <div>
+          <div className="notes-grid-all">
             {notes.map((note) => (
               <div
                 key={note._id}
+                className="note-card all-notes-card"
                 onClick={() => {
                   setSelectedNote(note)
                   setViewMode('view')
                 }}
               >
-                <h2>{note.title}</h2>
-                <small>{new Date(note.createdAt).toLocaleDateString('en-EN')}</small>
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation()
-                    handleDeleteNote(note._id)
-                  }}
-                >
-                  🗑️
-                </button>
-                <p>
+                <div className="all-note-card-header">
+                  <div className="all-note-head-left">
+                    <h3 className="all-note-title">{note.title}</h3>
+                    <small className="all-note-date">{new Date(note.createdAt).toLocaleDateString('en-EN')}</small>
+                  </div>
+                  <button
+                    className="all-note-delete"
+                    aria-label="Delete note"
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      handleDeleteNote(note._id)
+                    }}
+                  >
+                    🗑️
+                  </button>
+                </div>
+                <p className="all-note-body">
                   {note.content.length > 400
                     ? note.content.slice(0, 400) + '...'
                     : note.content}
