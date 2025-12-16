@@ -93,10 +93,7 @@
 
 .progress-totals {
     display: flex;
-    gap: 2.5rem;
-    margin-top: 1rem;
-    padding-top: 1rem;
-}
+    gap: 2.5rem;}
 
 .progress-total-item {
     display: flex;
@@ -117,6 +114,65 @@
     font-weight: 500;
     color: var(--bg);
     opacity: 0.85;
+}
+
+
+.progress-expanded-row {
+    display: flex;
+    flex-direction: row;
+    gap: 5.5rem;
+    align-items: flex-start;
+    margin-bottom: 1.5rem;
+}
+
+.progress-year {
+    min-width: 260px;
+    margin: 0;
+}
+
+.progress-year-content {
+    display: flex;
+    gap: 2rem;
+    align-items: center;
+    margin-top: 0.5rem;
+}
+
+.progress-donut {
+    width: 25vh;
+    flex-shrink: 0;
+}
+
+.progress-year-legend {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+}
+
+.progress-legend-item {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+}
+
+.progress-legend-color {
+    width: 12px;
+    height: 12px;
+    border-radius: 2px;
+    flex-shrink: 0;
+}
+
+.progress-legend-label {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--bg);
+    flex: 1;
+}
+
+.progress-legend-percent {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--bg);
+    opacity: 0.7;
 }
 
 .progress-grid .expand-arrow {

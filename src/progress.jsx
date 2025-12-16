@@ -1,6 +1,7 @@
 const { useState, useEffect } = React
 
 function Progress({ userId, expanded, onToggleExpand }) {
+function Progress({ userId, expanded, onToggleExpand, hideExpandArrow = false }) {
   const [weeklyData, setWeeklyData] = useState([0, 0, 0, 0, 0, 0, 0])
   const [weeklyCompleted, setWeeklyCompleted] = useState([0, 0, 0, 0, 0, 0, 0])
   const [todayCount, setTodayCount] = useState(0)
@@ -102,6 +103,33 @@ function Progress({ userId, expanded, onToggleExpand }) {
   const maxTasks = Math.max(...weeklyData, 1)
   const maxBarHeight = 55
 
+
+  const typeColors = {
+    classes: 'var(--panel-2)',
+    fit: 'var(--accent-yellow)',
+    meets: 'var(--accent-blue)',
+    study: hideExpandArrow ? 'var(--accent-orange)' : 'var(--accent-neon)',
+    personal: 'var(--panel)',
+    work: 'var(--white)',
+    social: 'var(--accent-light-yellow)',
+    health: 'var(--muted)',
+    hobby: 'var(--accent-pink)',
+    other: 'var(--accent-green)'
+  }
+
+  const colorPalette = [
+    'var(--panel-2)',
+    'var(--accent-yellow)',
+    'var(--accent-blue)',
+    'var(--accent-neon)',
+    'var(--panel)',
+    'var(--white)',
+    'var(--accent-light-yellow)',
+    'var(--muted)',
+    'var(--accent-pink)',
+    'var(--accent-green)'
+  ]
+
   const totalYearEvents = Object.values(yearData).reduce((sum, val) => sum + val, 0)
   const yearSegments = totalYearEvents > 0 ? Object.entries(yearData).map(([type, count], index) => ({
     type,
@@ -110,11 +138,14 @@ function Progress({ userId, expanded, onToggleExpand }) {
     color: typeColors[type] || colorPalette[index % colorPalette.length]
   })) : []
 
+  const donutBaseColor = hideExpandArrow ? 'var(--accent-neon)' : 'var(--accent-orange)';
+
   return (
     <div className={`progress-container ${expanded ? "progress-expanded" : ""}`}>
       <div className="progress-grid">
         <h2>Progress</h2>
         <ExpandArrow onClick={onToggleExpand} expanded={expanded} color="var(--bg)" />
+        {!hideExpandArrow && <ExpandArrow onClick={onToggleExpand} expanded={expanded} color="var(--bg)" />}
         <div className="progress-content">
           {!expanded && (
             <>
@@ -280,8 +311,10 @@ function Progress({ userId, expanded, onToggleExpand }) {
                         })
                       })() : (
                         <circle cx="100" cy="100" r="90" fill="var(--accent-orange)" />
+                        <circle cx="100" cy="100" r="90" fill={donutBaseColor} />
                       )}
                       <circle cx="100" cy="100" r="50" fill="var(--accent-orange)" />
+                      <circle cx="100" cy="100" r="50" fill={donutBaseColor} />
                     </svg>
                     
                     <div className="progress-year-legend">
