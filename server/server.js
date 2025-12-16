@@ -221,6 +221,26 @@ async function handleApi(message, response) {
       return sendJson(response, 200, friendsData)
     }
 
+  const userMatch = url.pathname.match(/^\/api\/users\/([a-zA-Z0-9\-_]+)$/)
+  if (userMatch && message.method === 'GET') {
+    const userId = userMatch[1]
+    const usersCol = getCollection('users')
+    const user = await usersCol.findOne({ _id: userId })
+    if (!user) return sendJson(response, 404, { error: 'User not found' })
+
+    const User = {
+      _id: user._id,
+      username: user.username,
+      email: user.email,
+      level: user.level,
+      xp: user.xp,
+      photos: user.photos || [],
+      settings: user.settings || {}
+    }
+
+    return sendJson(response, 200, User)
+  }
+
   sendJson(response, 404, { error: 'Not found' })
 
 }
