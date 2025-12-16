@@ -2,18 +2,79 @@ const { useState, useEffect } = React
 
 function Progress({ userId, expanded, onToggleExpand }) {
   const [weeklyData, setWeeklyData] = useState([0, 0, 0, 0, 0, 0, 0])
+  const [weeklyCompleted, setWeeklyCompleted] = useState([0, 0, 0, 0, 0, 0, 0])
   const [todayCount, setTodayCount] = useState(0)
   const [weekCount, setWeekCount] = useState(0)
 
   useEffect(() => {
-    const mockData = [2, 3, 5, 1, 0, 0, 0]
-    setWeeklyData(mockData)
-    setTodayCount(mockData[2])
-    setWeekCount(mockData.reduce((sum, val) => sum + val, 0))
+    fetchWeeklyProgress()
+    
+    const interval = setInterval(() => {
+      fetchWeeklyProgress()
+    }, 5000)
+    
+    return () => clearInterval(interval)
   }, [userId])
+
+  async function fetchWeeklyProgress() {
+    try {
+      const response = await fetch(`http://localhost:3001/api/todos?userId=${userId}`)
+      const todos = await response.json()
+      
+      if (!Array.isArray(todos)) {
+        throw new Error('Invalid response from server')
+      }
+      
+      const now = new Date()
+      const currentDay = now.getDay() 
+      const mondayOffset = currentDay === 0 ? -6 : 1 - currentDay
+      const monday = new Date(now)
+      monday.setDate(now.getDate() + mondayOffset)
+      monday.setHours(0, 0, 0, 0)
+      
+      const sunday = new Date(monday)
+      sunday.setDate(monday.getDate() + 6)
+      sunday.setHours(23, 59, 59, 999)
+
+      const created = [0, 0, 0, 0, 0, 0, 0]
+      const completed = [0, 0, 0, 0, 0, 0, 0]
+      
+      todos.forEach(todo => {
+        const createdDate = new Date(todo.createdAt)
+        
+        if (createdDate >= monday && createdDate <= sunday) {
+          const dayIndex = createdDate.getDay()
+          const adjustedIndex = dayIndex === 0 ? 6 : dayIndex - 1
+          
+          created[adjustedIndex]++
+          
+          if (todo.completed === 'true' || todo.completed === true) {
+            completed[adjustedIndex]++
+          }
+        }
+      })
+      
+      setWeeklyData(created)
+      setWeeklyCompleted(completed)
+      
+      const todayIndex = currentDay === 0 ? 6 : currentDay - 1
+      setTodayCount(completed[todayIndex])
+      setWeekCount(completed.reduce((sum, val) => sum + val, 0))
+      
+    } catch (error) {
+      console.error('Error fetching todos:', error)
+      const mockCreated = [4, 3, 5, 2, 1, 0, 0]
+      const mockCompleted = [2, 2, 3, 1, 0, 0, 0]
+      setWeeklyData(mockCreated)
+      setWeeklyCompleted(mockCompleted)
+      setTodayCount(mockCompleted[2])
+      setWeekCount(mockCompleted.reduce((sum, val) => sum + val, 0))
+    }
+  }
 
   const dayLabels = ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su']
   const maxTasks = Math.max(...weeklyData, 1)
+  const maxBarHeight = 55
 
   return (
     <div className={`progress-container ${expanded ? "progress-expanded" : ""}`}>
@@ -24,40 +85,43 @@ function Progress({ userId, expanded, onToggleExpand }) {
         <div className="progress-content">
           <div className="progress-stats">
             <div className="progress-stat">
-              <span className="progress-label">Today:</span>
+              <span className="progress-label">Completly today:</span>
               <span className="progress-value">{todayCount}</span>
             </div>
             <div className="progress-stat">
-              <span className="progress-label">This week:</span>
+              <span className="progress-label">Completly this week:</span>
               <span className="progress-value">{weekCount}</span>
             </div>
           </div>
 
           <svg className={`progress-chart ${expanded ? 'progress-chart-small' : ''}`} viewBox="0 0 160 78" preserveAspectRatio="xMidYMid meet">
             {dayLabels.map((day, i) => {
-              const barHeight = (weeklyData[i] / maxTasks) * 55
               const x = i * 20 + 8
-              const maxBarHeight = 55
-              const backgroundY = 10
-              const foregroundY = 10 + (maxBarHeight - barHeight)
+              const createdCount = weeklyData[i]
+              const completedCount = weeklyCompleted[i]
+              
+              const grayBarHeight = maxBarHeight
+              
+              const maxPossible = Math.max(...weeklyData, 1)
+              const blackBarHeight = (completedCount / maxPossible) * maxBarHeight
               
               return (
                 <g key={day}>
                   {}
                   <rect
                     x={x}
-                    y={backgroundY}
+                    y={10}
                     width="10"
-                    height={maxBarHeight}
+                    height={grayBarHeight}
                     rx="5"
                     fill="rgba(0, 0, 0, 0.15)"
                   />
                   {}
                   <rect
                     x={x}
-                    y={foregroundY}
+                    y={10 + (grayBarHeight - blackBarHeight)}
                     width="10"
-                    height={barHeight}
+                    height={blackBarHeight}
                     rx="5"
                     fill="var(--bg)"
                   />

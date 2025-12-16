@@ -221,6 +221,14 @@ async function handleApi(message, response) {
       return sendJson(response, 200, friendsData)
     }
 
+  if (url.pathname === '/api/todos' && message.method === 'GET') {
+    const todosCol = getCollection('todos')
+    const userId = url.searchParams.get('userId')
+    const filter = userId ? { userId: userId } : {}
+    const todos = await todosCol.find(filter).toArray()
+    return sendJson(response, 200, todos)
+  }
+
   const userMatch = url.pathname.match(/^\/api\/users\/([a-zA-Z0-9\-_]+)$/)
   if (userMatch && message.method === 'GET') {
     const userId = userMatch[1]
