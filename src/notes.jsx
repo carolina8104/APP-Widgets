@@ -115,14 +115,14 @@ function Notes({ userId, expanded, onToggleExpand }) {
   if (viewMode === 'create') {
     return (
       <div className="notes-container notes-open-mode">
-        <div className="notes-open-header" style={{ display: 'flex'}}>
+        <div className="notes-open-header notes-edit-header-row">
           <h2>Notes</h2>
           <input
             type="text"
             placeholder="New note title"
             value={newTitle}
             onChange={e => setNewTitle(e.target.value)}
-            className="note-name-input"
+            className="note-name-input note-title-large"
             style={{ marginLeft: '1vw', flex: 1 }}
           />
           <ExpandArrow onClick={() => { setViewMode('list'); onToggleExpand(); }} expanded={true} color="var(--bg)" />
@@ -177,27 +177,19 @@ function Notes({ userId, expanded, onToggleExpand }) {
   if (viewMode === 'edit' && selectedNote) {
     return (
       <div className="notes-container notes-open-mode">
-        <div className="notes-open-header">
+        <div className="notes-open-header notes-edit-header-row">
           <h2>Edit Note</h2>
+          <input
+            type="text"
+            placeholder="Note title"
+            value={editTitle}
+            onChange={e => setEditTitle(e.target.value)}
+            className="note-name-input note-title-large"
+            style={{ marginLeft: '1vw', flex: 1 }}
+          />
           <ExpandArrow onClick={() => { setViewMode('list'); onToggleExpand(); }} expanded={true} color="var(--bg)" />
         </div>
         <div>
-          <h2>
-            <input
-              type="text"
-              placeholder="Note title"
-              value={editTitle}
-              onChange={e => setEditTitle(e.target.value)}
-              className="note-name-input"
-              style={{
-                fontSize: 'inherit',
-                fontWeight: 'inherit',
-                width: '100%',
-                padding: 0,
-                margin: 0
-              }}
-            />
-          </h2>
           <small className="detail-date">
             {new Date(selectedNote.createdAt).toLocaleDateString('en-EN', {
               weekday: 'long',
@@ -213,7 +205,7 @@ function Notes({ userId, expanded, onToggleExpand }) {
             value={editContent}
             onChange={e => setEditContent(e.target.value)}
           />
-          <div>
+          <div className="notes-open-actions-buttons">
             <button className="regular-button" onClick={handleSaveEdit}>Save</button>
             <button className="regular-button" onClick={() => { setViewMode('list'); onToggleExpand(); }}>Cancel</button>
           </div>
