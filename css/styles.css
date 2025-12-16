@@ -15,12 +15,22 @@
   --accent-pink: #541921;
   --accent-rose: #004821;
   --radius-lg: 16px;
+
+  --notif-bg: #2a2a2a;
+  --notif-text: #cccccc;
+  --notif-badge: #F9773B;
+  --notif-count-bg: #B7FF2F; 
+  --notif-accent: #B7FF2F; 
+  --notif-accent-hover: #DCDCDC; 
+  --notif-avatar-start: #00b37e;
+  --notif-avatar-end: #ffd24d;
 }
 
 body {
   font-family: 'Jost', sans-serif;
   background-color: var(--bg);
   line-height: 1.2;
+  overflow: hidden;
 }
 
 h2 {

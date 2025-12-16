@@ -1,0 +1,108 @@
+.calendar-widget {
+  height: 100%;
+  padding: 1rem;
+}
+
+.calendar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+}
+
+.calendar-title {
+  color: var(--accent-yellow);
+  margin: 0;
+  font-size: 1.25rem;
+}
+
+.calendar-expanded-container {
+  position: fixed;
+  left: 0vw;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 70vw;
+  height: 85vh;
+  z-index: 10;
+  display: grid;
+  grid-template-columns: 1.5fr 0.5fr;
+  grid-template-rows: auto 1fr 1fr;
+  gap: 1.2rem;
+}
+
+.calendar-main-widget {
+  grid-row: 1 / 4;
+  grid-column: 1;
+  background-color: var(--panel);
+  border-radius: 20px;
+  padding: 2rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+}
+
+.calendar-add-task-widget {
+  grid-row: 1;
+  grid-column: 2;
+  background-color: var(--white);
+  border-radius: 20px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.calendar-mini-widget {
+  grid-row: 2;
+  grid-column: 2;
+  background-color: var(--accent-orange);
+  border-radius: 20px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.calendar-sticker-widget {
+  grid-row: 3;
+  grid-column: 2;
+  background-color: var(--accent-yellow);
+  border-radius: 20px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.calendar-add-task-btn {
+  background-color: var(--bg);
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 10px;
+  font-size: 1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: transform 0.2s;
+}
+
+.calendar-add-task-btn:hover {
+  transform: translateY(-2px);
+}
+
+.calendar-add-task-btn span {
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+.calendar-placeholder-text {
+  color: var(--bg);
+  opacity: 0.7;
+  font-size: 0.9rem;
+  margin-top: 0.5rem;
+}
+
+.calendar-mini-title {
+  color: var(--bg);
+  font-size: 1.1rem;
+  margin: 0 0 1rem 0;
+  font-weight: 600;
+}
