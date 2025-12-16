@@ -5,16 +5,29 @@ function Progress({ userId, expanded, onToggleExpand }) {
   const [weeklyCompleted, setWeeklyCompleted] = useState([0, 0, 0, 0, 0, 0, 0])
   const [todayCount, setTodayCount] = useState(0)
   const [weekCount, setWeekCount] = useState(0)
+  const [totalStats, setTotalStats] = useState({ events: 0, tasks: 0, notes: 0, friends: 0 })
 
   useEffect(() => {
     fetchWeeklyProgress()
+    fetchTotalStats()
     
     const interval = setInterval(() => {
       fetchWeeklyProgress()
+      fetchTotalStats()
     }, 5000)
     
     return () => clearInterval(interval)
   }, [userId])
+
+  async function fetchTotalStats() {
+    try {
+      const response = await fetch(`http://localhost:3001/api/stats?userId=${userId}`)
+      const stats = await response.json()
+      setTotalStats(stats)
+    } catch (error) {
+      console.error('Error fetching stats:', error)
+    }
+  }
 
   async function fetchWeeklyProgress() {
     try {
@@ -82,7 +95,6 @@ function Progress({ userId, expanded, onToggleExpand }) {
         <h2>Progress</h2>
         <ExpandArrow onClick={onToggleExpand} expanded={expanded} color="var(--bg)" />
         <div className="progress-content">
-          {/* Modo fechado: layout original, stats horizontais abaixo do gráfico */}
           {!expanded && (
             <>
              <div className="progress-stats">
@@ -137,7 +149,6 @@ function Progress({ userId, expanded, onToggleExpand }) {
               </svg>
             </>
           )}
-          {/* Modo expandido: gráfico maior à esquerda, stats à direita, título */}
           {expanded && (
             <>
               <h3 className="progress-subtitle">Week tasks</h3>
@@ -192,6 +203,25 @@ function Progress({ userId, expanded, onToggleExpand }) {
                     )
                   })}
                 </svg>
+              </div>
+              
+              <div className="progress-totals">
+                <div className="progress-total-item">
+                  <span className="progress-total-value">{totalStats.events}</span>
+                  <span className="progress-total-label">Events</span>
+                </div>
+                <div className="progress-total-item">
+                  <span className="progress-total-value">{totalStats.tasks}</span>
+                  <span className="progress-total-label">Tasks</span>
+                </div>
+                <div className="progress-total-item">
+                  <span className="progress-total-value">{totalStats.notes}</span>
+                  <span className="progress-total-label">Notes</span>
+                </div>
+                <div className="progress-total-item">
+                  <span className="progress-total-value">{totalStats.friends}</span>
+                  <span className="progress-total-label">Friends</span>
+                </div>
               </div>
             </>
           )}

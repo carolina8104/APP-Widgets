@@ -249,6 +249,55 @@ async function handleApi(message, response) {
     return sendJson(response, 200, User)
   }
 
+  if (url.pathname === '/api/stats' && message.method === 'GET') {
+    const userId = url.searchParams.get('userId')
+    if (!userId) {
+      return sendJson(response, 400, { error: 'userId required' })
+    }
+
+    const calendarCol = getCollection('calendar')
+    const todosCol = getCollection('todo')
+    const notesCol = getCollection('notes')
+    const friendshipCol = getCollection('friendship')
+
+    const eventsCount = await calendarCol.countDocuments({ userId })
+    const tasksCount = await todosCol.countDocuments({ userId })
+    const notesCount = await notesCol.countDocuments({ userId })
+    
+    const friendships = await friendshipCol.find({
+      $or: [
+        { user1: userId, status: 'accepted' },
+        { user2: userId, status: 'accepted' }
+      ]
+    }).toArray()
+    const friendsCount = friendships.length
+
+    return sendJson(response, 200, {
+      events: eventsCount,
+      tasks: tasksCount,
+      notes: notesCount,
+      friends: friendsCount
+    })
+  }
+
+  if (url.pathname === '/api/calendar/types' && message.method === 'GET') {
+    const userId = url.searchParams.get('userId')
+    if (!userId) {
+      return sendJson(response, 400, { error: 'userId required' })
+    }
+
+    const calendarCol = getCollection('calendar')
+    const events = await calendarCol.find({ userId }).toArray()
+    
+    const typeCounts = {}
+    events.forEach(event => {
+      const type = event.type || 'other'
+      typeCounts[type] = (typeCounts[type] || 0) + 1
+    })
+
+    return sendJson(response, 200, typeCounts)
+  }
+
   const friendRequestsMatch = url.pathname.match(/^\/api\/users\/([a-zA-Z0-9\-_]+)\/friend-requests$/)
   if (friendRequestsMatch && message.method === 'GET') {
     const userId = friendRequestsMatch[1]
