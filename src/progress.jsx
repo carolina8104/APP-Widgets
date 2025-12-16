@@ -18,7 +18,7 @@ function Progress({ userId, expanded, onToggleExpand }) {
 
   async function fetchWeeklyProgress() {
     try {
-      const response = await fetch(`http://localhost:3001/api/todos?userId=${userId}`)
+      const response = await fetch(`http://localhost:3001/api/todo?userId=${userId}`)
       const todos = await response.json()
       
       if (!Array.isArray(todos)) {
@@ -85,11 +85,11 @@ function Progress({ userId, expanded, onToggleExpand }) {
         <div className="progress-content">
           <div className="progress-stats">
             <div className="progress-stat">
-              <span className="progress-label">Completly today:</span>
+              <span className="progress-label">Completed today:</span>
               <span className="progress-value">{todayCount}</span>
             </div>
             <div className="progress-stat">
-              <span className="progress-label">Completly this week:</span>
+              <span className="progress-label">Completed this week:</span>
               <span className="progress-value">{weekCount}</span>
             </div>
           </div>

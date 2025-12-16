@@ -221,8 +221,8 @@ async function handleApi(message, response) {
       return sendJson(response, 200, friendsData)
     }
 
-  if (url.pathname === '/api/todos' && message.method === 'GET') {
-    const todosCol = getCollection('todos')
+  if (url.pathname === '/api/todo' && message.method === 'GET') {
+    const todosCol = getCollection('todo')
     const userId = url.searchParams.get('userId')
     const filter = userId ? { userId: userId } : {}
     const todos = await todosCol.find(filter).toArray()
