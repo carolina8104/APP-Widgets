@@ -16,8 +16,57 @@
     align-items: center;
 }
 
+.progress-content {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    display: flex;
+    flex-direction: column;
+}
+
+.progress-stats {
+    display: flex;
+    gap: 1.5rem;
+    align-items: center;
+}
+
+.progress-stat {
+    display: flex;
+    flex-direction: column;
+    gap: 0.1rem;
+}
+
+.progress-label {
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--bg);
+    opacity: 0.8;
+}
+
+.progress-value {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--bg);
+}
+
+.progress-chart {
+    width: 100%;
+    height: auto;
+    overflow: visible;
+    max-width: 100%;
+}
+
+.progress-chart-small {
+    max-width: 45%;
+    margin-right: auto;
+}
+
 .progress-grid .expand-arrow {
     grid-column: 2;
     grid-row: 1;
     justify-self: end;
+}
+
+
+svg{
+    scale:1;
 }
