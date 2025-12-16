@@ -116,11 +116,11 @@ function App() {
             <div className={getWidgetClassName('progress')} 
                  style={{ display: isWidgetVisible('progress') ? 'block' : 'none' }}>
                 <Widget color="var(--accent-orange)" content={
-                    <div className="widget-placeholder">
-                        <h2 style={{color: 'var(--bg)', margin: 0, fontSize: '1.25rem'}}>Progress</h2>
-                        <p style={{color: 'var(--bg)', opacity: 0.6, fontSize: '0.9rem'}}>Today: 1.2h</p>
-                        <p style={{color: 'var(--bg)', height: '10vh', opacity: 0.6, fontSize: '0.9rem'}}>This week: 12.3h</p>
-                    </div>
+                    <Progress 
+                        userId={currentUser.userId}
+                        expanded={expandedWidget === 'progress'}
+                        onToggleExpand={() => toggleWidget('progress')}
+                    />
                 } />
             </div>
 
