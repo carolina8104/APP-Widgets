@@ -298,6 +298,38 @@ async function handleApi(message, response) {
     return sendJson(response, 200, typeCounts)
   }
 
+  const friendRequestsMatch = url.pathname.match(/^\/api\/users\/([a-zA-Z0-9\-_]+)\/friend-requests$/)
+  if (friendRequestsMatch && message.method === 'GET') {
+    const userId = friendRequestsMatch[1]
+    const friendshipCol = getCollection('friendship')
+    const usersCol = getCollection('users')
+
+    const pendingRequests = await friendshipCol.find({
+      user2: userId,
+      status: 'pending'
+    }).toArray()
+
+    const requestsWithUserData = await Promise.all(
+      pendingRequests.map(async (req) => {
+        const fromUser = await usersCol.findOne({ _id: req.user1 })
+        if (!fromUser) return null
+        return {
+          _id: req._id,
+          fromUser: {
+            _id: fromUser._id,
+            username: fromUser.username,
+            level: fromUser.level,
+            photos: fromUser.photos || []
+          },
+          createdAt: req.createdAt
+        }
+      })
+    )
+
+    const validRequests = requestsWithUserData.filter(r => r !== null)
+
+    return sendJson(response, 200, validRequests)
+  }
   sendJson(response, 404, { error: 'Not found' })
 
 }
