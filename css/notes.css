@@ -111,8 +111,6 @@
   margin-left: 1vh;
 }
 
-
-
 .notes-open-mode h2 {
   padding: 0;
   margin-left: 1vh;
@@ -131,6 +129,8 @@
 
 .notes-open-mode textarea,
 .notes-open-mode p {
+  font-family: 'Jost', sans-serif;
+  font-size: medium;
   width: 95%;
   height: 59vh;
   min-height: -1vh;
@@ -140,6 +140,10 @@
   border-radius: 10px;
   box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.04);
   margin: 1vh 0 1vh 0
+}
+
+.notes-open-mode p{
+  font-size: medium;
 }
 
 .notes-open-mode textarea:focus {
