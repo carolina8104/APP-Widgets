@@ -91,6 +91,34 @@
     flex-shrink: 0;
 }
 
+.progress-totals {
+    display: flex;
+    gap: 2.5rem;
+    margin-top: 1rem;
+    padding-top: 1rem;
+}
+
+.progress-total-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    align-items: flex-start;
+}
+
+.progress-total-value {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--bg);
+    line-height: 1;
+}
+
+.progress-total-label {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--bg);
+    opacity: 0.85;
+}
+
 .progress-grid .expand-arrow {
     grid-column: 2;
     grid-row: 1;
