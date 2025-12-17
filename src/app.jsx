@@ -63,7 +63,15 @@ function App() {
                 <Notifications userId={currentUser.userId} />
                 <button className="app-logout" onClick={handleLogout}>Logout</button>
             </div>
-            <div className="dashboard-grid">
+            <div 
+                className="dashboard-grid"
+                onClick={(e) => {
+                    const clickedInsideWidget = e.target.closest('.widget')
+                    if (expandedWidget && !clickedInsideWidget) {
+                        toggleWidget(expandedWidget)
+                    }
+                }}
+            >
 
             <div className={getWidgetClassName('friends')} 
                  style={{ display: isWidgetVisible('friends') ? 'block' : 'none' }}>
