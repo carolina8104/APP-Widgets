@@ -419,3 +419,8 @@
   opacity: 0.6;
   cursor: not-allowed;
 }
+
+.friends.widget-expanded .expand-arrow {
+    justify-self: end;
+}
+
