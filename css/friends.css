@@ -216,6 +216,14 @@
   height: 2.2rem;
 }
 
+.fw-level-inline {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #06210a;
+  opacity: 0.75;
+  margin-left: 0.4rem;
+}
+
 .fw-progress-header .fw-title {
   flex: 1;
 }

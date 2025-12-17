@@ -109,7 +109,7 @@ function Friends({ userId, expanded, onToggleExpand }) {
           ) : (
             <div className="fw-avatar fw-avatar-large" aria-hidden></div>
           )}
-          <h2 className="fw-title">{selectedFriend.name}</h2>
+          <h2 className="fw-title">{selectedFriend.name} <span className="fw-level-inline">lvl {selectedFriend.level}</span></h2>
           <ExpandArrow 
             onClick={() => { 
               setViewMode('list'); 
