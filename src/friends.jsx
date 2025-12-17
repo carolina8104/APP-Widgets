@@ -87,6 +87,53 @@ function Friends({ userId, expanded, onToggleExpand }) {
       setSendingRequest(false)
     }
   }
+
+  if (viewMode === 'add-friend') {
+    return (
+      <div className="friends-widget friends-add-view" role="region" aria-label="Add Friend">
+        <div className="fw-header">
+          <h2 className="fw-title">Add Friend</h2>
+          <ExpandArrow 
+            onClick={() => { 
+              setViewMode('list')
+              setAddFriendUsername('')
+              setUserValidation(null)
+              onToggleExpand()
+            }} 
+            expanded={true} 
+            color="var(--bg)" 
+          />
+        </div>
+        
+        <div className="fw-add-content">
+          <p className="fw-add-description">Enter the username of the person you want to add as a friend</p>
+          
+          <div className="fw-add-input-container">
+            <input 
+              type="text" 
+              className="fw-add-input"
+              placeholder="Username" 
+              value={addFriendUsername}
+              onChange={(e) => {
+                setAddFriendUsername(e.target.value)
+                setUserValidation(null)
+              }}
+              onKeyPress={(e) => {
+                if (e.key === 'Enter' && addFriendUsername.trim()) {
+                  checkUsername(addFriendUsername)
+                }
+              }}
+            />
+            <button 
+              className="fw-add-check-btn"
+              onClick={() => checkUsername(addFriendUsername)}
+              disabled={!addFriendUsername.trim()}
+            >
+              Check
+            </button>
+          </div>
+  }
+
   if (viewMode === 'progress' && selectedFriend) {
     const photoPathRaw = selectedFriend.photos && selectedFriend.photos.length > 0 ? selectedFriend.photos[0] : null
     let photoUrl = null
