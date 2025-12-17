@@ -157,46 +157,52 @@ function Progress({ userId, expanded, onToggleExpand, hideExpandArrow = false })
                   <span className="progress-value">{weekCount}</span>
                 </div>
               </div>
-              <svg className="progress-chart" viewBox="0 0 160 78" preserveAspectRatio="xMidYMid meet">
-                {dayLabels.map((day, i) => {
-                  const x = i * 20 + 8
-                  const createdCount = weeklyData[i]
-                  const completedCount = weeklyCompleted[i]
-                  const grayBarHeight = maxBarHeight
-                  const maxPossible = Math.max(...weeklyData, 1)
-                  const blackBarHeight = (completedCount / maxPossible) * maxBarHeight
-                  return (
-                    <g key={day}>
-                      <rect
-                        x={x}
-                        y={10}
-                        width="10"
-                        height={grayBarHeight}
-                        rx="5"
-                        fill="rgba(0, 0, 0, 0.15)"
-                      />
-                      <rect
-                        x={x}
-                        y={10 + (grayBarHeight - blackBarHeight)}
-                        width="10"
-                        height={blackBarHeight}
-                        rx="5"
-                        fill="var(--bg)"
-                      />
-                      <text
-                        x={x + 5}
-                        y={74}
-                        textAnchor="middle"
-                        fontSize="8"
-                        fontWeight="500"
-                        fill="var(--bg)"
-                      >
-                        {day}
-                      </text>
-                    </g>
-                  )
-                })}
-              </svg>
+              {weekCount === 0 && todayCount === 0 ? (
+                <div className="progress-no-data">
+                  <p>No activity this week</p>
+                </div>
+              ) : (
+                <svg className="progress-chart" viewBox="0 0 160 78" preserveAspectRatio="xMidYMid meet">
+                  {dayLabels.map((day, i) => {
+                    const x = i * 20 + 8
+                    const createdCount = weeklyData[i]
+                    const completedCount = weeklyCompleted[i]
+                    const grayBarHeight = maxBarHeight
+                    const maxPossible = Math.max(...weeklyData, 1)
+                    const blackBarHeight = (completedCount / maxPossible) * maxBarHeight
+                    return (
+                      <g key={day}>
+                        <rect
+                          x={x}
+                          y={10}
+                          width="10"
+                          height={grayBarHeight}
+                          rx="5"
+                          fill="rgba(0, 0, 0, 0.15)"
+                        />
+                        <rect
+                          x={x}
+                          y={10 + (grayBarHeight - blackBarHeight)}
+                          width="10"
+                          height={blackBarHeight}
+                          rx="5"
+                          fill="var(--bg)"
+                        />
+                        <text
+                          x={x + 5}
+                          y={74}
+                          textAnchor="middle"
+                          fontSize="8"
+                          fontWeight="500"
+                          fill="var(--bg)"
+                        >
+                          {day}
+                        </text>
+                      </g>
+                    )
+                  })}
+                </svg>
+              )}
             </>
           )}
           {expanded && (
@@ -205,14 +211,9 @@ function Progress({ userId, expanded, onToggleExpand, hideExpandArrow = false })
                 <div className="progress-main">
                   <h3 className="progress-subtitle">Week tasks</h3>
                   <div className="progress-main-row">
-                    <div className="progress-stats">
-                      <div className="progress-stat">
-                        <span className="progress-value">{todayCount}</span>
-                        <span className="progress-label">Today</span>
-                      </div>
-                      <div className="progress-stat">
-                        <span className="progress-value">{weekCount}</span>
-                        <span className="progress-label">This week</span>
+                    {weekCount === 0 && todayCount === 0 ? (
+                      <div className="progress-no-data">
+                        <p>No activity this week</p>
                       </div>
                     ) : (
                       <>
@@ -316,9 +317,14 @@ function Progress({ userId, expanded, onToggleExpand, hideExpandArrow = false })
                           )
                         })
                       })() : (
-                        <circle cx="100" cy="100" r="90" fill={donutBaseColor} />
+                        <>
+                          <circle cx="100" cy="100" r="90" fill="rgba(15, 15, 15, 0.1)" />
+                          <circle cx="100" cy="100" r="60" fill="var(--bg)" fillOpacity="0.05" />
+                          <text x="100" y="110" textAnchor="middle" fontSize="0.95rem" fontWeight="500" fill="var(--bg)" opacity="0.7">
+                            No calendar events
+                          </text>
+                        </>
                       )}
-                      <circle cx="100" cy="100" r="50" fill={donutBaseColor} />
                     </svg>
                     <div className="progress-year-legend">
                       {yearSegments.map(segment => (
