@@ -132,6 +132,25 @@ function Friends({ userId, expanded, onToggleExpand }) {
               Check
             </button>
           </div>
+          
+          {userValidation && (
+            <div className={`fw-validation ${userValidation.exists ? 'valid' : 'invalid'}`}>
+              {userValidation.message || (userValidation.exists ? `Found: ${userValidation.username}` : 'User not found')}
+            </div>
+          )}
+          
+          {userValidation && userValidation.exists && !userValidation.sent && (
+            <button 
+              className="fw-add-send-btn"
+              onClick={sendFriendRequest}
+              disabled={sendingRequest}
+            >
+              {sendingRequest ? 'Sending...' : 'Send Friend Request'}
+            </button>
+          )}
+        </div>
+      </div>
+    )
   }
 
   if (viewMode === 'progress' && selectedFriend) {
