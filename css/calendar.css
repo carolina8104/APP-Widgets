@@ -32,7 +32,7 @@
   grid-template-columns: 1.5fr 0.5fr;
   grid-template-rows: auto 1fr 1fr;
   gap: 1.2rem;
-  animation: calendarExpand 0.3s cubic-bezier(0.34, 2, 0.64, 1);
+  animation: calendarExpand 0.4s cubic-bezier(0.34, 2, 0.64, 1);
 }
 
 @keyframes calendarExpand {
