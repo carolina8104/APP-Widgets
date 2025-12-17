@@ -4,6 +4,8 @@ function Friends({ userId, expanded, onToggleExpand }) {
   const [friends, setFriends] = useState([])
   const [searchQuery, setSearchQuery] = useState('')
   const [loading, setLoading] = useState(true)
+  const [selectedFriend, setSelectedFriend] = useState(null)
+  const [viewMode, setViewMode] = useState('list')
 
   useEffect(() => {
     fetch(`http://localhost:3001/api/users/${userId}/friends`)
@@ -21,6 +23,44 @@ function Friends({ userId, expanded, onToggleExpand }) {
   const filteredFriends = friends.filter(friend =>
     friend.name.toLowerCase().includes(searchQuery.toLowerCase())
   )
+
+  if (viewMode === 'progress' && selectedFriend) {
+    const photoPathRaw = selectedFriend.photos && selectedFriend.photos.length > 0 ? selectedFriend.photos[0] : null
+    let photoUrl = null
+    if (photoPathRaw) {
+      if (photoPathRaw.startsWith('http://') || photoPathRaw.startsWith('https://')) {
+        photoUrl = photoPathRaw
+      } else {
+        const prefix = photoPathRaw.startsWith('/') ? '' : '/'
+        photoUrl = `${window.location.origin}${prefix}${photoPathRaw}`
+      }
+    }
+    
+    return (
+      <div className="friends-widget friends-progress-view" role="region" aria-label="Friend Progress">
+        <div className="fw-header fw-progress-header">
+          {photoUrl ? (
+            <div className="fw-avatar fw-avatar-large">
+              <img src={photoUrl} alt={`${selectedFriend.name} avatar`} />
+            </div>
+          ) : (
+            <div className="fw-avatar fw-avatar-large" aria-hidden></div>
+          )}
+          <h2 className="fw-title">{selectedFriend.name}</h2>
+          <ExpandArrow 
+            onClick={() => { 
+              setViewMode('list'); 
+              setSelectedFriend(null); 
+              onToggleExpand(); 
+            }} 
+            expanded={true} 
+            color="var(--bg)" 
+          />
+        </div>
+        <Progress userId={selectedFriend._id} expanded={true} onToggleExpand={() => {}} hideExpandArrow={true} />
+      </div>
+    )
+  }
 
   return (
     <div className="friends-widget" role="region" aria-label="Friends">
@@ -59,7 +99,18 @@ function Friends({ userId, expanded, onToggleExpand }) {
               }
             }
             return (
-              <div className="fw-item" key={f._id} role="listitem" tabIndex={0}>
+              <div 
+                className="fw-item" 
+                key={f._id} 
+                role="listitem" 
+                tabIndex={0}
+                onClick={() => {
+                  if (!expanded) onToggleExpand();
+                  setSelectedFriend(f);
+                  setViewMode('progress');
+                }}
+                style={{ cursor: 'pointer' }}
+              >
                 {photoUrl ? (
                   <div className="fw-avatar">
                     <img src={photoUrl} alt={`${f.name} avatar`} />

@@ -1,6 +1,5 @@
 const { useState, useEffect } = React
 
-function Progress({ userId, expanded, onToggleExpand }) {
 function Progress({ userId, expanded, onToggleExpand, hideExpandArrow = false }) {
   const [weeklyData, setWeeklyData] = useState([0, 0, 0, 0, 0, 0, 0])
   const [weeklyCompleted, setWeeklyCompleted] = useState([0, 0, 0, 0, 0, 0, 0])
@@ -144,7 +143,6 @@ function Progress({ userId, expanded, onToggleExpand, hideExpandArrow = false })
     <div className={`progress-container ${expanded ? "progress-expanded" : ""}`}>
       <div className="progress-grid">
         <h2>Progress</h2>
-        <ExpandArrow onClick={onToggleExpand} expanded={expanded} color="var(--bg)" />
         {!hideExpandArrow && <ExpandArrow onClick={onToggleExpand} expanded={expanded} color="var(--bg)" />}
         <div className="progress-content">
           {!expanded && (
@@ -204,11 +202,6 @@ function Progress({ userId, expanded, onToggleExpand, hideExpandArrow = false })
           {expanded && (
             <>
               <h3 className="progress-subtitle">Week tasks</h3>
-              <div className="progress-main">
-                <div className="progress-stats">
-                  <div className="progress-stat">
-                    <span className="progress-value">{todayCount}</span>
-                    <span className="progress-label">Today</span>
               <div className="progress-expanded-row">
                 <div className="progress-main">
                   <div className="progress-stats">
@@ -221,9 +214,6 @@ function Progress({ userId, expanded, onToggleExpand, hideExpandArrow = false })
                       <span className="progress-label">This week</span>
                     </div>
                   </div>
-                  <div className="progress-stat">
-                    <span className="progress-value">{weekCount}</span>
-                    <span className="progress-label">This week</span>
                   <svg className="progress-chart" viewBox="0 0 160 78" preserveAspectRatio="xMidYMid meet">
                     {dayLabels.map((day, i) => {
                       const x = i * 20 + 8
@@ -310,10 +300,8 @@ function Progress({ userId, expanded, onToggleExpand, hideExpandArrow = false })
                           )
                         })
                       })() : (
-                        <circle cx="100" cy="100" r="90" fill="var(--accent-orange)" />
                         <circle cx="100" cy="100" r="90" fill={donutBaseColor} />
                       )}
-                      <circle cx="100" cy="100" r="50" fill="var(--accent-orange)" />
                       <circle cx="100" cy="100" r="50" fill={donutBaseColor} />
                     </svg>
                     
