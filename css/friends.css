@@ -312,3 +312,98 @@
   cursor: pointer;
   transition: all 0.15s ease;
 }
+
+.fw-add-check-btn:hover:not(:disabled) {
+  background: rgba(0,0,0,0.18);
+  transform: translateY(-1px);
+}
+
+.fw-add-check-btn:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.fw-add-check-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.fw-validation-msg {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.6rem 0.8rem;
+  border-radius: 0.6rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  animation: slideIn 0.2s ease;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fw-validation-msg.success {
+  background: rgba(34,197,94,0.2);
+  color: #065f46;
+}
+
+.fw-validation-msg.error {
+  background: rgba(239,68,68,0.2);
+  color: #991b1b;
+}
+
+.fw-validation-msg.sent {
+  background: rgba(59,130,246,0.2);
+  color: #1e40af;
+}
+
+.fw-validation-msg svg {
+  flex-shrink: 0;
+}
+
+.fw-validation-avatar {
+  width: 1.8rem;
+  height: 1.8rem;
+  border-radius: 50%;
+  overflow: hidden;
+  flex-shrink: 0;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  background: rgba(0,0,0,0.05);
+}
+
+
+
+.fw-add-send-btn {
+  background: rgba(6,33,10,0.9);
+  border: none;
+  border-radius: 0.6rem;
+  padding: 0.75rem 1rem;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--accent-neon);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.fw-add-send-btn:hover:not(:disabled) {
+  background: rgba(6,33,10,1);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.fw-add-send-btn:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.fw-add-send-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
