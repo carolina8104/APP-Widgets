@@ -196,3 +196,31 @@
 .blank-space {
     height: 100vh; 
 }
+.friends-progress-view {
+  padding: 1rem;
+  gap: 1rem;
+}
+
+.friends-progress-view .fw-header {
+  margin-bottom: 0.5rem;
+}
+
+.fw-progress-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.fw-avatar-large {
+  width: 2.2rem;
+  height: 2.2rem;
+}
+
+.fw-progress-header .fw-title {
+  flex: 1;
+}
+
+.friends-progress-view .progress-container {
+  background: transparent;
+  padding: 0;
+}
