@@ -134,10 +134,10 @@ function App() {
             <div className={getWidgetClassName('calendar')} 
                  style={{ display: isWidgetVisible('calendar') ? 'block' : 'none' }}>
                 <Widget color="var(--panel)" content={
-                    <div className="widget-placeholder" style={{minHeight: '200px'}}>
-                        <h2 style={{color: 'var(--accent-yellow)', margin: 0, fontSize: '1.25rem'}}>Calendar</h2>
-                        <p style={{color: '#fff', height: '79vh',opacity: 0.6, fontSize: '0.9rem', marginTop: '0.5rem'}}>Week 24 to 30 of November</p>
-                    </div>
+                    <Calendar 
+                        expanded={expandedWidget === 'calendar'}
+                        onToggleExpand={() => toggleWidget('calendar')}
+                    />
                 } />
             </div>
 

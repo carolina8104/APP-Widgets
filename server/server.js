@@ -310,18 +310,18 @@ async function handleApi(message, response) {
     }).toArray()
 
     const requestsWithUserData = await Promise.all(
-      pendingRequests.map(async (req) => {
-        const fromUser = await usersCol.findOne({ _id: req.user1 })
+      pendingRequests.map(async (request) => {
+        const fromUser = await usersCol.findOne({ _id: request.user1 })
         if (!fromUser) return null
         return {
-          _id: req._id,
+          _id: request._id,
           fromUser: {
             _id: fromUser._id,
             username: fromUser.username,
             level: fromUser.level,
             photos: fromUser.photos || []
           },
-          createdAt: req.createdAt
+          createdAt: request.createdAt
         }
       })
     )
