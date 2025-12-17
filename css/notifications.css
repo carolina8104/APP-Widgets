@@ -15,6 +15,9 @@
   justify-content: center;
   transition: background-color 0.2s;
 }
+.notifications-bell svg {
+    scale: 1;
+}
 
 .notifications-bell:hover {
   background-color: rgba(255, 255, 255, 0.1);
@@ -22,16 +25,16 @@
 
 .notifications-badge {
   position: absolute;
-  top: 4px;
+  top: 6px;
   right: 4px;
   background-color: var(--notif-badge);
   color: white;
   font-size: 10px;
   font-weight: bold;
-  padding: 2px 5px;
+  padding: 2px 3px;
   border-radius: 10px;
   min-width: 16px;
-  height: 16px;
+  height: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -51,7 +54,6 @@
 .notifications-dropdown {
   position: absolute;
   top: calc(100% + 8px);
-  right: 0;
   width: 360px;
   max-height: 480px;
   background-color: var(--panel, #2a2a2a);
@@ -61,6 +63,18 @@
   overflow: hidden;
   display: flex;
   flex-direction: column;
+}
+
+/* Windows: buttons on left, dropdown opens to the right */
+.notifications-container.windows .notifications-dropdown {
+  left: 0;
+  right: auto;
+}
+
+/* Mac: buttons on right, dropdown opens to the left */
+.notifications-container.mac .notifications-dropdown {
+  right: 0;
+  left: auto;
 }
 
 .notifications-header {
@@ -217,28 +231,4 @@
 
 .notifications-list::-webkit-scrollbar-thumb:hover {
   background: rgba(255, 255, 255, 0.3);
-}
-
-.app-actions {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 8px;
-  position: absolute;
-  top: 36px;
-  right: 12px;
-  z-index: 200;
-}
-
-.app-actions .app-logout {
-  color: #ffffff;
-  background: transparent;
-  border: none;
-  cursor: pointer;
-  font-size: 14px;
-  padding: 6px 8px;
-}
-
-.app-actions .app-logout:hover {
-  opacity: 0.9;
 }
