@@ -248,3 +248,59 @@
 .fw-add-btn:active {
   transform: scale(0.95);
 }
+
+.friends-add-view {
+  padding: 1rem;
+  gap: 1rem;
+}
+
+.fw-add-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+.fw-add-description {
+  margin: 0;
+  font-size: 0.85rem;
+  color: rgba(6,33,10,0.8);
+  line-height: 1.4;
+}
+
+.fw-add-input-container {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.fw-add-input {
+  flex: 1;
+  background: rgba(0,0,0,0.08);
+  border: none;
+  border-radius: 0.6rem;
+  padding: 0.6rem 0.8rem;
+  font-size: 0.9rem;
+  color: #06210a;
+  outline: none;
+  transition: background 0.15s ease;
+}
+
+.fw-add-input:focus {
+  background: rgba(0,0,0,0.12);
+}
+
+.fw-add-input::placeholder {
+  color: rgba(6,33,10,0.5);
+}
+
+.fw-add-check-btn {
+  background: rgba(0,0,0,0.12);
+  border: none;
+  border-radius: 0.6rem;
+  padding: 0.6rem 1rem;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #06210a;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
