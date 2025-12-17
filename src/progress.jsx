@@ -201,17 +201,19 @@ function Progress({ userId, expanded, onToggleExpand, hideExpandArrow = false })
           )}
           {expanded && (
             <>
-              <h3 className="progress-subtitle">Week tasks</h3>
               <div className="progress-expanded-row">
                 <div className="progress-main">
-                  <div className="progress-stats">
-                    <div className="progress-stat">
-                      <span className="progress-value">{todayCount}</span>
-                      <span className="progress-label">Today</span>
-                    </div>
-                    <div className="progress-stat">
-                      <span className="progress-value">{weekCount}</span>
-                      <span className="progress-label">This week</span>
+                  <h3 className="progress-subtitle">Week tasks</h3>
+                  <div className="progress-main-row">
+                    <div className="progress-stats">
+                      <div className="progress-stat">
+                        <span className="progress-value">{todayCount}</span>
+                        <span className="progress-label">Today</span>
+                      </div>
+                      <div className="progress-stat">
+                        <span className="progress-value">{weekCount}</span>
+                        <span className="progress-label">This week</span>
+                      </div>
                     </div>
                   </div>
                   <svg className="progress-chart" viewBox="0 0 160 78" preserveAspectRatio="xMidYMid meet">
@@ -304,7 +306,6 @@ function Progress({ userId, expanded, onToggleExpand, hideExpandArrow = false })
                       )}
                       <circle cx="100" cy="100" r="50" fill={donutBaseColor} />
                     </svg>
-                    
                     <div className="progress-year-legend">
                       {yearSegments.map(segment => (
                         <div key={segment.type} className="progress-legend-item">
