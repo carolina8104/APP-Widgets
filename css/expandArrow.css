@@ -24,14 +24,35 @@
     width: 20px;
     height: 20px;
     transition: transform 0.3s ease;
+    scale: 1.4;
 }
 
 .expand-arrow.expanded svg {
     transform: rotate(180deg);
 }
 
+.widget-expanded .expand-arrow svg {
+    transform: scale(1.7);
+}
+
+.widget-expanded .expand-arrow.expanded svg {
+    transform: scale(1.7) rotate(180deg);
+}
+
 .expand-arrow:focus {
     outline: none;
+}
+
+.widget-expanded .expand-arrow {
+    padding: 0.6rem;
+    border-radius: 10px;
+    background: rgba(0,0,0,0.08);
+    transition: background 0.25s ease, transform 0.25s ease;
+}
+
+.widget-expanded .expand-arrow:hover {
+    background: rgba(0,0,0,0.18);
+    transform: translateY(-2px);
 }
 
 
