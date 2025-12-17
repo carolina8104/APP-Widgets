@@ -3,6 +3,10 @@
   padding: 1rem;
 }
 
+.calendar.widget-expanded .widget {
+  width: 0;
+}
+
 .calendar-header {
   display: flex;
   align-items: center;
@@ -28,6 +32,18 @@
   grid-template-columns: 1.5fr 0.5fr;
   grid-template-rows: auto 1fr 1fr;
   gap: 1.2rem;
+  animation: calendarExpand 0.3s cubic-bezier(0.34, 2, 0.64, 1);
+}
+
+@keyframes calendarExpand {
+  from {
+    opacity: 0;
+    transform: translateY(-50%) scale(0.7);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(-50%) scale(1);
+  }
 }
 
 .calendar-main-widget {
