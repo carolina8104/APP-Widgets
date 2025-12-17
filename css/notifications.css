@@ -65,13 +65,11 @@
   flex-direction: column;
 }
 
-/* Windows: buttons on left, dropdown opens to the right */
 .notifications-container.windows .notifications-dropdown {
   left: 0;
   right: auto;
 }
 
-/* Mac: buttons on right, dropdown opens to the left */
 .notifications-container.mac .notifications-dropdown {
   right: 0;
   left: auto;

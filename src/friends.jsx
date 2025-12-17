@@ -200,7 +200,7 @@ function Friends({ userId, expanded, onToggleExpand }) {
           <label className="fw-search" aria-label="Search friend">
             <input 
               type="search" 
-              placeholder="Search friend" 
+              placeholder="Search" 
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
             />
