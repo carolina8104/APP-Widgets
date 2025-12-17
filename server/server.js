@@ -330,6 +330,30 @@ async function handleApi(message, response) {
 
     return sendJson(response, 200, validRequests)
   }
+
+  const acceptMatch = url.pathname.match(/^\/api\/friend-requests\/([a-zA-Z0-9\-_]+)\/accept$/)
+  if (acceptMatch && message.method === 'PUT') {
+    const requestId = acceptMatch[1]
+    const friendshipCol = getCollection('friendship')
+
+    await friendshipCol.updateOne(
+      { _id: requestId },
+      { $set: { status: 'accepted' } }
+    )
+
+    return sendJson(response, 200, { success: true })
+  }
+
+  const rejectMatch = url.pathname.match(/^\/api\/friend-requests\/([a-zA-Z0-9\-_]+)\/reject$/)
+  if (rejectMatch && message.method === 'DELETE') {
+    const requestId = rejectMatch[1]
+    const friendshipCol = getCollection('friendship')
+
+    await friendshipCol.deleteOne({ _id: requestId })
+
+    return sendJson(response, 200, { success: true })
+  }
+
   sendJson(response, 404, { error: 'Not found' })
 
 }
