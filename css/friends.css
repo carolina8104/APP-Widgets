@@ -9,10 +9,11 @@
 }
 
 .fw-header{
-  display: flex;
+  display: grid;
+  grid-template-columns: auto 1.2fr auto;
   gap: 0.5rem;
   align-items: center;
-  justify-content: space-between;
+  width: 100%;
 }
 
 .fw-title {
@@ -23,7 +24,10 @@
   display: flex;
   gap: 0.4rem;
   align-items: center;
+  justify-self: end;
+  overflow: visible;
 }
+
 
 .fw-title{
   margin: 0;
@@ -39,11 +43,12 @@
   display: inline-flex;
   align-items: center;
   background: rgba(0,0,0,0.08);
-  padding: 0.15rem 0.5rem;
+  padding: 0.12rem 0.45rem;
   border-radius: 0.6rem;
-  min-width: 8rem;
-  max-width: 90%;
+  min-width: 7rem;
+  max-width: 100%;
   box-sizing: border-box;
+  justify-self: stretch;
 }
 
 .fw-search input{
@@ -52,9 +57,10 @@
   outline: none;
   color: #06210a;            
   font-size: 0.75rem;
-  padding: 0.35rem 0.2rem 0.35rem 0.2rem;
+  padding: 0.28rem 0.12rem;
   width: 100%;
   line-height: 1;
+  min-width: 0;
 }
 
 .fw-search input::placeholder{
@@ -246,6 +252,12 @@
   color: #06210a;
   transition: all 0.15s ease;
   flex-shrink: 0;
+}
+
+.fw-add-btn {
+  position: relative;
+  z-index: 3;
+  margin-left: 0.20rem;
 }
 
 .fw-add-btn:hover {

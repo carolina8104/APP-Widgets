@@ -59,10 +59,10 @@ function App() {
 
     return (
         <>
-            <div className="app-actions">
-                <Notifications userId={currentUser.userId} />
-                <button className="app-logout" onClick={handleLogout}>Logout</button>
-            </div>
+            <TopBar 
+                userId={currentUser.userId} 
+                onLogout={handleLogout}
+            />
             <div 
                 className="dashboard-grid"
                 onClick={(e) => {
@@ -72,7 +72,6 @@ function App() {
                     }
                 }}
             >
-
             <div className={getWidgetClassName('friends')} 
                  style={{ display: isWidgetVisible('friends') ? 'block' : 'none' }}>
                 <Widget color="var(--accent-neon)" content={
