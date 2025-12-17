@@ -14,6 +14,17 @@ function Notes({ userId, expanded, onToggleExpand }) {
     fetchNotes()
   }, [userId])
 
+  useEffect(() => {
+    if (!expanded) {
+      setViewMode('list')
+      setSelectedNote(null)
+      setNewTitle('')
+      setNewContent('')
+      setEditTitle('')
+      setEditContent('')
+    }
+  }, [expanded])
+
   function fetchNotes() {
     fetch('http://localhost:3001/api/notes?userId=' + encodeURIComponent(userId))
       .then(response => response.json())

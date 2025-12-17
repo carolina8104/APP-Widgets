@@ -23,6 +23,16 @@ function Friends({ userId, expanded, onToggleExpand }) {
       })
   }, [userId])
 
+  useEffect(() => {
+    if (!expanded) {
+      setViewMode('list')
+      setSelectedFriend(null)
+      setAddFriendUsername('')
+      setUserValidation(null)
+      setSearchQuery('')
+    }
+  }, [expanded])
+
   const filteredFriends = friends.filter(friend =>
     friend.name.toLowerCase().includes(searchQuery.toLowerCase())
   )

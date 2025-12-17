@@ -63,8 +63,15 @@ function App() {
                 userId={currentUser.userId} 
                 onLogout={handleLogout}
             />
-            <div className="dashboard-grid">
-
+            <div 
+                className="dashboard-grid"
+                onClick={(e) => {
+                    const clickedInsideWidget = e.target.closest('.widget')
+                    if (expandedWidget && !clickedInsideWidget) {
+                        toggleWidget(expandedWidget)
+                    }
+                }}
+            >
             <div className={getWidgetClassName('friends')} 
                  style={{ display: isWidgetVisible('friends') ? 'block' : 'none' }}>
                 <Widget color="var(--accent-neon)" content={
