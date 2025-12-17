@@ -6,6 +6,9 @@ function Friends({ userId, expanded, onToggleExpand }) {
   const [loading, setLoading] = useState(true)
   const [selectedFriend, setSelectedFriend] = useState(null)
   const [viewMode, setViewMode] = useState('list')
+  const [addFriendUsername, setAddFriendUsername] = useState('')
+  const [userValidation, setUserValidation] = useState(null)
+  const [sendingRequest, setSendingRequest] = useState(false)
 
   useEffect(() => {
     fetch(`http://localhost:3001/api/users/${userId}/friends`)
@@ -24,6 +27,66 @@ function Friends({ userId, expanded, onToggleExpand }) {
     friend.name.toLowerCase().includes(searchQuery.toLowerCase())
   )
 
+  const checkUsername = async (username) => {
+    if (!username.trim()) {
+      setUserValidation(null)
+      return
+    }
+    
+    try {
+      const response = await fetch(`http://localhost:3001/api/users/search?username=${encodeURIComponent(username)}`)
+      const data = await response.json()
+      
+      if (response.ok && data.userId) {
+        if (data.userId === userId) {
+          setUserValidation({ exists: false, message: "That's you!" })
+        } else if (friends.some(f => f._id === data.userId)) {
+          setUserValidation({ exists: false, message: 'Already friends' })
+        } else {
+          setUserValidation({ exists: true, userId: data.userId, username: data.username, photos: data.photos || [] })
+        }
+      } else {
+        setUserValidation({ exists: false, message: 'User not found' })
+      }
+    } catch (err) {
+      console.error('Error checking username:', err)
+      setUserValidation({ exists: false, message: 'Error checking user' })
+    }
+  }
+
+  const sendFriendRequest = async () => {
+    if (!userValidation || !userValidation.exists) return
+    
+    setSendingRequest(true)
+    try {
+      const response = await fetch('http://localhost:3001/api/friend-requests', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          fromUserId: userId,
+          toUserId: userValidation.userId
+        })
+      })
+      
+      const data = await response.json()
+      
+      if (response.ok) {
+        setUserValidation({ exists: true, message: 'Request sent!', sent: true })
+        setAddFriendUsername('')
+        setTimeout(() => {
+          setViewMode('list')
+          setUserValidation(null)
+        }, 1500)
+      } else {
+        setUserValidation({ exists: false, message: data.error || 'Failed to send request' })
+      }
+    } catch (err) {
+      console.error('Error sending friend request:', err)
+      setUserValidation({ exists: false, message: 'Error sending request' })
+    } finally {
+      setSendingRequest(false)
+    }
+  }
   if (viewMode === 'progress' && selectedFriend) {
     const photoPathRaw = selectedFriend.photos && selectedFriend.photos.length > 0 ? selectedFriend.photos[0] : null
     let photoUrl = null
@@ -80,6 +143,19 @@ function Friends({ userId, expanded, onToggleExpand }) {
               <circle cx="11" cy="11" r="6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
             </svg>
           </label>  
+          </label>
+          <button 
+            className="fw-add-btn"
+            onClick={() => {
+              if (!expanded) onToggleExpand()
+              setViewMode('add-friend')
+            }}
+            aria-label="Add friend"
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+              <path d="M12 5v14M5 12h14" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"/>
+            </svg>
+          </button>
         </div>
       </div>
 
