@@ -88,7 +88,8 @@
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s ease;
-  background: #3e3e3e26;
+  background: var(--bg);
+  color: var(--accent-yellow);
 }
 
 .regular-button:hover {
