@@ -138,6 +138,17 @@
   margin: 1vh 0 1vh 0
 }
 
+.notes-open-mode p {
+  max-height: 45vh;
+  overflow-y: auto;
+  word-break: break-word;
+  white-space: pre-wrap;
+  background: #3e3e3e29;
+  border-radius: 10px;
+  padding: 0.7em 1em;
+  margin: 1vh 0 1vh 0;
+}
+
 .notes-open-mode textarea:focus {
   outline: none;
   border: 1.5px solid var(--accent-neon);
