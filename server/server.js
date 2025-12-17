@@ -229,6 +229,27 @@ async function handleApi(message, response) {
     return sendJson(response, 200, todos)
   }
 
+  if (url.pathname === '/api/users/search' && message.method === 'GET') {
+    const username = url.searchParams.get('username')
+    if (!username) {
+      return sendJson(response, 400, { error: 'Username required' })
+    }
+    
+    const usersCol = getCollection('users')
+    const user = await usersCol.findOne({ username: username })
+    
+    if (!user) {
+      return sendJson(response, 404, { error: 'User not found' })
+    }
+    
+    return sendJson(response, 200, {
+      userId: user._id,
+      username: user.username,
+      level: user.level,
+      photos: user.photos || []
+    })
+  }
+
   const userMatch = url.pathname.match(/^\/api\/users\/([a-zA-Z0-9\-_]+)$/)
   if (userMatch && message.method === 'GET') {
     const userId = userMatch[1]

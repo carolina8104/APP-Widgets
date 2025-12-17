@@ -142,7 +142,6 @@ function Friends({ userId, expanded, onToggleExpand }) {
               <path d="M21 21l-4.35-4.35" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
               <circle cx="11" cy="11" r="6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
             </svg>
-          </label>  
           </label>
           <button 
             className="fw-add-btn"

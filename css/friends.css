@@ -224,3 +224,27 @@
   background: transparent;
   padding: 0;
 }
+
+.fw-add-btn {
+  background: rgba(0,0,0,0.08);
+  border: none;
+  border-radius: 0.6rem;
+  width: 1.8rem;
+  height: 1.8rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #06210a;
+  transition: all 0.15s ease;
+  flex-shrink: 0;
+}
+
+.fw-add-btn:hover {
+  background: rgba(0,0,0,0.15);
+  transform: scale(1.05);
+}
+
+.fw-add-btn:active {
+  transform: scale(0.95);
+}
