@@ -140,7 +140,15 @@ function Progress({ userId, expanded, onToggleExpand, hideExpandArrow = false })
   const donutBaseColor = hideExpandArrow ? 'var(--accent-neon)' : 'var(--accent-orange)';
 
   return (
-    <div className={`progress-container ${expanded ? "progress-expanded" : ""}`}>
+    <div 
+      className={`progress-container ${expanded ? "progress-expanded" : ""}`}
+      onClick={(e) => {
+        if (!expanded && !hideExpandArrow && !e.target.closest('.expand-arrow')) {
+          onToggleExpand()
+        }
+      }}
+      style={{ cursor: !expanded && !hideExpandArrow ? 'pointer' : 'default' }}
+    >
       <div className="progress-grid">
         <h2>Progress</h2>
         {!hideExpandArrow && <ExpandArrow onClick={onToggleExpand} expanded={expanded} color="var(--bg)" />}
