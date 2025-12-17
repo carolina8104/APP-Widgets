@@ -59,10 +59,10 @@ function App() {
 
     return (
         <>
-            <div className="app-actions">
-                <Notifications userId={currentUser.userId} />
-                <button className="app-logout" onClick={handleLogout}>Logout</button>
-            </div>
+            <TopBar 
+                userId={currentUser.userId} 
+                onLogout={handleLogout}
+            />
             <div className="dashboard-grid">
 
             <div className={getWidgetClassName('friends')} 
