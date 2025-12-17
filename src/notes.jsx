@@ -260,7 +260,7 @@ function Notes({ userId, expanded, onToggleExpand }) {
                       handleDeleteNote(note._id)
                     }}
                   >
-                    🗑️
+                    ✖
                   </button>
                 </div>
                 <p className="all-note-body">
