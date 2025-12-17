@@ -134,35 +134,8 @@ function Friends({ userId, expanded, onToggleExpand }) {
           </div>
           
           {userValidation && (
-            <div className={`fw-validation-msg ${userValidation.exists ? 'success' : 'error'} ${userValidation.sent ? 'sent' : ''}`}>
-              {userValidation.sent ? (
-                <>
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-                    <path d="M20 6L9 17l-5-5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                  </svg>
-                  <span>{userValidation.message}</span>
-                </>
-              ) : userValidation.exists ? (
-                <>
-                  {userValidation.photos && userValidation.photos.length > 0 ? (
-                    <div className="fw-validation-avatar">
-                      <img src={userValidation.photos[0].startsWith('http') ? userValidation.photos[0] : `${window.location.origin}${userValidation.photos[0].startsWith('/') ? '' : '/'}${userValidation.photos[0]}`} alt={userValidation.username} />
-                    </div>
-                  ) : (
-                    <div className="fw-validation-avatar" aria-hidden></div>
-                  )}
-                  <span>User found: <strong>{userValidation.username}</strong></span>
-                </>
-              ) : (
-                <>
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-                    <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="2"/>
-                    <line x1="15" y1="9" x2="9" y2="15" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
-                    <line x1="9" y1="9" x2="15" y2="15" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
-                  </svg>
-                  <span>{userValidation.message}</span>
-                </>
-              )}
+            <div className={`fw-validation ${userValidation.exists ? 'valid' : 'invalid'}`}>
+              {userValidation.message || (userValidation.exists ? `Found: ${userValidation.username}` : 'User not found')}
             </div>
           )}
           
