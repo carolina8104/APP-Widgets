@@ -352,6 +352,57 @@ async function handleApi(message, response) {
     return sendJson(response, 200, validRequests)
   }
 
+  if (url.pathname === '/api/friend-requests' && message.method === 'POST') {
+    const body = await parseBody(message)
+    const { fromUserId, toUserId } = body
+    
+    if (!fromUserId || !toUserId) {
+      return sendJson(response, 400, { error: 'Both fromUserId and toUserId are required' })
+    }
+    
+    if (fromUserId === toUserId) {
+      return sendJson(response, 400, { error: 'Cannot send friend request to yourself' })
+    }
+    
+    const friendshipCol = getCollection('friendship')
+    const usersCol = getCollection('users')
+    
+    const toUser = await usersCol.findOne({ _id: toUserId })
+    if (!toUser) {
+      return sendJson(response, 404, { error: 'User not found' })
+    }
+    
+    const existingFriendship = await friendshipCol.findOne({
+      $or: [
+        { user1: fromUserId, user2: toUserId },
+        { user1: toUserId, user2: fromUserId }
+      ]
+    })
+    
+    if (existingFriendship) {
+      if (existingFriendship.status === 'accepted') {
+        return sendJson(response, 400, { error: 'Already friends' })
+      } else {
+        return sendJson(response, 400, { error: 'Friend request already exists' })
+      }
+    }
+    
+    const newRequest = {
+      _id: 'req' + Date.now(),
+      user1: fromUserId,
+      user2: toUserId,
+      status: 'pending',
+      createdAt: new Date().toISOString()
+    }
+    
+    await friendshipCol.insertOne(newRequest)
+    
+    return sendJson(response, 201, { 
+      success: true,
+      requestId: newRequest._id
+    })
+  }
+
   const acceptMatch = url.pathname.match(/^\/api\/friend-requests\/([a-zA-Z0-9\-_]+)\/accept$/)
   if (acceptMatch && message.method === 'PUT') {
     const requestId = acceptMatch[1]
