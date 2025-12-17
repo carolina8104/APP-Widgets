@@ -1,6 +1,6 @@
 .dashboard-grid {
     display: grid;
-    height: calc(95vh);
+    height: calc(100vh);
     padding: 1.2rem 12vw;
     gap: 1.2rem;
     background: var(--bg);
@@ -9,7 +9,7 @@
     box-sizing: border-box;
 
     grid-template-columns: 0.35fr 0.1fr 0.1fr 0.5fr 1.1fr; 
-    grid-template-rows: 0.7fr 0.7fr 0.7fr 3fr;
+    grid-template-rows: 0.7fr 0.3fr 0.5fr 0.7fr;
     grid-template-areas:
         "friends      friends      tasks      tasks      calendar"
         "timeTracker  timeTracker  tasks      tasks      calendar"
@@ -28,7 +28,7 @@
 
 
 .widget {
-    padding: 1rem 1rem;
+    padding: 0.6rem 1rem;
     border-radius: 20px;
     box-shadow: 0 4px 12px rgba(0,0,0,0.3);
     display: flex;
@@ -42,6 +42,11 @@
 .photo .widget {
     padding: 0;
     height: 100%;
+}
+
+.timeTracker .widget {
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
 }
 
 .dashboard-grid > div {
