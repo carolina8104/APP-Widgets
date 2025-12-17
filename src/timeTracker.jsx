@@ -24,7 +24,15 @@ function TimeTracker({ userId, expanded, onToggleExpand }) {
             <div className="tt-grid">
                 <div className="tt-title">Time tracker</div>
                 <ExpandArrow onClick={onToggleExpand} expanded={expanded} color="var(--accent-neon)" />
-                <div className="tt-blocks">
+                <div 
+                    className="tt-blocks"
+                    onClick={(e) => {
+                        if (!expanded && !e.target.closest('.expand-arrow')) {
+                            onToggleExpand()
+                        }
+                    }}
+                    style={{ cursor: !expanded ? 'pointer' : 'default' }}
+                >
                     <div className="tt-block"><span>{h}</span><label>H</label></div>
                     <div className="tt-block"><span>{m}</span><label>M</label></div>
                     <div className="tt-block"><span>{s}</span><label>S</label></div>
