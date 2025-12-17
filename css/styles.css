@@ -30,7 +30,22 @@ body {
   font-family: 'Jost', sans-serif;
   background-color: var(--bg);
   line-height: 1.2;
-  overflow: hidden;
+}
+
+
+html, body {
+  scrollbar-width: none; 
+  -ms-overflow-style: none;
+}
+
+
+html::-webkit-scrollbar, body::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+}
+
+body {
+  -webkit-overflow-scrolling: touch;
 }
 
 h2 {
