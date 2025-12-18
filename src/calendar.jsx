@@ -1,6 +1,6 @@
 const { useState } = React
 
-function Calendar({ expanded, onToggleExpand }) {
+function Calendar({ apiUrl, expanded, onToggleExpand }) {
   if (expanded) {
     return (
       <div className="calendar-expanded-container">

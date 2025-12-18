@@ -1,6 +1,6 @@
 const { useState, useEffect, useRef } = React
 
-function Photos({ userId, expanded, onToggleExpand }) {
+function Photos({ userId, apiUrl, expanded, onToggleExpand }) {
   const [photos, setPhotos] = useState([])
   const [currentIndex, setCurrentIndex] = useState(0)
   const transitionTimeoutRef = useRef(null)
@@ -8,7 +8,7 @@ function Photos({ userId, expanded, onToggleExpand }) {
     useEffect(() => {
         if (!userId) return
         
-        fetch(`http://localhost:3001/api/users/${userId}`)
+        fetch(`${apiUrl}/api/users/${userId}`)
         .then(res => res.json())
         .then(data => {
             if (data && !data.error && data.photos) {
@@ -40,7 +40,7 @@ function Photos({ userId, expanded, onToggleExpand }) {
     const getPhotoUrl = (photoPath) => {
         if (!photoPath) return ''
         if (photoPath.startsWith('/')) {
-        return `http://localhost:3001${photoPath}`
+        return `${apiUrl}${photoPath}`
         }
         return photoPath
     }

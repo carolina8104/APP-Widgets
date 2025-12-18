@@ -1,6 +1,7 @@
 const { useState, useEffect } = React
 
-function Notes({ userId, expanded, onToggleExpand }) {
+function Notes({ userId, apiUrl, expanded, onToggleExpand }) {
+
   const [viewMode, setViewMode] = useState('list')
   const [loading, setLoading] = useState(true)
   const [notes, setNotes] = useState([])
@@ -26,7 +27,7 @@ function Notes({ userId, expanded, onToggleExpand }) {
   }, [expanded])
 
   function fetchNotes() {
-    fetch('http://localhost:3001/api/notes?userId=' + encodeURIComponent(userId))
+    fetch(`${apiUrl}/api/notes?userId=${encodeURIComponent(userId)}`)
       .then(response => response.json())
       .then(data => {
         const sorted = data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
@@ -45,7 +46,7 @@ function Notes({ userId, expanded, onToggleExpand }) {
       return
     }
 
-    fetch('http://localhost:3001/api/notes', {
+    fetch(apiUrl + '/api/notes', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -74,7 +75,7 @@ function Notes({ userId, expanded, onToggleExpand }) {
       return
     }
 
-    fetch(`http://localhost:3001/api/notes/${selectedNote._id}`, {
+    fetch(`${apiUrl}/api/notes/${selectedNote._id}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -104,7 +105,7 @@ function Notes({ userId, expanded, onToggleExpand }) {
   function handleDeleteNote(noteId) {
     if (!confirm('Delete this note?')) return
 
-    fetch(`http://localhost:3001/api/notes/${noteId}`, { method: 'DELETE' })
+    fetch(`${apiUrl}/api/notes/${noteId}`, { method: 'DELETE' })
       .then(response => {
         if (!response.ok) throw new Error(`HTTP Error: ${response.status}`)
         return response.json()
