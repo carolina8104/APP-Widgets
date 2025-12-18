@@ -74,6 +74,7 @@ function App() {
                 apiUrl={API_URL}
                 userId={currentUser.userId} 
                 onProfileClick={handleProfileClick}
+                onLogout={handleLogout}
             />
             <div 
                 className="dashboard-grid"
