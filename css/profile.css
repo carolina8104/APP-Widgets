@@ -111,6 +111,49 @@
   font-weight: 600;
 }
 
+.profile-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.5vh;
+}
+
+.profile-stat-card {
+  background: rgba(15, 15, 15, 0.03);
+  padding: 1.5vh 1vw;
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.8vh;
+  text-align: center;
+  transition: all 0.2s ease;
+}
+
+.profile-stat-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  background: rgba(15, 15, 15, 0.05);
+}
+
+.profile-stat-value {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--bg);
+}
+
+.profile-stat-label {
+  font-size: 0.75rem;
+  color: var(--bg);
+  opacity: 0.6;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
 .profile-logout-btn {
   background: var(--bg);
   color: var(--white);

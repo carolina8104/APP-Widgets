@@ -97,6 +97,53 @@ function Profile({ userId, expanded, onToggleExpand, onLogout }) {
           </div>
         </div>
 
+        <div className="profile-stats-grid">
+          <div className="profile-stat-card">
+            <div className="profile-stat-icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                <path d="M12 15l-2 5l-1-5l-5-1l5-2l2-5l1 5l5 1l-5 2z" stroke="var(--bg)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" fill="var(--bg)" opacity="0.2"/>
+              </svg>
+            </div>
+            <span className="profile-stat-value">{userData?.level || 1}</span>
+            <span className="profile-stat-label">Level</span>
+          </div>
+          
+          <div className="profile-stat-card">
+            <div className="profile-stat-icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                <path d="M13 2L3 14h9l-1 8l10-12h-9l1-8z" stroke="var(--bg)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" fill="var(--bg)" opacity="0.2"/>
+              </svg>
+            </div>
+            <span className="profile-stat-value">{userData?.xp || 0}</span>
+            <span className="profile-stat-label">XP</span>
+          </div>
+          
+          <div className="profile-stat-card">
+            <div className="profile-stat-icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                <circle cx="12" cy="12" r="10" stroke="var(--bg)" strokeWidth="2" fill="var(--bg)" opacity="0.2"/>
+                <path d="M8 14s1.5 2 4 2 4-2 4-2M9 9h.01M15 9h.01" stroke="var(--bg)" strokeWidth="2" strokeLinecap="round"/>
+              </svg>
+            </div>
+            <span className="profile-stat-value">{userData?.stickersUnlocked?.length || 0}</span>
+            <span className="profile-stat-label">Stickers</span>
+          </div>
+          
+          <div className="profile-stat-card">
+            <div className="profile-stat-icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                <rect x="3" y="3" width="18" height="18" rx="2" stroke="var(--bg)" strokeWidth="2" fill="var(--bg)" opacity="0.2"/>
+                <circle cx="8.5" cy="8.5" r="1.5" fill="var(--bg)"/>
+                <circle cx="15.5" cy="8.5" r="1.5" fill="var(--bg)"/>
+                <circle cx="8.5" cy="15.5" r="1.5" fill="var(--bg)"/>
+                <circle cx="15.5" cy="15.5" r="1.5" fill="var(--bg)"/>
+              </svg>
+            </div>
+            <span className="profile-stat-value">{userData?.themesUnlocked?.length || 0}</span>
+            <span className="profile-stat-label">Themes</span>
+          </div>
+        </div>
+
         <button className="profile-logout-btn" onClick={onLogout}>
           Logout
         </button>
