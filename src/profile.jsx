@@ -181,7 +181,8 @@ function Profile({ userId, expanded, onToggleExpand, onLogout }) {
           </div>
         </div>
 
-        <div className="profile-section">
+        <div style={{ display: 'flex', gap: '2vh', alignItems: 'flex-start' }}>
+        <div className="profile-section" style={{ flex: 1 }}>
           <h3 className="profile-section-title">Settings</h3>
           
           <div className="profile-settings-card">
@@ -202,10 +203,10 @@ function Profile({ userId, expanded, onToggleExpand, onLogout }) {
           </div>
         </div>
 
-        <div className="profile-section">
+        <div className="profile-section" style={{ flex: 1 }}>
           <h3 className="profile-section-title">Theme</h3>
-          
-          <div className="profile-themes-row">
+          <div className="profile-settings-card">
+            <div className="profile-themes-row">
             {[
               { id: 'theme1', color1: '#FFE86D', color2: '#F9773B' },
               { id: 'theme2', color1: '#F4721E', color2: '#4D6080' },
@@ -242,7 +243,9 @@ function Profile({ userId, expanded, onToggleExpand, onLogout }) {
                 </div>
               )
             })}
+            </div>
           </div>
+        </div>
         </div>
 
         <button className="profile-logout-btn" onClick={onLogout}>
