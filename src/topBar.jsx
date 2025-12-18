@@ -1,7 +1,7 @@
 const { useEffect, useState } = React
 
 
-function TopBar({apiUrl, userId, onLogout }) {
+function TopBar({apiUrl, userId, onLogout, onProfileClick }) {
 
   const [isMac, setIsMac] = useState(false)
 
