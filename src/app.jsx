@@ -32,14 +32,22 @@ function App() {
         localStorage.removeItem('currentUser')
     }
 
+    function handleProfileClick() {
+        toggleWidget('profile')
+    }
+
      const toggleWidget = (widgetName) => {
         if (expandedWidget === widgetName) {
             setExpandedWidget(null)
             setHiddenWidgets([])
         } else {
             setExpandedWidget(widgetName)
-            const widgetsToHide = allWidgets.filter(w => w !== widgetName)
-            setHiddenWidgets(widgetsToHide)
+            if (widgetName === 'profile') {
+                setHiddenWidgets(allWidgets)
+            } else {
+                const widgetsToHide = allWidgets.filter(w => w !== widgetName)
+                setHiddenWidgets(widgetsToHide)
+            }
         }
     }
 
@@ -62,6 +70,7 @@ function App() {
             <TopBar 
                 userId={currentUser.userId} 
                 onLogout={handleLogout}
+                onProfileClick={handleProfileClick}
             />
             <div 
                 className="dashboard-grid"
@@ -147,6 +156,19 @@ function App() {
                     />
                 } />
             </div>
+
+            {expandedWidget === 'profile' && (
+                <div className="profile widget-expanded" 
+                     style={{ display: 'block', gridColumn: '1 / -1', gridRow: '1 / -1' }}>
+                    <Widget color="var(--white)" content={
+                        <Profile 
+                            userId={currentUser.userId}
+                            expanded={true}
+                            onToggleExpand={() => toggleWidget('profile')}
+                        />
+                    } />
+                </div>
+            )}
 
             </div>
         </>

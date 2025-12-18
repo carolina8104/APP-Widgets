@@ -69,6 +69,27 @@
     background: rgba(255, 255, 255, 0.1);
 }
 
+.top-bar-profile {
+    color: #ffffff;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 4px 8px;
+    border-radius: 4px;
+    transition: background 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.top-bar-profile:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.top-bar-profile svg {
+    color: #ffffff;
+}
+
 #root {
     margin-top: 32px;
 }
