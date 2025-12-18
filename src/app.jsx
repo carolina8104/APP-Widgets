@@ -1,7 +1,7 @@
 const { useState, useEffect } = React
 
 
-const API_URL = 'http://10.17.0.27'
+const API_URL = 'http://localhost:3001' //10.17.0.27; //localhost:3001
 
 function App() {
     const [currentUser, setCurrentUser] = useState(null)
