@@ -69,7 +69,6 @@ function App() {
         <>
             <TopBar 
                 userId={currentUser.userId} 
-                onLogout={handleLogout}
                 onProfileClick={handleProfileClick}
             />
             <div 
@@ -165,6 +164,7 @@ function App() {
                             userId={currentUser.userId}
                             expanded={true}
                             onToggleExpand={() => toggleWidget('profile')}
+                            onLogout={handleLogout}
                         />
                     } />
                 </div>

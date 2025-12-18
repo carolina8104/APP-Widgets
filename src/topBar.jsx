@@ -1,6 +1,6 @@
 const { useEffect, useState } = React
 
-function TopBar({ userId, onLogout, onProfileClick }) {
+function TopBar({ userId, onProfileClick }) {
   const [isMac, setIsMac] = useState(false)
 
   useEffect(() => {
@@ -42,7 +42,6 @@ function TopBar({ userId, onLogout, onProfileClick }) {
             <path d="M6 21c0-3.866 2.686-7 6-7s6 3.134 6 7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
           </svg>
         </button>
-        <button className="top-bar-logout" onClick={onLogout}>Logout</button>
       </>,
       actionsContainer
     )
@@ -50,7 +49,7 @@ function TopBar({ userId, onLogout, onProfileClick }) {
     return () => {
       ReactDOM.unmountComponentAtNode(actionsContainer)
     }
-  }, [userId, onLogout, onProfileClick, isMac])
+  }, [userId, onProfileClick, isMac])
 
   return null
 }
