@@ -446,6 +446,106 @@ async function handleApi(message, response) {
     return sendJson(response, 200, { success: true })
   }
 
+  const photoMatch = url.pathname.match(/^\/api\/users\/([a-zA-Z0-9\-_]+)\/photo$/)
+  if (photoMatch && message.method === 'POST') {
+    const userId = photoMatch[1]
+    const usersCol = getCollection('users')
+
+    return new Promise((resolve) => {
+      const chunks = []
+      message.on('data', chunk => chunks.push(chunk))
+      
+      message.on('end', async () => {
+        try {
+          const buffer = Buffer.concat(chunks)          
+          
+          const contentType = message.headers['content-type']          
+          const boundary = contentType?.split('boundary=')[1]
+          if (!boundary) {
+            sendJson(response, 400, { error: 'No boundary found' })
+            return resolve()
+          }
+
+          const boundaryBuffer = Buffer.from(`--${boundary}`)
+          const parts = []
+          let start = 0
+          
+          while (start < buffer.length) {
+            const boundaryIndex = buffer.indexOf(boundaryBuffer, start)
+            if (boundaryIndex === -1) break
+            
+            const nextBoundaryIndex = buffer.indexOf(boundaryBuffer, boundaryIndex + boundaryBuffer.length)
+            if (nextBoundaryIndex === -1) break
+            
+            parts.push(buffer.slice(boundaryIndex + boundaryBuffer.length, nextBoundaryIndex))
+            start = nextBoundaryIndex
+          }
+
+          let imageData = null
+          let filename = 'avatar.jpg'
+
+          for (const part of parts) {
+            const partStr = part.toString('utf8', 0, Math.min(500, part.length))
+            
+            if (partStr.includes('Content-Type: image')) {
+              const filenameMatch = partStr.match(/filename="(.+?)"/)
+              if (filenameMatch) {
+                filename = filenameMatch[1]
+              }
+              
+              const headerEnd = part.indexOf(Buffer.from('\r\n\r\n'))
+              if (headerEnd !== -1) {
+                imageData = part.slice(headerEnd + 4, part.length - 2)
+              }
+              break
+            }
+          }
+
+          if (!imageData || imageData.length === 0) {
+            sendJson(response, 400, { error: 'No image data found' })
+            return resolve()
+          }
+
+          const uploadsBaseDir = path.join(__dirname, '..', 'uploads')
+          const userUploadsDir = path.join(uploadsBaseDir, userId)
+                    
+          if (!fs.existsSync(userUploadsDir)) {
+            fs.mkdirSync(userUploadsDir, { recursive: true })
+          }
+
+          try {
+            const existingFiles = fs.readdirSync(userUploadsDir)
+            existingFiles.forEach(file => {
+              if (file.startsWith('profile.')) {
+                const oldFilePath = path.join(userUploadsDir, file)
+                fs.unlinkSync(oldFilePath)
+              }
+            })
+          } catch (err) {
+          }
+
+          const ext = path.extname(filename) || '.jpg'
+          const profileFilename = `profile${ext}`
+          const filepath = path.join(userUploadsDir, profileFilename)
+
+          fs.writeFileSync(filepath, imageData)
+
+          const photoUrl = `/uploads/${userId}/${profileFilename}`          
+          const result = await usersCol.updateOne(
+            { _id: userId },
+            { $set: { photos: [photoUrl] } }
+          )
+          
+          sendJson(response, 200, { photos: [photoUrl] })
+          resolve()
+        } catch (err) {
+          sendJson(response, 500, { error: err.message })
+          resolve()
+        }
+      })
+    })
+  }
+
   sendJson(response, 404, { error: 'Not found' })
 
 }
