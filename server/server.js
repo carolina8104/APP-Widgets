@@ -30,36 +30,53 @@ function parseBody(message) {
 }
 
 function serveStatic(url, response) {
-  let filePath = path.join(__dirname, '..', url)
 
-  if (url === '/') {
-    filePath = path.join(__dirname, '..', 'index.html')
+  let safeUrl = url
+  if (!safeUrl || safeUrl === '/') {
+    safeUrl = '/index.html'
   }
-  fs.stat(filePath, (err, stats) => {
-    if (err || !stats.isFile()) {
+
+  if (safeUrl.startsWith('/')) safeUrl = safeUrl.slice(1)
+
+
+  const candidates = [
+    path.join(__dirname, safeUrl),
+    path.join(__dirname, '..', safeUrl)
+  ]
+
+  let tried = 0
+  const tryNext = () => {
+    if (tried >= candidates.length) {
       response.writeHead(404, { 'Content-Type': 'text/plain' })
       return response.end('File not found')
     }
 
-    let contentType = 'text/html'
-    if (filePath.endsWith('.js')) contentType = 'application/javascript'
-    else if (filePath.endsWith('.css')) contentType = 'text/css'
-    else if (filePath.endsWith('.json')) contentType = 'application/json'
-    else if (filePath.endsWith('.jsx')) contentType = 'application/javascript'
-    else if (filePath.endsWith('.png')) contentType = 'image/png'
-    else if (filePath.endsWith('.jpg') || filePath.endsWith('.jpeg')) contentType = 'image/jpeg'
-    else if (filePath.endsWith('.gif')) contentType = 'image/gif'
-    else if (filePath.endsWith('.webp')) contentType = 'image/webp'
-    else if (filePath.endsWith('.svg')) contentType = 'image/svg+xml'
+    const filePath = candidates[tried++]
+    fs.stat(filePath, (err, stats) => {
+      if (err || !stats.isFile()) return tryNext()
 
-    response.writeHead(200, { 'Content-Type': contentType })
-    const stream = fs.createReadStream(filePath)
-    stream.on('error', () => {
-      response.writeHead(500, { 'Content-Type': 'text/plain' })
-      response.end('Server error')
+      let contentType = 'text/html'
+      if (filePath.endsWith('.js')) contentType = 'application/javascript'
+      else if (filePath.endsWith('.css')) contentType = 'text/css'
+      else if (filePath.endsWith('.json')) contentType = 'application/json'
+      else if (filePath.endsWith('.jsx')) contentType = 'application/javascript'
+      else if (filePath.endsWith('.png')) contentType = 'image/png'
+      else if (filePath.endsWith('.jpg') || filePath.endsWith('.jpeg')) contentType = 'image/jpeg'
+      else if (filePath.endsWith('.gif')) contentType = 'image/gif'
+      else if (filePath.endsWith('.webp')) contentType = 'image/webp'
+      else if (filePath.endsWith('.svg')) contentType = 'image/svg+xml'
+
+      response.writeHead(200, { 'Content-Type': contentType })
+      const stream = fs.createReadStream(filePath)
+      stream.on('error', () => {
+        response.writeHead(500, { 'Content-Type': 'text/plain' })
+        response.end('Server error')
+      })
+      stream.pipe(response)
     })
-    stream.pipe(response)
-  })
+  }
+
+  tryNext()
 }
 
 const { getCollection } = require('./db')
