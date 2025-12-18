@@ -33,7 +33,7 @@ function TopBar({apiUrl, userId, onLogout }) {
 
     ReactDOM.render(
       <>
-        <Notifications userId={userId} isMac={isMac} />
+         <Notifications apiUrl={apiUrl} userId={userId} isMac={isMac} />
         <button 
           className="top-bar-profile" 
           onClick={onProfileClick}
