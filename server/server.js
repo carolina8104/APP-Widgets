@@ -263,8 +263,11 @@ async function handleApi(message, response) {
       email: user.email,
       level: user.level,
       xp: user.xp,
+      stickersUnlocked: user.stickersUnlocked || [],
+      themesUnlocked: user.themesUnlocked || [],
       photos: user.photos || [],
-      settings: user.settings || {}
+      settings: user.settings || {},
+      createdAt: user.createdAt
     }
 
     return sendJson(response, 200, User)

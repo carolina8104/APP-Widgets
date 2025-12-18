@@ -3,6 +3,7 @@ const { useState, useEffect } = React
 function Profile({ userId, expanded, onToggleExpand, onLogout }) {
   const [userData, setUserData] = useState(null)
   const [loading, setLoading] = useState(true)
+  const [selectedTheme, setSelectedTheme] = useState('')
   const [appearOnline, setAppearOnline] = useState(true)
 
   useEffect(() => {
@@ -11,7 +12,10 @@ function Profile({ userId, expanded, onToggleExpand, onLogout }) {
     fetch(`http://localhost:3001/api/users/${userId}`)
       .then(res => res.json())
       .then(data => {
+        console.log('User data received:', data)
+        console.log('Themes unlocked:', data?.themesUnlocked)
         setUserData(data)
+        setSelectedTheme(data?.settings?.Theme || 'Night')
         setAppearOnline(data?.settings?.appearOnline ?? true)
         setLoading(false)
       })
@@ -20,6 +24,21 @@ function Profile({ userId, expanded, onToggleExpand, onLogout }) {
         setLoading(false)
       })
   }, [userId])
+
+  const handleThemeChange = (theme) => {
+    setSelectedTheme(theme)
+    
+    fetch(`http://localhost:3001/api/users/${userId}/settings`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ Theme: theme })
+    })
+      .then(res => res.json())
+      .then(() => {
+        console.log('Theme updated successfully')
+      })
+      .catch(err => console.error('Error updating theme:', err))
+  }
 
   const handleAppearOnlineToggle = () => {
     const newValue = !appearOnline
@@ -180,6 +199,49 @@ function Profile({ userId, expanded, onToggleExpand, onLogout }) {
                 <span className="profile-toggle-slider"></span>
               </label>
             </div>
+          </div>
+        </div>
+
+        <div className="profile-section">
+          <h3 className="profile-section-title">Theme</h3>
+          
+          <div className="profile-themes-row">
+            {[
+              { id: 'theme1', color1: '#FFE86D', color2: '#F9773B' },
+              { id: 'theme2', color1: '#F4721E', color2: '#4D6080' },
+              { id: 'theme3', color1: '#F2B5FA', color2: '#A3B665', locked: true },
+              { id: 'theme4', color1: '#2801E8', color2: '#FFAED7', locked: true },
+              { id: 'theme5', color1: '#D71A21', color2: '#3B393E', locked: true },
+              { id: 'theme6', color1: '#FF6B9D', color2: '#C44569', locked: true }
+            ].map((theme) => {
+              const isUnlocked = userData?.themesUnlocked?.includes(theme.id)
+              const isLocked = theme.locked && !isUnlocked
+              const isActive = selectedTheme === theme.id
+              
+              return (
+                <div 
+                  key={theme.id}
+                  className={`profile-theme-dot ${isActive ? 'active' : ''} ${isLocked ? 'locked' : ''}`}
+                  onClick={!isLocked ? () => handleThemeChange(theme.id) : undefined}
+                  style={{ 
+                    background: `linear-gradient(135deg, ${theme.color1} 50%, ${theme.color2} 50%)`
+                  }}
+                  title={isLocked ? `${theme.id} (Locked)` : theme.id}
+                >
+                  {isActive && !isLocked && (
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                      <path d="M20 6L9 17l-5-5" stroke="white" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>
+                  )}
+                  {isLocked && (
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                      <rect x="5" y="11" width="14" height="10" rx="2" stroke="white" strokeWidth="2"/>
+                      <path d="M7 11V7a5 5 0 0 1 10 0v4" stroke="white" strokeWidth="2"/>
+                    </svg>
+                  )}
+                </div>
+              )
+            })}
           </div>
         </div>
 
