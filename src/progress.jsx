@@ -1,6 +1,7 @@
 const { useState, useEffect } = React
 
-function Progress({ userId, expanded, onToggleExpand, hideExpandArrow = false }) {
+function Progress({ userId, apiUrl, expanded, onToggleExpand, hideExpandArrow = false }) {
+
   const [weeklyData, setWeeklyData] = useState([0, 0, 0, 0, 0, 0, 0])
   const [weeklyCompleted, setWeeklyCompleted] = useState([0, 0, 0, 0, 0, 0, 0])
   const [todayCount, setTodayCount] = useState(0)
@@ -24,7 +25,7 @@ function Progress({ userId, expanded, onToggleExpand, hideExpandArrow = false })
 
   async function fetchTotalStats() {
     try {
-      const response = await fetch(`http://localhost:3001/api/stats?userId=${userId}`)
+      const response = await fetch(`${apiUrl}/api/stats?userId=${userId}`)
       const stats = await response.json()
       setTotalStats(stats)
     } catch (error) {
@@ -34,7 +35,7 @@ function Progress({ userId, expanded, onToggleExpand, hideExpandArrow = false })
 
   async function fetchYearData() {
     try {
-      const response = await fetch(`http://localhost:3001/api/calendar/types?userId=${userId}`)
+      const response = await fetch(`${apiUrl}/api/calendar/types?userId=${userId}`)
       const data = await response.json()
       setYearData(data)
     } catch (error) {
@@ -44,7 +45,7 @@ function Progress({ userId, expanded, onToggleExpand, hideExpandArrow = false })
 
   async function fetchWeeklyProgress() {
     try {
-      const response = await fetch(`http://localhost:3001/api/todo?userId=${userId}`)
+      const response = await fetch(`${apiUrl}/api/todo?userId=${userId}`)
       const todos = await response.json()
       
       if (!Array.isArray(todos)) {

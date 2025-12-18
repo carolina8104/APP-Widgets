@@ -1,5 +1,8 @@
 const { useState, useEffect } = React
 
+
+const API_URL = 'http://10.17.0.27'
+
 function App() {
     const [currentUser, setCurrentUser] = useState(null)
     const [expandedWidget, setExpandedWidget] = useState(null)
@@ -24,7 +27,7 @@ function App() {
     }
 
     if (!currentUser) {
-        return <Login onLoginSuccess={handleLoginSuccess} />
+        return <Login apiUrl={API_URL} onLoginSuccess={handleLoginSuccess} />
     }
 
     function handleLogout() {
@@ -68,6 +71,7 @@ function App() {
     return (
         <>
             <TopBar 
+                apiUrl={API_URL}
                 userId={currentUser.userId} 
                 onProfileClick={handleProfileClick}
             />
@@ -85,6 +89,7 @@ function App() {
                 <Widget color="var(--accent-neon)" content={
                     <Friends
                         userId={currentUser.userId} 
+                        apiUrl={API_URL}
                         expanded={expandedWidget === 'friends'}
                         onToggleExpand={() => toggleWidget('friends')}
                     />
@@ -107,6 +112,7 @@ function App() {
                 <Widget color="var(--accent-yellow)" content={
                     <Notes 
                         userId={currentUser.userId}
+                        apiUrl={API_URL}
                         expanded={expandedWidget === 'notes'}
                         onToggleExpand={() => toggleWidget('notes')}
                     />
@@ -129,6 +135,7 @@ function App() {
                 <Widget color="var(--panel)" content={
                     <Photos 
                         userId={currentUser.userId}
+                        apiUrl={API_URL}
                         expanded={expandedWidget === 'photo'}
                         onToggleExpand={() => toggleWidget('photo')}
                     />
@@ -140,6 +147,7 @@ function App() {
                 <Widget color="var(--accent-orange)" content={
                     <Progress 
                         userId={currentUser.userId}
+                        apiUrl={API_URL}
                         expanded={expandedWidget === 'progress'}
                         onToggleExpand={() => toggleWidget('progress')}
                     />
@@ -150,6 +158,7 @@ function App() {
                  style={{ display: isWidgetVisible('calendar') ? 'block' : 'none' }}>
                 <Widget color="var(--panel)" content={
                     <Calendar 
+                        apiUrl={API_URL}
                         expanded={expandedWidget === 'calendar'}
                         onToggleExpand={() => toggleWidget('calendar')}
                     />

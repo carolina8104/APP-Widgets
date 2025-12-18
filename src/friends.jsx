@@ -1,6 +1,6 @@
 const { useState, useEffect } = React
 
-function Friends({ userId, expanded, onToggleExpand }) {
+function Friends({ userId, apiUrl, expanded, onToggleExpand }) {
   const [friends, setFriends] = useState([])
   const [searchQuery, setSearchQuery] = useState('')
   const [loading, setLoading] = useState(true)
@@ -11,7 +11,7 @@ function Friends({ userId, expanded, onToggleExpand }) {
   const [sendingRequest, setSendingRequest] = useState(false)
 
   useEffect(() => {
-    fetch(`http://localhost:3001/api/users/${userId}/friends`)
+    fetch(`${apiUrl}/api/users/${userId}/friends`)
       .then(response => response.json())
       .then(data => {
         setFriends(data)
@@ -44,7 +44,7 @@ function Friends({ userId, expanded, onToggleExpand }) {
     }
     
     try {
-      const response = await fetch(`http://localhost:3001/api/users/search?username=${encodeURIComponent(username)}`)
+      const response = await fetch(`${apiUrl}/api/users/search?username=${encodeURIComponent(username)}`)
       const data = await response.json()
       
       if (response.ok && data.userId) {
@@ -69,7 +69,7 @@ function Friends({ userId, expanded, onToggleExpand }) {
     
     setSendingRequest(true)
     try {
-      const response = await fetch('http://localhost:3001/api/friend-requests', {
+      const response = await fetch(apiUrl + '/api/friend-requests', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -196,7 +196,7 @@ function Friends({ userId, expanded, onToggleExpand }) {
             color="var(--bg)" 
           />
         </div>
-        <Progress userId={selectedFriend._id} expanded={true} onToggleExpand={() => {}} hideExpandArrow={true} />
+        <Progress userId={selectedFriend._id} apiUrl={apiUrl} expanded={true} onToggleExpand={() => {}} hideExpandArrow={true} />
       </div>
     )
   }

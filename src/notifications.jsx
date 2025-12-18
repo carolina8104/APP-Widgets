@@ -1,6 +1,6 @@
 const { useState, useEffect } = React
 
-function Notifications({ userId, isMac = false }) {
+function Notifications({ userId, apiUrl, isMac = false }) {
   const [isOpen, setIsOpen] = useState(false)
   const [notifications, setNotifications] = useState([])
   const [loading, setLoading] = useState(false)
@@ -17,7 +17,7 @@ function Notifications({ userId, isMac = false }) {
 
   const fetchNotifications = async () => {
     try {
-      const res = await fetch(`http://localhost:3001/api/users/${userId}/friend-requests`)
+      const res = await fetch(`${apiUrl}/api/users/${userId}/friend-requests`)
       const data = await res.json()
       if (!data.error) {
         setNotifications(data)
@@ -31,7 +31,7 @@ function Notifications({ userId, isMac = false }) {
   const handleAccept = async (requestId, fromUserId) => {
     setLoading(true)
     try {
-      const res = await fetch(`http://localhost:3001/api/friend-requests/${requestId}/accept`, {
+      const res = await fetch(`${apiUrl}/api/friend-requests/${requestId}/accept`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' }
       })
@@ -48,7 +48,7 @@ function Notifications({ userId, isMac = false }) {
   const handleReject = async (requestId) => {
     setLoading(true)
     try {
-      const res = await fetch(`http://localhost:3001/api/friend-requests/${requestId}/reject`, {
+      const res = await fetch(`${apiUrl}/api/friend-requests/${requestId}/reject`, {
         method: 'DELETE'
       })
       const data = await res.json()
@@ -102,9 +102,9 @@ function Notifications({ userId, isMac = false }) {
                         {notif.fromUser.photos && notif.fromUser.photos.length > 0 ? (
                           <img 
                             src={notif.fromUser.photos[0].startsWith('/') 
-                              ? `http://localhost:3001${notif.fromUser.photos[0]}` 
+                              ? `${apiUrl}${notif.fromUser.photos[0]}` 
                               : notif.fromUser.photos[0]
-                            } 
+                            }
                             alt={`${notif.fromUser.username} avatar`} 
                           />
                         ) : (

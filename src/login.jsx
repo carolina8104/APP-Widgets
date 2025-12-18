@@ -1,6 +1,6 @@
 const { useState } = React
 
-function Login({ onLoginSuccess }) {
+function Login({ apiUrl, onLoginSuccess }) {
     const [isRegister, setIsRegister] = useState(false)
     const [username, setUsername] = useState('')
     const [email, setEmail] = useState('')
@@ -19,7 +19,7 @@ function Login({ onLoginSuccess }) {
             : { email, password }
 
         try {
-            const response = await fetch('http://localhost:3001' + endpoint, {
+            const response = await fetch(apiUrl + endpoint, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(body)

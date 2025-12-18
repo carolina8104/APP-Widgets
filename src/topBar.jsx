@@ -1,6 +1,8 @@
 const { useEffect, useState } = React
 
-function TopBar({ userId, onProfileClick }) {
+
+function TopBar({apiUrl, userId, onLogout }) {
+
   const [isMac, setIsMac] = useState(false)
 
   useEffect(() => {
@@ -31,7 +33,7 @@ function TopBar({ userId, onProfileClick }) {
 
     ReactDOM.render(
       <>
-        <Notifications userId={userId} isMac={isMac} />
+         <Notifications apiUrl={apiUrl} userId={userId} isMac={isMac} />
         <button 
           className="top-bar-profile" 
           onClick={onProfileClick}
@@ -42,6 +44,7 @@ function TopBar({ userId, onProfileClick }) {
             <path d="M6 21c0-3.866 2.686-7 6-7s6 3.134 6 7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
           </svg>
         </button>
+
       </>,
       actionsContainer
     )
