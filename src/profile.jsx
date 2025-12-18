@@ -3,6 +3,7 @@ const { useState, useEffect } = React
 function Profile({ userId, expanded, onToggleExpand, onLogout }) {
   const [userData, setUserData] = useState(null)
   const [loading, setLoading] = useState(true)
+  const [appearOnline, setAppearOnline] = useState(true)
 
   useEffect(() => {
     if (!userId) return
@@ -11,6 +12,7 @@ function Profile({ userId, expanded, onToggleExpand, onLogout }) {
       .then(res => res.json())
       .then(data => {
         setUserData(data)
+        setAppearOnline(data?.settings?.appearOnline ?? true)
         setLoading(false)
       })
       .catch(err => {
@@ -18,6 +20,22 @@ function Profile({ userId, expanded, onToggleExpand, onLogout }) {
         setLoading(false)
       })
   }, [userId])
+
+  const handleAppearOnlineToggle = () => {
+    const newValue = !appearOnline
+    setAppearOnline(newValue)
+    
+    fetch(`http://localhost:3001/api/users/${userId}/settings`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ appearOnline: newValue })
+    })
+      .then(res => res.json())
+      .then(() => {
+        console.log('Appear online updated successfully')
+      })
+      .catch(err => console.error('Error updating appear online:', err))
+  }
 
   const getPhotoUrl = (photoPath) => {
     if (!photoPath) return null
@@ -141,6 +159,27 @@ function Profile({ userId, expanded, onToggleExpand, onLogout }) {
             </div>
             <span className="profile-stat-value">{userData?.themesUnlocked?.length || 0}</span>
             <span className="profile-stat-label">Themes</span>
+          </div>
+        </div>
+
+        <div className="profile-section">
+          <h3 className="profile-section-title">Settings</h3>
+          
+          <div className="profile-settings-card">
+            <div className="profile-setting-item">
+              <div className="profile-setting-info">
+                <span className="profile-setting-label">Appear Online</span>
+                <span className="profile-setting-description">Show status to friends</span>
+              </div>
+              <label className="profile-toggle">
+                <input 
+                  type="checkbox" 
+                  checked={appearOnline}
+                  onChange={handleAppearOnlineToggle}
+                />
+                <span className="profile-toggle-slider"></span>
+              </label>
+            </div>
           </div>
         </div>
 
