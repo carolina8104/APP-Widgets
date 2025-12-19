@@ -48,6 +48,25 @@ function Task({ userId, apiUrl, expanded, onToggleExpand }) {
     }
   }
 
+  async function toggleTask(taskId, currentStatus) {
+    try {
+      const newStatus = currentStatus === 'true' ? 'false' : 'true'
+      const response = await fetch(`${apiUrl}/api/todo/${taskId}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ completed: newStatus })
+      })
+
+      if (response.ok) {
+        setTasks(tasks.map(task => 
+          task._id === taskId ? { ...task, completed: newStatus } : task
+        ))
+      }
+    } catch (error) {
+      console.error('Error toggling task:', error)
+    }
+  }
+
   const incompleteTasks = tasks.filter(t => t.completed !== 'true')
   const completedTasks = tasks.filter(t => t.completed === 'true')
 
@@ -75,12 +94,29 @@ function Task({ userId, apiUrl, expanded, onToggleExpand }) {
         {incompleteTasks.map(task => (
           <div key={task._id} className="task-item">
             <span className="task-content">{task.content}</span>
+            <button
+              className="task-checkbox"
+              onClick={() => toggleTask(task._id, task.completed)}
+            >
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                <circle cx="8" cy="8" r="7" stroke="currentColor" strokeWidth="1.5"/>
+              </svg>
+            </button>
           </div>
         ))}
 
         {completedTasks.length > 0 && completedTasks.map(task => (
           <div key={task._id} className="task-item task-completed">
             <span className="task-content">{task.content}</span>
+            <button
+              className="task-checkbox task-checkbox-checked"
+              onClick={() => toggleTask(task._id, task.completed)}
+            >
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                <circle cx="8" cy="8" r="7" fill="currentColor"/>
+                <path d="M5 8L7 10L11 6" stroke="var(--color-neutral-1)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+            </button>
           </div>
         ))}
 
