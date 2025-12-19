@@ -12,3 +12,56 @@
   justify-content: space-between;
   align-items: center;
 }
+
+.task-input-form {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.task-input {
+  flex: 1;
+  background: rgba(0, 0, 0, 0.05);
+  border: none;
+  border-radius: 0.5rem;
+  padding: 0.7rem 0.9rem;
+  color: var(--text-default);
+  font-family: 'Jost', sans-serif;
+  font-size: 0.95rem;
+  outline: none;
+  transition: background 0.2s ease;
+}
+
+.task-input::placeholder {
+  color: var(--text-default);
+  opacity: 0.3;
+}
+
+.task-input:focus {
+  background: rgba(0, 0, 0, 0.08);
+}
+
+.task-add-btn {
+  background: none;
+  border: none;
+  width: 2rem;
+  height: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  flex-shrink: 0;
+  color: var(--text-default);
+  font-size: 1.5rem;
+  font-weight: 300;
+  transition: opacity 0.2s ease;
+  opacity: 0.4;
+}
+
+.task-add-btn:hover {
+  opacity: 0.8;
+}
+
+.task-add-btn svg {
+  display: none;
+}
