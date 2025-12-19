@@ -65,3 +65,73 @@
 .task-add-btn svg {
   display: none;
 }
+
+.task-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  overflow-y: auto;
+  max-height: 46vh;
+  min-height: 46vh;
+}
+
+.task-list::-webkit-scrollbar {
+  width: 4px;
+}
+
+.task-list::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.task-list::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.15);
+  border-radius: 2px;
+}
+
+.task-list::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.25);
+}
+
+.task-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.8rem;
+  padding: 0.75rem 0.5rem;
+  transition: background 0.2s ease;
+  position: relative;
+}
+
+.task-item:hover {
+  background: rgba(0, 0, 0, 0.02);
+}
+
+.task-completed {
+  opacity: 0.5;
+}
+
+.task-content {
+  flex: 1;
+  color: var(--text-default);
+  font-size: 0.95rem;
+  word-break: break-word;
+  line-height: 1.4;
+  text-align: left;
+}
+
+.task-completed .task-content {
+  text-decoration: line-through;
+  opacity: 0.6;
+}
+
+.task-empty {
+  text-align: center;
+  padding: 2rem 1rem;
+  color: var(--text-default);
+  opacity: 0.5;
+}
+
+.task-empty p {
+  margin: 0;
+  font-size: 0.9rem;
+}
