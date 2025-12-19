@@ -453,17 +453,10 @@
     justify-self: end;
 }
 
-.friends.widget-expanded {
-  width: auto !important;
-  max-width: none !important;
-  left: 35% !important;
+.widget.friends-add-expanded {
+  width: 30vw !important;
+  max-width: 30vw !important;
+  box-sizing: border-box !important;
+  transform: translate(60%, 0%) !important;
+  right: auto !important;
 }
-
-.friends.widget-expanded .widget {
-  width: min(90vw, 24rem) !important;
-  max-width: min(90vw, 24rem) !important;
-  padding: clamp(1rem, 2.5vw, 2.5rem) clamp(0.75rem, 2vw, 2rem) !important;
-  border-radius: 0.75rem !important;
-  box-shadow: 0 2px 16px rgba(0,0,0,0.10) !important;
-}
-
