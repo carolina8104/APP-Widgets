@@ -39,6 +39,14 @@
     min-height: 0;
 }
 
+
+.dashboard-grid > div.calendar > .widget {
+    height: 97.5%;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+}
+
 .photo .widget {
     padding: 0;
     height: 100%;
