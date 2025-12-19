@@ -106,28 +106,30 @@ function Progress({ userId, apiUrl, expanded, onToggleExpand, hideExpandArrow = 
 
   const typeColors = {
     classes: 'var(--color-neutral-3)',
-    fit: 'var(--accent-yellow)',
-    meets: 'var(--accent-blue)',
-    study: hideExpandArrow ? 'var(--color-primary-3)' : 'var(--color-primary-1)',
+    fit: 'var(--color-primary-2)',
+    meets: 'var(--color-primary-1)',
+    study: 'var(--graph-5)',
     personal: 'var(--color-neutral-2)',
-    work: 'var(--white)',
-    social: 'var(--accent-light-yellow)',
-    health: 'var(--muted)',
-    hobby: 'var(--accent-pink)',
-    other: 'var(--accent-green)'
+    work: 'var(--color-neutral-1)',
+    
+    social: 'var(--graph-1)',
+    health: 'var(--graph-2)',
+    hobby: 'var(--graph-3)',
+    other: 'var(--graph-4)'
   }
 
   const colorPalette = [
-    'var(--panel-2)',
-    'var(--accent-yellow)',
-    'var(--accent-blue)',
+    'var(--color-neutral-3)',
+    'var(--color-primary-2)',
+    'var(--color-primary-1)',
     'var(--color-primary-1)',
     'var(--color-neutral-2)',
-    'var(--white)',
-    'var(--accent-light-yellow)',
-    'var(--muted)',
-    'var(--accent-pink)',
-    'var(--accent-green)'
+    'var(--color-neutral-1)',
+
+    'var(--graph-1)',
+    'var(--graph-2)',
+    'var(--graph-3)',
+    'var(--graph-4)'
   ]
 
   const totalYearEvents = Object.values(yearData).reduce((sum, val) => sum + val, 0)

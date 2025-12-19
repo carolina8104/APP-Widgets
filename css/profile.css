@@ -312,7 +312,7 @@
 
 .profile-logout-btn {
   background: var(--background);
-  color: var(--white);
+  color: var(--text-inverse);
   border: none;
   padding: 1.5vh 3vh;
   border-radius: 12px;
