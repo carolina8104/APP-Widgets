@@ -247,6 +247,48 @@ async function handleApi(message, response) {
     return sendJson(response, 200, todos)
   }
 
+  if (url.pathname === '/api/todo' && message.method === 'POST') {
+    const body = await parseBody(message)
+    const todosCol = getCollection('todo')
+    
+    const newTodo = {
+      _id: `todo${Date.now()}`,
+      userId: body.userId,
+      content: body.content,
+      completed: body.completed || 'false',
+      createdAt: body.createdAt || new Date().toISOString()
+    }
+    
+    await todosCol.insertOne(newTodo)
+    return sendJson(response, 201, newTodo)
+  }
+
+  const todoMatch = url.pathname.match(/^\/api\/todo\/([a-zA-Z0-9\-_]+)$/)
+  if (todoMatch && message.method === 'PUT') {
+    const todoId = todoMatch[1]
+    const body = await parseBody(message)
+    const todosCol = getCollection('todo')
+    
+    const updateData = {}
+    if (body.completed !== undefined) updateData.completed = body.completed
+    if (body.content !== undefined) updateData.content = body.content
+    
+    await todosCol.updateOne(
+      { _id: todoId },
+      { $set: updateData }
+    )
+    
+    return sendJson(response, 200, { success: true })
+  }
+
+  if (todoMatch && message.method === 'DELETE') {
+    const todoId = todoMatch[1]
+    const todosCol = getCollection('todo')
+    
+    await todosCol.deleteOne({ _id: todoId })
+    return sendJson(response, 200, { success: true })
+  }
+
   if (url.pathname === '/api/users/search' && message.method === 'GET') {
     const username = url.searchParams.get('username')
     if (!username) {
