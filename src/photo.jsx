@@ -52,9 +52,40 @@ function Photos({ userId, apiUrl, expanded, onToggleExpand }) {
     }
 
     const handleUploadClick = () => {
+        fileInputRef.current?.click()
     }
 
     const handleFileSelect = async (event) => {
+        const file = event.target.files?.[0]
+        if (!file) return
+
+        setUploading(true)
+        try {
+            const formData = new FormData()
+            formData.append('photo', file)
+
+            const response = await fetch(`${apiUrl}/api/users/${userId}/photos`, {
+                method: 'POST',
+                body: formData
+            })
+
+            const data = await response.json()
+            if (response.ok) {
+                if (data.photos) {
+                    setPhotos(data.photos)
+                    setCurrentIndex(data.photos.length - 1)
+                }
+            } else {
+                alert('Error uploading photo: ' + data.error)
+            }
+        } catch (err) {
+            alert('Error uploading photo: ' + err.message)
+        } finally {
+            setUploading(false)
+            if (fileInputRef.current) {
+                fileInputRef.current.value = ''
+            }
+        }
     }
 
     if (!photos || photos.length === 0) {
