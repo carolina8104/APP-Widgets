@@ -148,15 +148,47 @@ function Friends({ userId, apiUrl, expanded, onToggleExpand }) {
               {userValidation.message || (userValidation.exists ? `Found: ${userValidation.username}` : 'User not found')}
             </div>
           )}
-          
-          {userValidation && userValidation.exists && !userValidation.sent && (
-            <button 
-              className="fw-add-send-btn"
-              onClick={sendFriendRequest}
-              disabled={sendingRequest}
-            >
-              {sendingRequest ? 'Sending...' : 'Send Friend Request'}
-            </button>
+
+          {userValidation && userValidation.exists && (
+            (() => {
+              const photoPathRaw = userValidation.photos && userValidation.photos.length > 0 ? userValidation.photos[0] : null
+              let photoUrl = null
+              if (photoPathRaw) {
+                if (photoPathRaw.startsWith('http://') || photoPathRaw.startsWith('https://')) {
+                  photoUrl = photoPathRaw
+                } else {
+                  const prefix = photoPathRaw.startsWith('/') ? '' : '/'
+                  photoUrl = `${window.location.origin}${prefix}${photoPathRaw}`
+                }
+              }
+
+              return (
+                <div className="fw-validation-block">
+                  <div className="fw-validation-left">
+                    {photoUrl ? (
+                      <div className="fw-validation-avatar">
+                        <img src={photoUrl} alt={`${userValidation.username} avatar`} />
+                      </div>
+                    ) : (
+                      <div className="fw-validation-avatar" aria-hidden></div>
+                    )}
+                    <div className="fw-username">{userValidation.username}</div>
+                  </div>
+
+                  <div className="fw-validation-actions">
+                    {!userValidation.sent && (
+                      <button 
+                        className="fw-add-send-btn"
+                        onClick={sendFriendRequest}
+                        disabled={sendingRequest}
+                      >
+                        {sendingRequest ? 'Sending...' : 'Send Friend Request'}
+                      </button>
+                    )}
+                  </div>
+                </div>
+              )
+            })()
           )}
         </div>
       </div>

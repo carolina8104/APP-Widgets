@@ -1,6 +1,27 @@
-const { useState } = React
+const { useState, useEffect } = React
 
 function Calendar({ apiUrl, expanded, onToggleExpand }) {
+  const [events, setEvents] = useState([])
+  const [currentWeekStart, setCurrentWeekStart] = useState(new Date())
+  const weekDates = getWeekDates(currentWeekStart)
+  const weekDayNames = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
+  
+  const firstDate = weekDates[0]
+  const lastDate = weekDates[6]
+  const monthName = firstDate.toLocaleString('en-US', { month: 'long' })
+  const weekTitle = `Week ${firstDate.getDate()} to ${lastDate.getDate()} of ${monthName}`
+  const goToPreviousWeek = () => {
+    const newDate = new Date(currentWeekStart)
+    newDate.setDate(newDate.getDate() - 7)
+    setCurrentWeekStart(newDate)
+  }
+
+  const goToNextWeek = () => {
+    const newDate = new Date(currentWeekStart)
+    newDate.setDate(newDate.getDate() + 7)
+    setCurrentWeekStart(newDate)
+  }
+
   if (expanded) {
     return (
       <div className="calendar-expanded-container">
@@ -39,9 +60,19 @@ function Calendar({ apiUrl, expanded, onToggleExpand }) {
   }
 
   return (
-    <div className="calendar-widget" style={{height: '100%'}}>
-      <div className="calendar-header">
-        <h2 className="calendar-title">Calendar</h2>
+    <div className="calendar-widget">
+      <div className="calendar-compact-header">
+        <button className="calendar-nav-btn-compact" onClick={goToPreviousWeek}>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+            <path d="M15 18l-6-6 6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+          </svg>
+        </button>
+        <h2 className="calendar-title-compact">{weekTitle}</h2>
+        <button className="calendar-nav-btn-compact" onClick={goToNextWeek}>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+            <path d="M9 18l6-6-6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+          </svg>
+        </button>
         <ExpandArrow onClick={onToggleExpand} expanded={expanded} color={'#fff'} />
       </div>
       <div style={{color: '#fff', opacity: 0.6, height: "79.5vh", marginTop: '0.5rem'}}>
