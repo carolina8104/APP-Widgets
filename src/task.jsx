@@ -67,6 +67,20 @@ function Task({ userId, apiUrl, expanded, onToggleExpand }) {
     }
   }
 
+  async function deleteTask(taskId) {
+    try {
+      const response = await fetch(`${apiUrl}/api/todo/${taskId}`, {
+        method: 'DELETE'
+      })
+
+      if (response.ok) {
+        setTasks(tasks.filter(task => task._id !== taskId))
+      }
+    } catch (error) {
+      console.error('Error deleting task:', error)
+    }
+  }
+
   const incompleteTasks = tasks.filter(t => t.completed !== 'true')
   const completedTasks = tasks.filter(t => t.completed === 'true')
 
@@ -94,29 +108,45 @@ function Task({ userId, apiUrl, expanded, onToggleExpand }) {
         {incompleteTasks.map(task => (
           <div key={task._id} className="task-item">
             <span className="task-content">{task.content}</span>
-            <button
-              className="task-checkbox"
-              onClick={() => toggleTask(task._id, task.completed)}
-            >
-              <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                <circle cx="8" cy="8" r="7" stroke="currentColor" strokeWidth="1.5"/>
-              </svg>
-            </button>
+            <div className="task-actions">
+              <button
+                className="task-delete"
+                onClick={() => deleteTask(task._id)}
+              >
+                ×
+              </button>
+              <button
+                className="task-checkbox"
+                onClick={() => toggleTask(task._id, task.completed)}
+              >
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                  <circle cx="8" cy="8" r="7" stroke="currentColor" strokeWidth="1.5"/>
+                </svg>
+              </button>
+            </div>
           </div>
         ))}
 
         {completedTasks.length > 0 && completedTasks.map(task => (
           <div key={task._id} className="task-item task-completed">
             <span className="task-content">{task.content}</span>
-            <button
-              className="task-checkbox task-checkbox-checked"
-              onClick={() => toggleTask(task._id, task.completed)}
-            >
-              <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                <circle cx="8" cy="8" r="7" fill="currentColor"/>
-                <path d="M5 8L7 10L11 6" stroke="var(--color-neutral-1)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-              </svg>
-            </button>
+            <div className="task-actions">
+              <button
+                className="task-delete"
+                onClick={() => deleteTask(task._id)}
+              >
+                ×
+              </button>
+              <button
+                className="task-checkbox task-checkbox-checked"
+                onClick={() => toggleTask(task._id, task.completed)}
+              >
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                  <circle cx="8" cy="8" r="7" fill="currentColor"/>
+                  <path d="M5 8L7 10L11 6" stroke="var(--color-neutral-1)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              </button>
+            </div>
           </div>
         ))}
 
