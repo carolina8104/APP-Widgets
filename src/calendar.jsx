@@ -108,7 +108,7 @@ function Calendar({ apiUrl, expanded, onToggleExpand }) {
                 <path d="M9 18l6-6-6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
               </svg>
             </button>
-            <ExpandArrow onClick={onToggleExpand} expanded={expanded} color={'#fff'} />
+            <ExpandArrow onClick={onToggleExpand} expanded={expanded} color={'var(--background)'} />
           </div>
 
           <div className="calendar-week-grid">
@@ -144,7 +144,7 @@ function Calendar({ apiUrl, expanded, onToggleExpand }) {
         </div>
 
         <div className="calendar-add-task-widget">
-          <h3 style={{color: 'var(--bg)', margin: 0, fontSize: '1rem', fontWeight: 600}}>Add new task</h3>
+          <h3 style={{color: 'var(--text-default)', margin: 0, fontSize: '1rem', fontWeight: 600}}>Add new task</h3>
           <button className="calendar-add-task-btn">
             <span>+</span>
           </button>
@@ -203,7 +203,7 @@ function Calendar({ apiUrl, expanded, onToggleExpand }) {
             <path d="M9 18l6-6-6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
           </svg>
         </button>
-        <ExpandArrow onClick={onToggleExpand} expanded={expanded} color={'#fff'} />
+        <ExpandArrow onClick={onToggleExpand} expanded={expanded} color={'var(--background)'} />
       </div>
 
       <div className="calendar-week-grid-compact">

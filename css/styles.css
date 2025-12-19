@@ -1,14 +1,20 @@
 @import url('https://fonts.googleapis.com/css2?family=Jost:wght@400;500;700&display=swap');
 
 :root {
-  --bg: #0F0F0F;
-  --panel: #242424;
-  --panel-2: #3e3e3e54;
-  --muted: #DCDCDC;
-  --accent-neon: #B7FF2F;
-  --accent-orange: #F9773B;
-  --accent-yellow: #FFE86D;
-  --white: #FFFFFF;
+  --background: #0F0F0F;
+  --color-primary-1: #B7FF2F;
+  --color-primary-2: #FFE86D;
+  --color-primary-3: #F9773B;
+
+  --color-neutral-1: #FFFFFF;
+  --color-neutral-2: #242424;
+  --color-neutral-3: #3e3e3e54;
+
+  --text-default: #0F0F0F;
+  --text-accent-1: var(--color-primary-1);
+  --text-accent-2: var(--color-primary-2);
+  --text-accent-3: var(--color-primary-3);
+  --text-inverse:  #FFFFFF;
 
   --accent-blue: #97B9FF;
   --accent-light-yellow: #d8e2a7;
@@ -28,7 +34,7 @@
 
 body {
   font-family: 'Jost', sans-serif;
-  background-color: var(--bg);
+  background-color: var(--background);
   line-height: 1.2;
 }
 
@@ -51,21 +57,21 @@ body {
 h2 {
   font-weight: 600;
   font-size: x-large;
-  color: var(--bg);
+  color: var(--text-default);
   margin: 0vh;
 }
 
 h3 {
   font-weight: 200;
   font-size: medium;
-  color: var(--bg);
+  color: var(--text-default);
   margin: 0vh;
 }
 
 p {
   font-weight: 300;
   font-size: x-small;
-  color: var(--bg);
+  color: var(--text-default);
 }
 
 small {
@@ -81,8 +87,8 @@ button {
 }
 
 h3 button {
-  background-color: var(--panel-2);
-  color: var(--bg);
+  background-color: var(--color-neutral-3);
+  color: var(--text-default);
   padding: 0vh 1vh;
   margin-left: 23vh;
   border-radius: 30%;

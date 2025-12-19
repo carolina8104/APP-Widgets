@@ -106,7 +106,7 @@ function App() {
             >
             <div className={getWidgetClassName('friends')} 
                  style={{ display: isWidgetVisible('friends') ? 'block' : 'none' }}>
-                <Widget color="var(--accent-neon)" content={
+                <Widget color="var(  --color-primary-1)" content={
                     <Friends
                         userId={currentUser.userId} 
                         apiUrl={API_URL}
@@ -119,7 +119,7 @@ function App() {
 
             <div className={getWidgetClassName('timeTracker')} 
                  style={{ display: isWidgetVisible('timeTracker') ? 'block' : 'none' }}>
-                <Widget color="var(--panel)" content={
+                <Widget color="var(--color-neutral-2)" content={
                     <TimeTracker 
                         userId={currentUser.userId} 
                         expanded={expandedWidget === 'timeTracker'}
@@ -130,7 +130,7 @@ function App() {
 
             <div className={getWidgetClassName('notes')} 
                  style={{ display: isWidgetVisible('notes') ? 'block' : 'none' }}>
-                <Widget color="var(--accent-yellow)" content={
+                <Widget color="var(--color-primary-2)" content={
                     <Notes 
                         userId={currentUser.userId}
                         apiUrl={API_URL}
@@ -142,18 +142,18 @@ function App() {
 
             <div className={getWidgetClassName('tasks')} 
                  style={{ display: isWidgetVisible('tasks') ? 'block' : 'none' }}>
-                <Widget color="var(--white)" content={
+                <Widget color="var(--color-neutral-1)" content={
                     <div className="widget-placeholder">
-                        <h2 style={{color: 'var(--bg)', margin: 0, fontSize: '1.25rem'}}>Tasks</h2>
-                        <p style={{color: 'var(--bg)', opacity: 0.6, fontSize: '0.9rem'}}>Today: 2/8 tasks</p>
-                        <p style={{color: 'var(--bg)', height: '49vh', opacity: 0.6, fontSize: '0.9rem'}}>This week: 123 tasks</p>
+                        <h2 style={{color: 'var(--text-default)', margin: 0, fontSize: '1.25rem'}}>Tasks</h2>
+                        <p style={{color: 'var(--text-default)', opacity: 0.6, fontSize: '0.9rem'}}>Today: 2/8 tasks</p>
+                        <p style={{color: 'var(--text-default)', height: '49vh', opacity: 0.6, fontSize: '0.9rem'}}>This week: 123 tasks</p>
                     </div>
                 } />
             </div>
 
             <div className={getWidgetClassName('photo')} 
                  style={{ display: isWidgetVisible('photo') ? 'block' : 'none' }}>
-                <Widget color="var(--panel)" content={
+                <Widget color="var(--color-neutral-2)" content={
                     <Photos 
                         userId={currentUser.userId}
                         apiUrl={API_URL}
@@ -165,7 +165,7 @@ function App() {
 
             <div className={getWidgetClassName('progress')} 
                  style={{ display: isWidgetVisible('progress') ? 'block' : 'none' }}>
-                <Widget color="var(--accent-orange)" content={
+                <Widget color="var(--color-primary-3)" content={
                     <Progress 
                         userId={currentUser.userId}
                         apiUrl={API_URL}
@@ -177,7 +177,7 @@ function App() {
 
             <div className={getWidgetClassName('calendar')} 
                  style={{ display: isWidgetVisible('calendar') ? 'block' : 'none' }}>
-                <Widget color="var(--panel)" content={
+                <Widget color="var(--color-neutral-2)" content={
                     <Calendar 
                         apiUrl={API_URL}
                         expanded={expandedWidget === 'calendar'}
@@ -189,7 +189,7 @@ function App() {
             {expandedWidget === 'profile' && (
                 <div className="profile widget-expanded" 
                      style={{ display: 'block', gridColumn: '1 / -1', gridRow: '1 / -1' }}>
-                    <Widget color="var(--white)" content={
+                    <Widget color="var(--color-neutral-1)" content={
                         <Profile 
                             userId={currentUser.userId}
                             expanded={true}

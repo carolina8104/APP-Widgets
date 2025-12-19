@@ -6,7 +6,7 @@
   position: relative;
   background: transparent;
   border: none;
-  color: var(--text-primary, #fff);
+  color: var(--text-primary, --text-inverse);
   cursor: pointer;
   padding: 8px;
   border-radius: 50%;
@@ -56,7 +56,7 @@
   top: calc(100% + 8px);
   width: 360px;
   max-height: 480px;
-  background-color: var(--panel, #2a2a2a);
+  background-color: var(--color-neutral-2, #2a2a2a);
   border-radius: 12px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
   z-index: 1000;
@@ -87,12 +87,12 @@
   margin: 0;
   font-size: 18px;
   font-weight: 600;
-  color: var(--text-primary, #fff);
+  color: var(--text-primary, --text-inverse);
 }
 
 .notifications-count {
   background-color: var(--notif-count-bg);
-  color: #000;
+  color: var(--text-default);
   font-size: 12px;
   font-weight: bold;
   padding: 2px 8px;
@@ -142,7 +142,7 @@
   justify-content: center;
   font-size: 18px;
   font-weight: bold;
-  color: #000;
+  color: var(--text-default);
   flex-shrink: 0;
   overflow: hidden;
 }
@@ -154,7 +154,7 @@
 }
 
 .notification-avatar span {
-  color: #000;
+  color: var(--text-default);
   font-size: 18px;
   font-weight: bold;
 }
@@ -162,12 +162,12 @@
 .notification-text {
   flex: 1;
   font-size: 14px;
-  color: #ccc;
+  color: var(--text-inverse);
   line-height: 1.4;
 }
 
 .notification-text strong {
-  color: var(--text-primary, #fff);
+  color: var(--text-primary, --text-inverse);
   font-weight: 600;
 }
 
@@ -194,23 +194,23 @@
 
 .notification-btn.accept {
   background-color: rgba(255, 255, 255, 0.278);
-  color: #fff;
+  color: var(--text-inverse);
 }
 
 .notification-btn.accept:hover:not(:disabled) {
   background-color: var(--notif-accent);
-  color: #000;
+  color: var(--text-default);
   transform: translateY(-1px);
 }
 
 .notification-btn.reject {
   background-color: rgba(255, 255, 255, 0.1);
-  color: #fff;
+  color: var(--text-inverse);
 }
 
 .notification-btn.reject:hover:not(:disabled) {
   background-color: rgba(255, 68, 68, 0.655);
-  color: #ededed;
+  color: var(--text-inverse);
   transform: translateY(-1px);
 }
 

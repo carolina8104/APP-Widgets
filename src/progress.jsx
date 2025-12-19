@@ -105,11 +105,11 @@ function Progress({ userId, apiUrl, expanded, onToggleExpand, hideExpandArrow = 
 
 
   const typeColors = {
-    classes: 'var(--panel-2)',
+    classes: 'var(--color-neutral-3)',
     fit: 'var(--accent-yellow)',
     meets: 'var(--accent-blue)',
-    study: hideExpandArrow ? 'var(--accent-orange)' : 'var(--accent-neon)',
-    personal: 'var(--panel)',
+    study: hideExpandArrow ? 'var(--color-primary-3)' : 'var(--color-primary-1)',
+    personal: 'var(--color-neutral-2)',
     work: 'var(--white)',
     social: 'var(--accent-light-yellow)',
     health: 'var(--muted)',
@@ -121,8 +121,8 @@ function Progress({ userId, apiUrl, expanded, onToggleExpand, hideExpandArrow = 
     'var(--panel-2)',
     'var(--accent-yellow)',
     'var(--accent-blue)',
-    'var(--accent-neon)',
-    'var(--panel)',
+    'var(--color-primary-1)',
+    'var(--color-neutral-2)',
     'var(--white)',
     'var(--accent-light-yellow)',
     'var(--muted)',
@@ -138,7 +138,7 @@ function Progress({ userId, apiUrl, expanded, onToggleExpand, hideExpandArrow = 
     color: typeColors[type] || colorPalette[index % colorPalette.length]
   })) : []
 
-  const donutBaseColor = hideExpandArrow ? 'var(--accent-neon)' : 'var(--accent-orange)';
+  const donutBaseColor = hideExpandArrow ? 'var(--color-primary-1)' : 'var(--color-primary-3)';
 
   return (
     <div 
@@ -152,7 +152,7 @@ function Progress({ userId, apiUrl, expanded, onToggleExpand, hideExpandArrow = 
     >
       <div className="progress-grid">
         <h2>Progress</h2>
-        {!hideExpandArrow && <ExpandArrow onClick={onToggleExpand} expanded={expanded} color="var(--bg)" />}
+        {!hideExpandArrow && <ExpandArrow onClick={onToggleExpand} expanded={expanded}/>}
         <div className="progress-content">
           {!expanded && (
             <>
@@ -195,7 +195,7 @@ function Progress({ userId, apiUrl, expanded, onToggleExpand, hideExpandArrow = 
                           width="10"
                           height={blackBarHeight}
                           rx="5"
-                          fill="var(--bg)"
+                          fill="var(--text-accent-3)"
                         />
                         <text
                           x={x + 5}
@@ -203,7 +203,7 @@ function Progress({ userId, apiUrl, expanded, onToggleExpand, hideExpandArrow = 
                           textAnchor="middle"
                           fontSize="8"
                           fontWeight="500"
-                          fill="var(--bg)"
+                          fill="var(--text-accent-3)"
                         >
                           {day}
                         </text>
@@ -260,7 +260,7 @@ function Progress({ userId, apiUrl, expanded, onToggleExpand, hideExpandArrow = 
                                   width="10"
                                   height={blackBarHeight}
                                   rx="5"
-                                  fill="var(--bg)"
+                                  fill="var(--text-accent-3)"
                                 />
                                 <text
                                   x={x + 5}
@@ -268,7 +268,7 @@ function Progress({ userId, apiUrl, expanded, onToggleExpand, hideExpandArrow = 
                                   textAnchor="middle"
                                   fontSize="8"
                                   fontWeight="500"
-                                  fill="var(--bg)"
+                                  fill="var(--text-accent-3)"
                                 >
                                   {day}
                                 </text>
@@ -328,8 +328,8 @@ function Progress({ userId, apiUrl, expanded, onToggleExpand, hideExpandArrow = 
                       })() : (
                         <>
                           <circle cx="100" cy="100" r="90" fill="rgba(15, 15, 15, 0.1)" />
-                          <circle cx="100" cy="100" r="60" fill="var(--bg)" fillOpacity="0.05" />
-                          <text x="100" y="110" textAnchor="middle" fontSize="0.95rem" fontWeight="500" fill="var(--bg)" opacity="0.7">
+                          <circle cx="100" cy="100" r="60" fill="var(--text-accent-3)" fillOpacity="0.05" />
+                          <text x="100" y="110" textAnchor="middle" fontSize="0.95rem" fontWeight="500" fill="var(--text-accent-3)" opacity="0.7">
                             No calendar events
                           </text>
                         </>

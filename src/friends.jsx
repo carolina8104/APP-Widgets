@@ -139,7 +139,7 @@ function Friends({ userId, apiUrl, expanded, onToggleExpand, onFriendAccepted })
               onToggleExpand()
             }} 
             expanded={true} 
-            color="var(--bg)" 
+            color="var(--background)" 
           />
         </div>
         
@@ -251,7 +251,7 @@ function Friends({ userId, apiUrl, expanded, onToggleExpand, onFriendAccepted })
               onToggleExpand(); 
             }} 
             expanded={true} 
-            color="var(--bg)" 
+            color="var(--background)" 
           />
         </div>
         <Progress userId={selectedFriend._id} apiUrl={apiUrl} expanded={true} onToggleExpand={() => {}} hideExpandArrow={true} />
