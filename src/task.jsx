@@ -22,6 +22,32 @@ function Task({ userId, apiUrl, expanded, onToggleExpand }) {
     }
   }
 
+  async function addTask(e) {
+    e.preventDefault()
+    if (!newTask.trim()) return
+
+    try {
+      const response = await fetch(`${apiUrl}/api/todo`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          userId,
+          content: newTask,
+          completed: 'false',
+          createdAt: new Date().toISOString()
+        })
+      })
+
+      if (response.ok) {
+        const task = await response.json()
+        setTasks([task, ...tasks])
+        setNewTask('')
+      }
+    } catch (error) {
+      console.error('Error adding task:', error)
+    }
+  }
+
   const incompleteTasks = tasks.filter(t => t.completed !== 'true')
   const completedTasks = tasks.filter(t => t.completed === 'true')
 
@@ -32,7 +58,7 @@ function Task({ userId, apiUrl, expanded, onToggleExpand }) {
         <ExpandArrow onClick={onToggleExpand} expanded={expanded} />
       </div>
 
-      <form className="task-input-form">
+      <form onSubmit={addTask} className="task-input-form">
         <input
           type="text"
           value={newTask}
