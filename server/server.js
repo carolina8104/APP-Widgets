@@ -530,16 +530,17 @@ async function handleApi(message, response) {
 
           const uploadsBaseDir = path.join(__dirname, '..', 'uploads')
           const userUploadsDir = path.join(uploadsBaseDir, userId)
+          const profileDir = path.join(userUploadsDir, 'profile')
                     
-          if (!fs.existsSync(userUploadsDir)) {
-            fs.mkdirSync(userUploadsDir, { recursive: true })
+          if (!fs.existsSync(profileDir)) {
+            fs.mkdirSync(profileDir, { recursive: true })
           }
 
           try {
-            const existingFiles = fs.readdirSync(userUploadsDir)
+            const existingFiles = fs.readdirSync(profileDir)
             existingFiles.forEach(file => {
               if (file.startsWith('profile.')) {
-                const oldFilePath = path.join(userUploadsDir, file)
+                const oldFilePath = path.join(profileDir, file)
                 fs.unlinkSync(oldFilePath)
               }
             })
@@ -548,17 +549,17 @@ async function handleApi(message, response) {
 
           const ext = path.extname(filename) || '.jpg'
           const profileFilename = `profile${ext}`
-          const filepath = path.join(userUploadsDir, profileFilename)
+          const filepath = path.join(profileDir, profileFilename)
 
           fs.writeFileSync(filepath, imageData)
 
-          const photoUrl = `/uploads/${userId}/${profileFilename}`          
+          const photoUrl = `/uploads/${userId}/profile/${profileFilename}`          
           const result = await usersCol.updateOne(
             { _id: userId },
-            { $set: { photos: [photoUrl] } }
+            { $set: { 'settings.profilePhoto': photoUrl } }
           )
           
-          sendJson(response, 200, { photos: [photoUrl] })
+          sendJson(response, 200, { profilePhoto: photoUrl })
           resolve()
         } catch (err) {
           sendJson(response, 500, { error: err.message })

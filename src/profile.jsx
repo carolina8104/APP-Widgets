@@ -66,7 +66,10 @@ function Profile({ userId, expanded, onToggleExpand, onLogout }) {
       if (response.ok) {
         setUserData(prev => ({
           ...prev,
-          photos: data.photos
+          settings: {
+            ...prev.settings,
+            profilePhoto: data.profilePhoto
+          }
         }))
       } else {
         alert('Error uploading photo: ' + data.error)
@@ -81,11 +84,15 @@ function Profile({ userId, expanded, onToggleExpand, onLogout }) {
     if (photoPath.startsWith('http://') || photoPath.startsWith('https://')) {
       return photoPath
     }
-    return `http://localhost:3001${photoPath.startsWith('/') ? '' : '/'}${photoPath}`
+    if (!photoPath.startsWith('/uploads/')) {
+      const cleanPath = photoPath.startsWith('/') ? photoPath.substring(1) : photoPath
+      return `http://localhost:3001/uploads/${cleanPath}`
+    }
+    return `http://localhost:3001${photoPath}`
   }
 
-  const photoUrl = userData?.photos && userData.photos.length > 0 
-    ? getPhotoUrl(userData.photos[0]) 
+  const photoUrl = userData?.settings?.profilePhoto
+    ? getPhotoUrl(userData.settings.profilePhoto) 
     : null
 
   if (loading) {

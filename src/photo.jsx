@@ -41,10 +41,14 @@ function Photos({ userId, apiUrl, expanded, onToggleExpand }) {
 
     const getPhotoUrl = (photoPath) => {
         if (!photoPath) return ''
-        if (photoPath.startsWith('/')) {
-        return `${apiUrl}${photoPath}`
+        if (photoPath.startsWith('http://') || photoPath.startsWith('https://')) {
+            return photoPath
         }
-        return photoPath
+        if (!photoPath.startsWith('/uploads/')) {
+            const cleanPath = photoPath.startsWith('/') ? photoPath.substring(1) : photoPath
+            return `${apiUrl}/uploads/${cleanPath}`
+        }
+        return `${apiUrl}${photoPath}`
     }
 
     const handleUploadClick = () => {
