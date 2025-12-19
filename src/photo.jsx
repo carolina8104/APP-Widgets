@@ -53,24 +53,29 @@ function Photos({ userId, apiUrl, expanded, onToggleExpand }) {
 
     const handleUploadClick = () => {
     }
+
     const handleFileSelect = async (event) => {
     }
 
     if (!photos || photos.length === 0) {
         return (
         <div className="photo-empty">
-            Sem fotos disponíveis
             <button 
                 className="photo-upload-btn-large" 
+                onClick={handleUploadClick}
+                disabled={uploading}
                 aria-label="Upload photo"
             >
                 <svg width="80" height="80" viewBox="0 0 24 24" fill="none">
                     <path d="M12 5v14M5 12h14" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
                 </svg>
+                {uploading && <div className="photo-upload-spinner"></div>}
             </button>
             <input 
+                ref={fileInputRef}
                 type="file" 
                 accept="image/*"
+                onChange={handleFileSelect}
                 style={{ display: 'none' }}
             />
         </div>
@@ -88,6 +93,8 @@ function Photos({ userId, apiUrl, expanded, onToggleExpand }) {
 
       <button 
         className="photo-upload-btn-small" 
+        onClick={handleUploadClick}
+        disabled={uploading}
         aria-label="Upload photo"
       >
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
@@ -96,8 +103,10 @@ function Photos({ userId, apiUrl, expanded, onToggleExpand }) {
       </button>
 
       <input 
+        ref={fileInputRef}
         type="file" 
         accept="image/*"
+        onChange={handleFileSelect}
         style={{ display: 'none' }}
       />
 
@@ -112,9 +121,11 @@ function Photos({ userId, apiUrl, expanded, onToggleExpand }) {
         </div>
       )}
 
+      {uploading && (
         <div className="photo-upload-overlay">
           <div className="photo-upload-spinner"></div>
         </div>
+      )}
     </div>
   )
 }

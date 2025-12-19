@@ -1,6 +1,5 @@
 const { useState, useEffect, useRef } = React
 
-function Friends({ userId, apiUrl, expanded, onToggleExpand }) {
 function Friends({ userId, apiUrl, expanded, onToggleExpand, onFriendAccepted }) {
   const [friends, setFriends] = useState([])
   const [searchQuery, setSearchQuery] = useState('')
@@ -27,17 +26,23 @@ function Friends({ userId, apiUrl, expanded, onToggleExpand, onFriendAccepted })
     }
   }, [expanded, viewMode])
 
-  useEffect(() => {
-    fetch(`${apiUrl}/api/users/${userId}/friends`)
-      .then(response => response.json())
-      .then(data => {
+  const fetchFriends = async () => {
+    try {
+      const response = await fetch(`${apiUrl}/api/users/${userId}/friends`)
+      const data = await response.json()
+      if (!data.error) {
         setFriends(data)
-        setLoading(false)
-      })
-      .catch(err => {
-        console.error('Error fetching friends:', err)
-        setLoading(false)
-      })
+      }
+      setLoading(false)
+    } catch (err) {
+      console.error('Error fetching friends:', err)
+      setLoading(false)
+    }
+  }
+
+  useEffect(() => {
+    if (!userId) return
+    fetchFriends()
   }, [userId])
 
   useEffect(() => {
@@ -76,7 +81,6 @@ function Friends({ userId, apiUrl, expanded, onToggleExpand, onFriendAccepted })
         } else if (friends.some(f => f._id === data.userId)) {
           setUserValidation({ exists: false, message: 'Already friends' })
         } else {
-          setUserValidation({ exists: true, userId: data.userId, username: data.username, photos: data.photos || [] })
           setUserValidation({ exists: true, userId: data.userId, username: data.username, settings: data.settings || {} })
         }
       } else {
@@ -181,8 +185,6 @@ function Friends({ userId, apiUrl, expanded, onToggleExpand, onFriendAccepted })
                 if (photoPathRaw.startsWith('http://') || photoPathRaw.startsWith('https://')) {
                   photoUrl = photoPathRaw
                 } else {
-                  const prefix = photoPathRaw.startsWith('/') ? '' : '/'
-                  photoUrl = `${window.location.origin}${prefix}${photoPathRaw}`
                   photoUrl = photoPathRaw.startsWith('/') ? `${apiUrl}${photoPathRaw}` : `${apiUrl}/${photoPathRaw}`
                 }
               }
@@ -227,8 +229,6 @@ function Friends({ userId, apiUrl, expanded, onToggleExpand, onFriendAccepted })
       if (photoPathRaw.startsWith('http://') || photoPathRaw.startsWith('https://')) {
         photoUrl = photoPathRaw
       } else {
-        const prefix = photoPathRaw.startsWith('/') ? '' : '/'
-        photoUrl = `${window.location.origin}${prefix}${photoPathRaw}`
         photoUrl = photoPathRaw.startsWith('/') ? `${apiUrl}${photoPathRaw}` : `${apiUrl}/${photoPathRaw}`
       }
     }
@@ -303,8 +303,6 @@ function Friends({ userId, apiUrl, expanded, onToggleExpand, onFriendAccepted })
               if (photoPathRaw.startsWith('http://') || photoPathRaw.startsWith('https://')) {
                 photoUrl = photoPathRaw
               } else {
-                const prefix = photoPathRaw.startsWith('/') ? '' : '/'
-                photoUrl = `${window.location.origin}${prefix}${photoPathRaw}`
                 photoUrl = photoPathRaw.startsWith('/') ? `${apiUrl}${photoPathRaw}` : `${apiUrl}/${photoPathRaw}`
               }
             }

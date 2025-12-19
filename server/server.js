@@ -232,7 +232,6 @@ async function handleApi(message, response) {
         level: friend.level,
         email: friend.email,
         xp: friend.xp,
-        photos: friend.photos || []
         photos: friend.photos || [],
         settings: friend.settings || {}
       }))
@@ -265,7 +264,6 @@ async function handleApi(message, response) {
       userId: user._id,
       username: user.username,
       level: user.level,
-      photos: user.photos || []
       photos: user.photos || [],
       settings: user.settings || {}
     })
@@ -386,7 +384,6 @@ async function handleApi(message, response) {
             _id: fromUser._id,
             username: fromUser.username,
             level: fromUser.level,
-            photos: fromUser.photos || []
             photos: fromUser.photos || [],
             settings: fromUser.settings || {}
           },
@@ -629,6 +626,40 @@ async function handleApi(message, response) {
               break
             }
           }
+
+          if (!imageData || imageData.length === 0) {
+            sendJson(response, 400, { error: 'No image data found' })
+            return resolve()
+          }
+
+          const uploadsBaseDir = path.join(__dirname, '..', 'uploads')
+          const userUploadsDir = path.join(uploadsBaseDir, userId)
+                    
+          if (!fs.existsSync(userUploadsDir)) {
+            fs.mkdirSync(userUploadsDir, { recursive: true })
+          }
+
+          const ext = path.extname(filename) || '.jpg'
+          const photoFilename = `photo_${Date.now()}${ext}`
+          const filepath = path.join(userUploadsDir, photoFilename)
+
+          fs.writeFileSync(filepath, imageData)
+
+          const photoUrl = `/uploads/${userId}/${photoFilename}`
+          
+          const result = await usersCol.updateOne(
+            { _id: userId },
+            { $push: { photos: photoUrl } }
+          )
+          
+          const user = await usersCol.findOne({ _id: userId })
+          
+          sendJson(response, 200, { photos: user.photos || [] })
+          resolve()
+        } catch (err) {
+          sendJson(response, 500, { error: err.message })
+          resolve()
+        }
       })
     })
   }
