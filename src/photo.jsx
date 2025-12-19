@@ -3,7 +3,9 @@ const { useState, useEffect, useRef } = React
 function Photos({ userId, apiUrl, expanded, onToggleExpand }) {
   const [photos, setPhotos] = useState([])
   const [currentIndex, setCurrentIndex] = useState(0)
+  const [uploading, setUploading] = useState(false)
   const transitionTimeoutRef = useRef(null)
+  const fileInputRef = useRef(null)
 
     useEffect(() => {
         if (!userId) return
@@ -45,10 +47,28 @@ function Photos({ userId, apiUrl, expanded, onToggleExpand }) {
         return photoPath
     }
 
+    const handleUploadClick = () => {
+    }
+    const handleFileSelect = async (event) => {
+    }
+
     if (!photos || photos.length === 0) {
         return (
         <div className="photo-empty">
             Sem fotos disponíveis
+            <button 
+                className="photo-upload-btn-large" 
+                aria-label="Upload photo"
+            >
+                <svg width="80" height="80" viewBox="0 0 24 24" fill="none">
+                    <path d="M12 5v14M5 12h14" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+                </svg>
+            </button>
+            <input 
+                type="file" 
+                accept="image/*"
+                style={{ display: 'none' }}
+            />
         </div>
         )
     }
@@ -62,6 +82,21 @@ function Photos({ userId, apiUrl, expanded, onToggleExpand }) {
         className="photo-image"
       />
 
+      <button 
+        className="photo-upload-btn-small" 
+        aria-label="Upload photo"
+      >
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+          <path d="M12 5v14M5 12h14" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"/>
+        </svg>
+      </button>
+
+      <input 
+        type="file" 
+        accept="image/*"
+        style={{ display: 'none' }}
+      />
+
       {photos.length > 1 && (
         <div className="photo-indicators">
           {photos.map((_, idx) => (
@@ -72,6 +107,10 @@ function Photos({ userId, apiUrl, expanded, onToggleExpand }) {
           ))}
         </div>
       )}
+
+        <div className="photo-upload-overlay">
+          <div className="photo-upload-spinner"></div>
+        </div>
     </div>
   )
 }
