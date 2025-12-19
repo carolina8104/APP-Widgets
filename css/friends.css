@@ -456,8 +456,7 @@
 .friends.widget-expanded {
   width: auto !important;
   max-width: none !important;
-  left: 50% !important;
-  transform: translate(-50%, -50%) !important;
+  left: 35% !important;
 }
 
 .friends.widget-expanded .widget {
