@@ -3,6 +3,8 @@ const { useState, useEffect } = React
 function Calendar({ apiUrl, expanded, onToggleExpand }) {
   const [events, setEvents] = useState([])
   const [currentWeekStart, setCurrentWeekStart] = useState(new Date())
+  const [miniCalendarDate, setMiniCalendarDate] = useState(new Date())
+  const [selectedDate, setSelectedDate] = useState(new Date())
 
   useEffect(() => {
 
@@ -81,6 +83,15 @@ function Calendar({ apiUrl, expanded, onToggleExpand }) {
     setCurrentWeekStart(newDate)
   }
 
+  const isToday = (date) => {
+    const today = new Date()
+    return date.toDateString() === today.toDateString()
+  }
+
+  const isSelected = (date) => {
+    return date.toDateString() === selectedDate.toDateString()
+  }
+
   if (expanded) {
     return (
       <div className="calendar-expanded-container">
@@ -143,6 +154,28 @@ function Calendar({ apiUrl, expanded, onToggleExpand }) {
           <h3 className="calendar-mini-title">November 2025</h3>
           <div className="calendar-placeholder-text">
             Mini calendar placeholder
+          <div className="mini-calendar-header">
+            <button className="mini-calendar-nav" onClick={goToPreviousMonth}>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                <path d="M15 18l-6-6 6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+            </button>
+            <h3 className="mini-calendar-month">
+              {miniCalendarDate.toLocaleString('en-US', { month: 'long', year: 'numeric' })}
+            </h3>
+            <button className="mini-calendar-nav" onClick={goToNextMonth}>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                <path d="M9 18l6-6-6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+            </button>
+          </div>
+          
+          <div className="mini-calendar-weekdays">
+            {['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su'].map((day, i) => (
+              <div key={i} className="mini-calendar-weekday">{day}</div>
+            ))}
+          </div>
+          
           </div>
         </div>
 
