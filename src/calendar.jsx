@@ -48,11 +48,11 @@ function Calendar({ apiUrl, expanded, onToggleExpand }) {
     const diff = start.getDate() - day + (day === 0 ? -6 : 1)
     start.setDate(diff)
     
-    for (let i = 0; i < 7; i++) {
+    Array.from({ length: 7 }).forEach((_, i) => {
       const date = new Date(start)
       date.setDate(start.getDate() + i)
       dates.push(date)
-    }
+    })
     return dates
   }
 
@@ -88,7 +88,15 @@ function Calendar({ apiUrl, expanded, onToggleExpand }) {
     if (duration >= 1) return 'event-medium' 
     return 'event-short' 
   }
-    const DAY_START = 5
+
+  const layoutEventsInColumn = (events) => {
+    if (events.length === 0) return []
+
+    const sorted = [...events].sort((a, b) => {
+      return getEventStartTime(a.time) - getEventStartTime(b.time)
+    })
+
+    const DAY_START = 6
 
     const items = sorted.map(event => {
       const duration = getEventDuration(event.time)
@@ -106,18 +114,48 @@ function Calendar({ apiUrl, expanded, onToggleExpand }) {
       if (endShifted <= startShifted) {
         endShifted += 24
       }
+
+      const topPercent = (startShifted / 24) * 100
+      let heightPercent = ((endShifted - startShifted) / 24) * 100
+
+      const minPercent = 2.0
+      if (heightPercent < minPercent) heightPercent = minPercent
+
+      if (topPercent + heightPercent > 100) heightPercent = 100 - topPercent
+
+      return { ...event, heightClass, topPercent, heightPercent }
+    })
+
+    const gapPercent = 3.0
+
+    items.forEach((cur, i) => {
+      const next = items[i + 1]
+      if (!next) return
+      const minTopForNext = cur.topPercent + cur.heightPercent + gapPercent
+      if (next.topPercent < minTopForNext) {
+        next.topPercent = minTopForNext
+
+        if (next.topPercent + next.heightPercent > 100) {
+          next.heightPercent = Math.max(3.0, 100 - next.topPercent)
+        }
+      }
+    })
+
+    return items.map(it => ({ ...it }))
+    }
+
     
       const days = []
     
-    
       const remainingDays = 42 - days.length
-      for (let day = 1; day <= remainingDays; day++) {
+      Array.from({ length: remainingDays }).forEach((_, d) => {
+        const day = d + 1
         days.push({
           day,
           isCurrentMonth: false,
           date: new Date(year, month + 1, day)
         })
-      }
+      })
     
       return days
     }
@@ -304,6 +342,7 @@ function Calendar({ apiUrl, expanded, onToggleExpand }) {
       <div className="calendar-week-grid-compact">
         {weekDates.map((date, index) => {
           const dayEvents = getEventsForDay(date)
+          const layoutedEvents = layoutEventsInColumn(dayEvents)
           return (
             <div key={index} className="calendar-day-column-compact">
               <div className="calendar-day-header-compact">
@@ -311,14 +350,26 @@ function Calendar({ apiUrl, expanded, onToggleExpand }) {
                 <div className="calendar-day-name-compact">{weekDayNames[index]}</div>
               </div>
               <div className="calendar-events-container-compact">
-                {dayEvents.map((event, eventIndex) => (
+                {layoutedEvents.map((event, eventIndex) => (
                   <div 
                     key={eventIndex} 
-                    className="calendar-event-compact"
-                    style={{ backgroundColor: event.color || '#ffd600' }}
+                    className={`calendar-event-compact ${event.heightClass}`}
+                    style={{ 
+                      backgroundColor: event.color || '#ffd600',
+                      top: `${event.topPercent}%`,
+                      height: `${event.heightPercent}%`
+                    }}
                   >
                     <div className="calendar-event-title-compact">{event.title}</div>
-                    <div className="calendar-event-time-compact">{event.time}</div>
+                    {(() => {
+                      const parts = event.time && event.time.includes('-') ? event.time.split('-').map(p => p.trim()) : [event.time]
+                      return (
+                        <div className="calendar-event-time-compact">
+                          <span className="calendar-event-time-compact-line">{parts[0]}{parts[1] ? ' -' : ''}</span>
+                          {parts[1] && <span className="calendar-event-time-compact-line">{parts[1]}</span>}
+                        </div>
+                      )
+                    })()}
                     {event.userId && (
                       <div className="calendar-event-avatar-compact">
                         <div className="calendar-avatar-circle-compact"></div>
