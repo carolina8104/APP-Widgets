@@ -83,44 +83,44 @@ function Calendar({ apiUrl, expanded, onToggleExpand }) {
     setCurrentWeekStart(newDate)
   }
 
-  const getDaysInMonth = (date) => {
-    const year = date.getFullYear()
-    const month = date.getMonth()
-    const firstDay = new Date(year, month, 1)
-    const lastDay = new Date(year, month + 1, 0)
-    const daysInMonth = lastDay.getDate()
-    const startingDayOfWeek = (firstDay.getDay() + 6) % 7
-    
-    const days = []
-    
-    const prevMonthLastDay = new Date(year, month, 0).getDate()
-    for (let i = startingDayOfWeek - 1; i >= 0; i--) {
-      days.push({
-        day: prevMonthLastDay - i,
-        isCurrentMonth: false,
-        date: new Date(year, month - 1, prevMonthLastDay - i)
-      })
-    }
-    
-    for (let day = 1; day <= daysInMonth; day++) {
-      days.push({
-        day,
-        isCurrentMonth: true,
-        date: new Date(year, month, day)
-      })
-    }
-    
-    const remainingDays = 42 - days.length
-    for (let day = 1; day <= remainingDays; day++) {
-      days.push({
-        day,
-        isCurrentMonth: false,
-        date: new Date(year, month + 1, day)
-      })
-    }
-    
-    return days
+  const getEventHeight = (duration) => {
+    if (duration >= 2.5) return 'event-long' 
+    if (duration >= 1) return 'event-medium' 
+    return 'event-short' 
   }
+    const DAY_START = 5
+
+    const items = sorted.map(event => {
+      const duration = getEventDuration(event.time)
+      const heightClass = getEventHeight(duration)
+      let start = getEventStartTime(event.time)
+      let end = start + duration
+      if (end === 0) end = 24
+      if (end > 24) end = 24
+
+      const shift = (h) => ((h - DAY_START + 24) % 24)
+
+      let startShifted = shift(start)
+      let endShifted = shift(end)
+
+      if (endShifted <= startShifted) {
+        endShifted += 24
+      }
+    
+      const days = []
+    
+    
+      const remainingDays = 42 - days.length
+      for (let day = 1; day <= remainingDays; day++) {
+        days.push({
+          day,
+          isCurrentMonth: false,
+          date: new Date(year, month + 1, day)
+        })
+      }
+    
+      return days
+    }
 
   const goToPreviousMonth = () => {
     setMiniCalendarDate(new Date(miniCalendarDate.getFullYear(), miniCalendarDate.getMonth() - 1, 1))
@@ -138,6 +138,30 @@ function Calendar({ apiUrl, expanded, onToggleExpand }) {
   const isSelected = (date) => {
     return date.toDateString() === selectedDate.toDateString()
   }
+
+  const getEventDuration = (timeString) => {
+    if (!timeString.includes('-')) return 1 
+    
+    const [start, end] = timeString.split('-').map(t => t.trim())
+    const parseTime = (t) => {
+      const [hours, minutes] = t.replace('h', '').split(':').map(Number)
+      return hours + (minutes || 0) / 60
+    }
+    
+    const startTime = parseTime(start)
+    let endTime = parseTime(end)
+    
+    if (endTime === 0) endTime = 24
+    
+    return Math.max(endTime - startTime, 0.5) 
+  }
+
+  const getEventStartTime = (timeString) => {
+    const match = timeString.match(/(\d+):(\d+)h/)
+    if (!match) return 0
+    return parseInt(match[1]) + parseInt(match[2]) / 60
+  }
+  
 
   if (expanded) {
     return (
@@ -161,6 +185,7 @@ function Calendar({ apiUrl, expanded, onToggleExpand }) {
           <div className="calendar-week-grid">
             {weekDates.map((date, index) => {
               const dayEvents = getEventsForDay(date)
+              const layoutedEvents = layoutEventsInColumn(dayEvents)
               return (
                 <div key={index} className="calendar-day-column">
                   <div className="calendar-day-header">
@@ -168,14 +193,26 @@ function Calendar({ apiUrl, expanded, onToggleExpand }) {
                     <div className="calendar-day-name">{weekDayNames[index]}</div>
                   </div>
                   <div className="calendar-events-container">
-                    {dayEvents.map((event, eventIndex) => (
+                    {layoutedEvents.map((event, eventIndex) => (
                       <div 
                         key={eventIndex} 
-                        className="calendar-event"
-                        style={{ backgroundColor: event.color || '#ffd600' }}
+                        className={`calendar-event ${event.heightClass}`}
+                          style={{ 
+                            backgroundColor: event.color || '#ffd600',
+                            top: `${event.topPercent}%`,
+                            height: `${event.heightPercent}%`
+                          }}
                       >
                         <div className="calendar-event-title">{event.title}</div>
-                        <div className="calendar-event-time">{event.time}</div>
+                            {(() => {
+                              const parts = event.time && event.time.includes('-') ? event.time.split('-').map(p => p.trim()) : [event.time]
+                              return (
+                                <div className="calendar-event-time">
+                                  <span className="calendar-event-time-line">{parts[0]}{parts[1] ? ' -' : ''}</span>
+                                  {parts[1] && <span className="calendar-event-time-line">{parts[1]}</span>}
+                                </div>
+                              )
+                            })()}
                         {event.userId && (
                           <div className="calendar-event-avatar">
                             <div className="calendar-avatar-circle"></div>
