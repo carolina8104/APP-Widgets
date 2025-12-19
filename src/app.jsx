@@ -14,7 +14,16 @@ function App() {
         const savedUser = localStorage.getItem('currentUser')
         if (savedUser) {
             try {
-                setCurrentUser(JSON.parse(savedUser))
+                const user = JSON.parse(savedUser)
+                setCurrentUser(user)
+                
+                fetch(`${API_URL}/api/users/${user.userId}`)
+                    .then(res => res.json())
+                    .then(data => {
+                        const savedTheme = data?.settings?.Theme || 'theme1'
+                        applyTheme(savedTheme)
+                    })
+                    .catch(err => console.error('Error loading theme:', err))
             } catch (e) {
                 localStorage.removeItem('currentUser')
             }
@@ -24,6 +33,14 @@ function App() {
     const handleLoginSuccess = (userData) => {
         setCurrentUser(userData)
         localStorage.setItem('currentUser', JSON.stringify(userData))
+        
+        fetch(`${API_URL}/api/users/${userData.userId}`)
+            .then(res => res.json())
+            .then(data => {
+                const savedTheme = data?.settings?.Theme || 'theme1'
+                applyTheme(savedTheme)
+            })
+            .catch(err => console.error('Error loading theme:', err))
     }
 
     if (!currentUser) {

@@ -57,10 +57,15 @@ const THEMES = {
 
 function applyTheme(themeId) {
   const theme = THEMES[themeId]
-  if (!theme) return
+  if (!theme) {
+    console.warn('Theme not found:', themeId)
+    return
+  }
   
   const root = document.documentElement
   Object.entries(theme.colors).forEach(([property, value]) => {
-    root.style.setProperty(property, value)
+    root.style.setProperty(property, value, 'important')
   })
+  
+  localStorage.setItem('selectedTheme', themeId)
 }
