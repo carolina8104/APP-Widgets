@@ -99,11 +99,11 @@ function Notifications({ userId, apiUrl, isMac = false }) {
                   <div key={notif._id} className="notification-item">
                     <div className="notification-content">
                       <div className="notification-avatar">
-                        {notif.fromUser.photos && notif.fromUser.photos.length > 0 ? (
+                        {notif.fromUser.settings?.profilePhoto ? (
                           <img 
-                            src={notif.fromUser.photos[0].startsWith('/') 
-                              ? `${apiUrl}${notif.fromUser.photos[0]}` 
-                              : notif.fromUser.photos[0]
+                            src={notif.fromUser.settings.profilePhoto.startsWith('/') 
+                              ? `${apiUrl}${notif.fromUser.settings.profilePhoto}` 
+                              : notif.fromUser.settings.profilePhoto
                             }
                             alt={`${notif.fromUser.username} avatar`} 
                           />

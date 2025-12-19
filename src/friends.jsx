@@ -167,7 +167,7 @@ function Friends({ userId, apiUrl, expanded, onToggleExpand }) {
 
           {userValidation && userValidation.exists && (
             (() => {
-              const photoPathRaw = userValidation.photos && userValidation.photos.length > 0 ? userValidation.photos[0] : null
+              const photoPathRaw = userValidation.settings?.profilePhoto || null
               let photoUrl = null
               if (photoPathRaw) {
                 if (photoPathRaw.startsWith('http://') || photoPathRaw.startsWith('https://')) {
@@ -212,7 +212,7 @@ function Friends({ userId, apiUrl, expanded, onToggleExpand }) {
   }
 
   if (viewMode === 'progress' && selectedFriend) {
-    const photoPathRaw = selectedFriend.photos && selectedFriend.photos.length > 0 ? selectedFriend.photos[0] : null
+    const photoPathRaw = selectedFriend.settings?.profilePhoto || null
     let photoUrl = null
     if (photoPathRaw) {
       if (photoPathRaw.startsWith('http://') || photoPathRaw.startsWith('https://')) {
@@ -287,7 +287,7 @@ function Friends({ userId, apiUrl, expanded, onToggleExpand }) {
           <div className="fw-loading">Loading...</div>
         ) : filteredFriends.length > 0 ? (
           filteredFriends.map((f, i) => {
-            const photoPathRaw = f.photos && f.photos.length > 0 ? f.photos[0] : null
+            const photoPathRaw = f.settings?.profilePhoto || null
             let photoUrl = null
             if (photoPathRaw) {
               if (photoPathRaw.startsWith('http://') || photoPathRaw.startsWith('https://')) {
