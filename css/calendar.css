@@ -118,14 +118,14 @@
 }
 
 .calendar-placeholder-text {
-  color: var(--bg);
+  color: var(--background);
   opacity: 0.7;
   font-size: 0.9rem;
   margin-top: 0.5rem;
 }
 
 .calendar-mini-title {
-  color: var(--bg);
+  color: var(--background);
   font-size: 1.1rem;
   margin: 0 0 1rem 0;
   font-weight: 600;
@@ -203,13 +203,6 @@
   line-height: 1.2;
 }
 
-.calendar-event-title {
-  font-size: 0.85rem;
-  font-weight: 700;
-  color: var(--bg);
-  margin-bottom: 0.25rem;
-  line-height: 1.2;
-}
 .calendar-event-time {
   font-size: 0.7rem;
   color: rgba(0, 0, 0, 0.6);
@@ -256,7 +249,7 @@
 }
 
 .calendar-title-compact {
-  color: var(--text-accent-2);
+  color: var(--color-primary-2);
   margin: 0;
   font-size: 0.95rem;
   font-weight: 700;
@@ -312,7 +305,7 @@
 .calendar-day-number-compact {
   font-size: 1rem;
   font-weight: 800;
-  color: var(--bg);
+  color: var(--background);
   line-height: 1;
 }
 
@@ -360,7 +353,7 @@
 .calendar-event-title-compact {
   font-size: 0.7rem;
   font-weight: 700;
-  color: var(--bg);
+  color: var(--background);
   margin-bottom: 0.2rem;
   line-height: 1.1;
   word-wrap: break-word;
@@ -406,16 +399,54 @@
   justify-content: center;
   cursor: pointer;
   transition: all 0.2s ease;
-  color: var(--bg);
+  color: var(--background);
 }
 
 .mini-calendar-nav:hover {
   background: rgba(0, 0, 0, 0.15);
   transform: scale(1.05);
 }
+
+.mini-calendar-month {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--background);
+  margin: 0;
+}
+
 .mini-calendar-weekdays {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
   gap: 0.3rem;
   margin-bottom: 0.5rem;
+}
+
+.mini-calendar-weekday {
+  text-align: center;
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: var(--background);
+  opacity: 0.7;
+  padding: 0.3rem 0;
+}
+
+.mini-calendar-days {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 0.3rem;
+  flex: 1;
+}
+
+.mini-calendar-day {
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.5rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  color: var(--background);
+  background: rgba(255, 255, 255, 0.2);
 }

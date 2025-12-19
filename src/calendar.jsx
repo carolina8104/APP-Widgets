@@ -83,6 +83,44 @@ function Calendar({ apiUrl, expanded, onToggleExpand }) {
     setCurrentWeekStart(newDate)
   }
 
+  const getDaysInMonth = (date) => {
+    const year = date.getFullYear()
+    const month = date.getMonth()
+    const firstDay = new Date(year, month, 1)
+    const lastDay = new Date(year, month + 1, 0)
+    const daysInMonth = lastDay.getDate()
+    const startingDayOfWeek = (firstDay.getDay() + 6) % 7
+    
+    const days = []
+    
+    const prevMonthLastDay = new Date(year, month, 0).getDate()
+    for (let i = startingDayOfWeek - 1; i >= 0; i--) {
+      days.push({
+        day: prevMonthLastDay - i,
+        isCurrentMonth: false,
+        date: new Date(year, month - 1, prevMonthLastDay - i)
+      })
+    }
+    
+    for (let day = 1; day <= daysInMonth; day++) {
+      days.push({
+        day,
+        isCurrentMonth: true,
+        date: new Date(year, month, day)
+      })
+    }
+    
+    const remainingDays = 42 - days.length
+    for (let day = 1; day <= remainingDays; day++) {
+      days.push({
+        day,
+        isCurrentMonth: false,
+        date: new Date(year, month + 1, day)
+      })
+    }
+    
+    return days
+  }
   const isToday = (date) => {
     const today = new Date()
     return date.toDateString() === today.toDateString()
@@ -151,9 +189,6 @@ function Calendar({ apiUrl, expanded, onToggleExpand }) {
         </div>
 
         <div className="calendar-mini-widget">
-          <h3 className="calendar-mini-title">November 2025</h3>
-          <div className="calendar-placeholder-text">
-            Mini calendar placeholder
           <div className="mini-calendar-header">
             <button className="mini-calendar-nav" onClick={goToPreviousMonth}>
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
@@ -176,6 +211,20 @@ function Calendar({ apiUrl, expanded, onToggleExpand }) {
             ))}
           </div>
           
+          <div className="mini-calendar-days">
+            {getDaysInMonth(miniCalendarDate).map((dayObj, i) => (
+              <div
+                key={i}
+                className={`mini-calendar-day ${
+                  !dayObj.isCurrentMonth ? 'other-month' : ''
+                } ${isToday(dayObj.date) ? 'today' : ''} ${
+                  isSelected(dayObj.date) ? 'selected' : ''
+                }`}
+                onClick={() => setSelectedDate(dayObj.date)}
+              >
+                {dayObj.day}
+              </div>
+            ))}
           </div>
         </div>
 
