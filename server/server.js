@@ -290,6 +290,28 @@ async function handleApi(message, response) {
     return sendJson(response, 200, User)
   }
 
+  const userSettingsMatch = url.pathname.match(/^\/api\/users\/([a-zA-Z0-9\-_]+)\/settings$/)
+  if (userSettingsMatch && message.method === 'PUT') {
+    const userId = userSettingsMatch[1]
+    const body = await parseBody(message)
+    const usersCol = getCollection('users')
+    
+    const updateFields = {}
+    if (body.Theme !== undefined) updateFields['settings.Theme'] = body.Theme
+    if (body.appearOnline !== undefined) updateFields['settings.appearOnline'] = body.appearOnline
+    
+    const result = await usersCol.updateOne(
+      { _id: userId },
+      { $set: updateFields }
+    )
+    
+    if (result.matchedCount === 0) {
+      return sendJson(response, 404, { error: 'User not found' })
+    }
+    
+    return sendJson(response, 200, { success: true, updated: updateFields })
+  }
+
   if (url.pathname === '/api/stats' && message.method === 'GET') {
     const userId = url.searchParams.get('userId')
     if (!userId) {
