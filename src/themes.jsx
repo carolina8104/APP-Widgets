@@ -10,9 +10,9 @@ const THEMES = {
       '--color-neutral-2': '#242424',
 
       '--text-default': '#0F0F0F',
-      '--text-accent-1': 'var(--color-primary-1)',
-      '--text-accent-2': 'var(--color-primary-2)',
-      '--text-accent-3': 'var(--color-primary-3)',
+      '--text-accent-1': '#0F0F0F',
+      '--text-accent-2': '#0F0F0F',
+      '--text-accent-3': '#0F0F0F',
 
     }
   },
@@ -26,9 +26,9 @@ const THEMES = {
       '--color-neutral-2': '#242424',
 
       '--text-default': '#0F0F0F',
-      '--text-accent-1': 'var(--color-primary-1)',
-      '--text-accent-2': 'var(--color-primary-2)',
-      '--text-accent-3': 'var(--color-primary-3)',
+      '--text-accent-1': '#FFFFFF',
+      '--text-accent-2': '#242424',
+      '--text-accent-3': '#FFFFFF',
 
     }
   },
@@ -66,17 +66,18 @@ const THEMES = {
   },
   theme5: {
     colors: {
-      '--background': '#0F0F0F',
+      '--background': '#c3bdbdff',
       '--color-primary-1': '#D71A21',
-      '--color-primary-2': '#FF6B9D',
-      '--color-primary-3': '#3B393E',
+      '--color-primary-2': '#dbd9d9ff',
+      '--color-primary-3': '#d6d6d6ff',
       '--color-neutral-1': '#FFFFFF',
       '--color-neutral-2': '#242424',
 
-      '--text-default': '#0F0F0F',
-      '--text-accent-1': 'var(--color-primary-1)',
-      '--text-accent-2': 'var(--color-primary-2)',
-      '--text-accent-3': 'var(--color-primary-3)',
+      '--text-default': '#ffffffff',
+      '--text-inverse': '#000000ff',
+      '--text-accent-1': '#000000ff',
+      '--text-accent-2': '#1d1b1bff',
+      '--text-accent-3': '#D71A21',
     }
   },
   theme6: {

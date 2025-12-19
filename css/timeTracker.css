@@ -47,7 +47,7 @@
     grid-row: 1;
     font-size: clamp(1rem, 2.5vw, 1.25rem);
     font-weight: 800;
-    color: var(--text-accent-1);
+    color: var(--color-primary-1);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -87,6 +87,10 @@
 
 svg {
     scale: 1.7;
+}
+
+.timeTracker .expand-arrow svg {
+    color: var(--color-primary-1);
 }
 
 .tt-circle:hover {

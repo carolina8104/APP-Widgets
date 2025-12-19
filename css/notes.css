@@ -16,7 +16,7 @@
 
 .notes-plus-btn {
   background: var(--color-primary-2);
-  color: var(--text-default);
+  color: var(--text-accent-2);
   border: none;
   border-radius: 50%;
   font-size: 1.5em;
@@ -89,7 +89,7 @@
   cursor: pointer;
   transition: all 0.2s ease;
   background: var(--background);
-  color: var(--text-accent-2);
+  color:var(--color-primary-2);
 }
 
 .regular-button:hover {
@@ -130,7 +130,7 @@
   width: 95%;
   height: 59vh;
   min-height: -1vh;
-  background: #3e3e3e29;
+  background: var(--color-neutral-3);
   border: none;
   padding: 0.7em 1em;
   border-radius: 10px;
@@ -143,7 +143,7 @@
   overflow-y: auto;
   word-break: break-word;
   white-space: pre-wrap;
-  background: #3e3e3e29;
+  background: var(--color-neutral-3);
   border-radius: 10px;
   padding: 0.7em 1em;
   margin: 1vh 0 1vh 0;
@@ -177,7 +177,7 @@
 .all-notes-card {
   min-height: 22vh;
   max-height: 32vh;
-  background: var(--color-neutral-2);
+  background: var(--color-neutral-3);
   border-radius: 14px;
   padding: 1.4vh 1.6vh;
   display: flex;
@@ -249,7 +249,7 @@
 textarea::-webkit-scrollbar-thumb:hover,
 .notes-open-mode p::-webkit-scrollbar-thumb:hover,
 .notes-grid-all::-webkit-scrollbar-thumb:hover {
-  background: var(--color-neutral-2);
+  background: var(--color-neutral-3);
 }
 
 textarea,
@@ -264,13 +264,13 @@ textarea,
   font-size: large;
   width: 100%;
   background: transparent;
-  color: var(--text-default);
+  color: var(--text-accent-2);
   border: none;
   margin-left: 0.5vh;
 }
 
 .detail-date {
-  color: var(--text-default);
+  color: var(--text-accent-2);
   font-size: small;
   line-height: 1.2;
 }
@@ -314,7 +314,9 @@ div textarea::placeholder {
 
 
 
-
+.notes p, h2, h3, svg{
+    color: var(--text-accent-2);
+}
 
 
 

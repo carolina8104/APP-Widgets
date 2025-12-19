@@ -152,7 +152,7 @@ function Progress({ userId, apiUrl, expanded, onToggleExpand, hideExpandArrow = 
     >
       <div className="progress-grid">
         <h2>Progress</h2>
-        {!hideExpandArrow && <ExpandArrow onClick={onToggleExpand} expanded={expanded} color="var(--background)" />}
+        {!hideExpandArrow && <ExpandArrow onClick={onToggleExpand} expanded={expanded}/>}
         <div className="progress-content">
           {!expanded && (
             <>
@@ -195,7 +195,7 @@ function Progress({ userId, apiUrl, expanded, onToggleExpand, hideExpandArrow = 
                           width="10"
                           height={blackBarHeight}
                           rx="5"
-                          fill="var(--background)"
+                          fill="var(--text-accent-3)"
                         />
                         <text
                           x={x + 5}
@@ -203,7 +203,7 @@ function Progress({ userId, apiUrl, expanded, onToggleExpand, hideExpandArrow = 
                           textAnchor="middle"
                           fontSize="8"
                           fontWeight="500"
-                          fill="var(--background)"
+                          fill="var(--text-accent-3)"
                         >
                           {day}
                         </text>
@@ -260,7 +260,7 @@ function Progress({ userId, apiUrl, expanded, onToggleExpand, hideExpandArrow = 
                                   width="10"
                                   height={blackBarHeight}
                                   rx="5"
-                                  fill="var(--background)"
+                                  fill="var(--text-accent-3)"
                                 />
                                 <text
                                   x={x + 5}
@@ -268,7 +268,7 @@ function Progress({ userId, apiUrl, expanded, onToggleExpand, hideExpandArrow = 
                                   textAnchor="middle"
                                   fontSize="8"
                                   fontWeight="500"
-                                  fill="var(--background)"
+                                  fill="var(--text-accent-3)"
                                 >
                                   {day}
                                 </text>
@@ -328,8 +328,8 @@ function Progress({ userId, apiUrl, expanded, onToggleExpand, hideExpandArrow = 
                       })() : (
                         <>
                           <circle cx="100" cy="100" r="90" fill="rgba(15, 15, 15, 0.1)" />
-                          <circle cx="100" cy="100" r="60" fill="var(--background)" fillOpacity="0.05" />
-                          <text x="100" y="110" textAnchor="middle" fontSize="0.95rem" fontWeight="500" fill="var(--background)" opacity="0.7">
+                          <circle cx="100" cy="100" r="60" fill="var(--text-accent-3)" fillOpacity="0.05" />
+                          <text x="100" y="110" textAnchor="middle" fontSize="0.95rem" fontWeight="500" fill="var(--text-accent-3)" opacity="0.7">
                             No calendar events
                           </text>
                         </>
