@@ -5,6 +5,7 @@
     gap: 0.6rem 1rem;
     width: 100%;
     align-items: center;
+    position: relative;
 }
 
 .tt-blocks {
@@ -101,6 +102,8 @@ svg {
     grid-column: 2;
     grid-row: 1;
     justify-self: end;
+    position: relative;
+    z-index: 10;
 }
 
 .tt-container.tt-expanded .tt-block span {
@@ -127,20 +130,22 @@ svg {
 }
 
 .timeTracker.widget-expanded {
-    left: 25% !important;
+    left: 50% !important;
     top: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    max-width: 600px !important;
 }
 
 @media (max-width: 640px) {
     .tt-grid {
-        grid-template-columns: 1fr;
+        grid-template-columns: 1fr auto;
         grid-template-rows: auto auto auto;
     }
 
     .tt-title { grid-column: 1; grid-row: 1; }
-    .tt-blocks { grid-column: 1; grid-row: 2; }
-    .tt-btn-row { grid-column: 1; grid-row: 3; justify-self: stretch; }
-    .tt-grid .expand-arrow { grid-column: 1; grid-row: 1; justify-self: start; }
+    .tt-blocks { grid-column: 1 / -1; grid-row: 2; }
+    .tt-btn-row { grid-column: 1 / -1; grid-row: 3; justify-self: stretch; }
+    .tt-grid .expand-arrow { grid-column: 2; grid-row: 1; justify-self: end; }
 
     .tt-btn-row { justify-content: space-between; }
 
