@@ -1,4 +1,4 @@
-const { useState, useEffect } = React
+const { useState, useEffect, useRef } = React
 
 function Friends({ userId, apiUrl, expanded, onToggleExpand }) {
   const [friends, setFriends] = useState([])
@@ -9,6 +9,22 @@ function Friends({ userId, apiUrl, expanded, onToggleExpand }) {
   const [addFriendUsername, setAddFriendUsername] = useState('')
   const [userValidation, setUserValidation] = useState(null)
   const [sendingRequest, setSendingRequest] = useState(false)
+  const rootRef = useRef(null)
+
+  useEffect(() => {
+    const el = rootRef.current
+    const widget = el && el.closest ? el.closest('.widget') : null
+    if (widget) {
+      if (expanded && viewMode === 'add-friend') {
+        widget.classList.add('friends-add-expanded')
+      } else {
+        widget.classList.remove('friends-add-expanded')
+      }
+    }
+    return () => {
+      if (widget) widget.classList.remove('friends-add-expanded')
+    }
+  }, [expanded, viewMode])
 
   useEffect(() => {
     fetch(`${apiUrl}/api/users/${userId}/friends`)
@@ -100,7 +116,7 @@ function Friends({ userId, apiUrl, expanded, onToggleExpand }) {
 
   if (viewMode === 'add-friend') {
     return (
-      <div className="friends-widget friends-add-view" role="region" aria-label="Add Friend">
+      <div ref={rootRef} className="friends-widget friends-add-view" role="region" aria-label="Add Friend">
         <div className="fw-header">
           <h2 className="fw-title">Add Friend</h2>
           <ExpandArrow 
@@ -208,7 +224,7 @@ function Friends({ userId, apiUrl, expanded, onToggleExpand }) {
     }
     
     return (
-      <div className="friends-widget friends-progress-view" role="region" aria-label="Friend Progress">
+      <div ref={rootRef} className="friends-widget friends-progress-view" role="region" aria-label="Friend Progress">
         <div className="fw-header fw-progress-header">
           {photoUrl ? (
             <div className="fw-avatar fw-avatar-large">
@@ -234,7 +250,7 @@ function Friends({ userId, apiUrl, expanded, onToggleExpand }) {
   }
 
   return (
-    <div className="friends-widget" role="region" aria-label="Friends">
+    <div ref={rootRef} className="friends-widget" role="region" aria-label="Friends">
       <div className="fw-header">
         <h2 className="fw-title">Friends</h2>   
 
