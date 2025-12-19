@@ -1,10 +1,11 @@
-const { useState, useEffect } = React
+const { useState, useEffect, useRef } = React
 
 function Profile({ userId, expanded, onToggleExpand, onLogout }) {
   const [userData, setUserData] = useState(null)
   const [loading, setLoading] = useState(true)
   const [selectedTheme, setSelectedTheme] = useState('')
   const [appearOnline, setAppearOnline] = useState(true)
+  const fileInputRef = useRef(null)
 
   useEffect(() => {
     if (!userId) return
@@ -12,48 +13,64 @@ function Profile({ userId, expanded, onToggleExpand, onLogout }) {
     fetch(`http://localhost:3001/api/users/${userId}`)
       .then(res => res.json())
       .then(data => {
-        console.log('User data received:', data)
-        console.log('Themes unlocked:', data?.themesUnlocked)
         setUserData(data)
         setSelectedTheme(data?.settings?.Theme || 'Night')
         setAppearOnline(data?.settings?.appearOnline ?? true)
         setLoading(false)
       })
       .catch(err => {
-        console.error('Error fetching user data:', err)
         setLoading(false)
       })
   }, [userId])
 
   const handleThemeChange = (theme) => {
     setSelectedTheme(theme)
-    
     fetch(`http://localhost:3001/api/users/${userId}/settings`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ Theme: theme })
     })
       .then(res => res.json())
-      .then(() => {
-        console.log('Theme updated successfully')
-      })
       .catch(err => console.error('Error updating theme:', err))
   }
 
   const handleAppearOnlineToggle = () => {
     const newValue = !appearOnline
     setAppearOnline(newValue)
-    
     fetch(`http://localhost:3001/api/users/${userId}/settings`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ appearOnline: newValue })
     })
       .then(res => res.json())
-      .then(() => {
-        console.log('Appear online updated successfully')
-      })
       .catch(err => console.error('Error updating appear online:', err))
+  }
+
+  const handlePhotoUpload = async (event) => {
+    const file = event.target.files[0]
+    if (!file) return
+
+    const formData = new FormData()
+    formData.append('photo', file)
+
+    try {
+      const response = await fetch(`http://localhost:3001/api/users/${userId}/photo`, {
+        method: 'POST',
+        body: formData
+      })
+
+      const data = await response.json()      
+      if (response.ok) {
+        setUserData(prev => ({
+          ...prev,
+          photos: data.photos
+        }))
+      } else {
+        alert('Error uploading photo: ' + data.error)
+      }
+    } catch (err) {
+      alert('Error uploading photo: ' + err.message)
+    }
   }
 
   const getPhotoUrl = (photoPath) => {
@@ -93,16 +110,39 @@ function Profile({ userId, expanded, onToggleExpand, onLogout }) {
           
           <div className="profile-info-card">
             <div className="profile-avatar-container">
+              <input 
+                type="file" 
+                ref={fileInputRef}
+                onChange={handlePhotoUpload}
+                accept="image/png,image/jpeg,image/jpg,image/webp,image/gif"
+                style={{ display: 'none' }}
+              />
               {photoUrl ? (
-                <div className="profile-avatar">
+                <div 
+                  className="profile-avatar profile-avatar-editable"
+                  onClick={() => fileInputRef.current?.click()}
+                >
                   <img src={photoUrl} alt={`${userData?.name} avatar`} />
+                  <div className="profile-avatar-overlay">
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none">
+                      <path d="M12 5v14M5 12h14" stroke="white" strokeWidth="2.5" strokeLinecap="round"/>
+                    </svg>
+                  </div>
                 </div>
               ) : (
-                <div className="profile-avatar profile-avatar-placeholder">
+                <div 
+                  className="profile-avatar profile-avatar-placeholder profile-avatar-editable"
+                  onClick={() => fileInputRef.current?.click()}
+                >
                   <svg width="60" height="60" viewBox="0 0 24 24" fill="none">
                     <circle cx="12" cy="8" r="4" stroke="var(--bg)" strokeWidth="2" />
                     <path d="M6 21c0-3.866 2.686-7 6-7s6 3.134 6 7" stroke="var(--bg)" strokeWidth="2" strokeLinecap="round" />
                   </svg>
+                  <div className="profile-avatar-overlay">
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none">
+                      <path d="M12 5v14M5 12h14" stroke="white" strokeWidth="2.5" strokeLinecap="round"/>
+                    </svg>
+                  </div>
                 </div>
               )}
             </div>
