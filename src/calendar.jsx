@@ -121,6 +121,15 @@ function Calendar({ apiUrl, expanded, onToggleExpand }) {
     
     return days
   }
+
+  const goToPreviousMonth = () => {
+    setMiniCalendarDate(new Date(miniCalendarDate.getFullYear(), miniCalendarDate.getMonth() - 1, 1))
+  }
+
+  const goToNextMonth = () => {
+    setMiniCalendarDate(new Date(miniCalendarDate.getFullYear(), miniCalendarDate.getMonth() + 1, 1))
+  }
+
   const isToday = (date) => {
     const today = new Date()
     return date.toDateString() === today.toDateString()

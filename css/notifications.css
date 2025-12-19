@@ -16,6 +16,7 @@
   transition: background-color 0.2s;
 }
 .notifications-bell svg {
+    color: var(--text-primary, --text-inverse);
     scale: 1;
 }
 
