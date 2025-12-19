@@ -1,4 +1,4 @@
-const { useState, useEffect } = React
+const { useState, useEffect, useRef } = React
 
 
 const API_URL = 'http://localhost:3001' //10.17.0.27; //localhost:3001
@@ -7,6 +7,7 @@ function App() {
     const [currentUser, setCurrentUser] = useState(null)
     const [expandedWidget, setExpandedWidget] = useState(null)
     const [hiddenWidgets, setHiddenWidgets] = useState([])
+    const onFriendAcceptedRef = useRef(null)
 
     const allWidgets = ['friends', 'timeTracker', 'notes', 'tasks', 'photo', 'progress', 'calendar']
 
@@ -92,6 +93,7 @@ function App() {
                 userId={currentUser.userId} 
                 onProfileClick={handleProfileClick}
                 onLogout={handleLogout}
+                onFriendAcceptedRef={onFriendAcceptedRef}
             />
             <div 
                 className="dashboard-grid"
@@ -110,6 +112,7 @@ function App() {
                         apiUrl={API_URL}
                         expanded={expandedWidget === 'friends'}
                         onToggleExpand={() => toggleWidget('friends')}
+                        onFriendAccepted={onFriendAcceptedRef}
                     />
                 } />
             </div>

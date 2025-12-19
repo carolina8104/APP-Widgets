@@ -1,7 +1,7 @@
 const { useEffect, useState } = React
 
 
-function TopBar({apiUrl, userId, onLogout, onProfileClick }) {
+function TopBar({apiUrl, userId, onLogout, onProfileClick, onFriendAcceptedRef }) {
 
   const [isMac, setIsMac] = useState(false)
 
@@ -33,7 +33,7 @@ function TopBar({apiUrl, userId, onLogout, onProfileClick }) {
 
     ReactDOM.render(
       <>
-         <Notifications apiUrl={apiUrl} userId={userId} isMac={isMac} />
+         <Notifications apiUrl={apiUrl} userId={userId} isMac={isMac} onFriendAcceptedRef={onFriendAcceptedRef} />
         <button 
           className="top-bar-profile" 
           onClick={onProfileClick}

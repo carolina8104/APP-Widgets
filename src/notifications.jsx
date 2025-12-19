@@ -1,6 +1,6 @@
 const { useState, useEffect } = React
 
-function Notifications({ userId, apiUrl, isMac = false }) {
+function Notifications({ userId, apiUrl, isMac = false, onFriendAcceptedRef }) {
   const [isOpen, setIsOpen] = useState(false)
   const [notifications, setNotifications] = useState([])
   const [loading, setLoading] = useState(false)
@@ -38,6 +38,9 @@ function Notifications({ userId, apiUrl, isMac = false }) {
       const data = await res.json()
       if (!data.error) {
         await fetchNotifications()
+        if (onFriendAcceptedRef?.current) {
+          onFriendAcceptedRef.current()
+        }
       }
     } catch (err) {
       console.error('Error accepting request:', err)
@@ -99,11 +102,11 @@ function Notifications({ userId, apiUrl, isMac = false }) {
                   <div key={notif._id} className="notification-item">
                     <div className="notification-content">
                       <div className="notification-avatar">
-                        {notif.fromUser.photos && notif.fromUser.photos.length > 0 ? (
+                        {notif.fromUser.settings?.profilePhoto ? (
                           <img 
-                            src={notif.fromUser.photos[0].startsWith('/') 
-                              ? `${apiUrl}${notif.fromUser.photos[0]}` 
-                              : notif.fromUser.photos[0]
+                            src={notif.fromUser.settings.profilePhoto.startsWith('/') 
+                              ? `${apiUrl}${notif.fromUser.settings.profilePhoto}` 
+                              : notif.fromUser.settings.profilePhoto
                             }
                             alt={`${notif.fromUser.username} avatar`} 
                           />

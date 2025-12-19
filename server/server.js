@@ -232,7 +232,8 @@ async function handleApi(message, response) {
         level: friend.level,
         email: friend.email,
         xp: friend.xp,
-        photos: friend.photos || []
+        photos: friend.photos || [],
+        settings: friend.settings || {}
       }))
       
       return sendJson(response, 200, friendsData)
@@ -263,7 +264,8 @@ async function handleApi(message, response) {
       userId: user._id,
       username: user.username,
       level: user.level,
-      photos: user.photos || []
+      photos: user.photos || [],
+      settings: user.settings || {}
     })
   }
 
@@ -382,7 +384,8 @@ async function handleApi(message, response) {
             _id: fromUser._id,
             username: fromUser.username,
             level: fromUser.level,
-            photos: fromUser.photos || []
+            photos: fromUser.photos || [],
+            settings: fromUser.settings || {}
           },
           createdAt: request.createdAt
         }
@@ -560,6 +563,98 @@ async function handleApi(message, response) {
           )
           
           sendJson(response, 200, { profilePhoto: photoUrl })
+          resolve()
+        } catch (err) {
+          sendJson(response, 500, { error: err.message })
+          resolve()
+        }
+      })
+    })
+  }
+
+  const photosMatch = url.pathname.match(/^\/api\/users\/([a-zA-Z0-9\-_]+)\/photos$/)
+  if (photosMatch && message.method === 'POST') {
+    const userId = photosMatch[1]
+    const usersCol = getCollection('users')
+
+    return new Promise((resolve) => {
+      const chunks = []
+      message.on('data', chunk => chunks.push(chunk))
+      
+      message.on('end', async () => {
+        try {
+          const buffer = Buffer.concat(chunks)          
+          
+          const contentType = message.headers['content-type']          
+          const boundary = contentType?.split('boundary=')[1]
+          if (!boundary) {
+            sendJson(response, 400, { error: 'No boundary found' })
+            return resolve()
+          }
+
+          const boundaryBuffer = Buffer.from(`--${boundary}`)
+          const parts = []
+          let start = 0
+          
+          while (start < buffer.length) {
+            const boundaryIndex = buffer.indexOf(boundaryBuffer, start)
+            if (boundaryIndex === -1) break
+            
+            const nextBoundaryIndex = buffer.indexOf(boundaryBuffer, boundaryIndex + boundaryBuffer.length)
+            if (nextBoundaryIndex === -1) break
+            
+            parts.push(buffer.slice(boundaryIndex + boundaryBuffer.length, nextBoundaryIndex))
+            start = nextBoundaryIndex
+          }
+
+          let imageData = null
+          let filename = 'photo.jpg'
+
+          for (const part of parts) {
+            const partStr = part.toString('utf8', 0, Math.min(500, part.length))
+            
+            if (partStr.includes('Content-Type: image')) {
+              const filenameMatch = partStr.match(/filename="(.+?)"/)
+              if (filenameMatch) {
+                filename = filenameMatch[1]
+              }
+              
+              const headerEnd = part.indexOf(Buffer.from('\r\n\r\n'))
+              if (headerEnd !== -1) {
+                imageData = part.slice(headerEnd + 4, part.length - 2)
+              }
+              break
+            }
+          }
+
+          if (!imageData || imageData.length === 0) {
+            sendJson(response, 400, { error: 'No image data found' })
+            return resolve()
+          }
+
+          const uploadsBaseDir = path.join(__dirname, '..', 'uploads')
+          const userUploadsDir = path.join(uploadsBaseDir, userId)
+                    
+          if (!fs.existsSync(userUploadsDir)) {
+            fs.mkdirSync(userUploadsDir, { recursive: true })
+          }
+
+          const ext = path.extname(filename) || '.jpg'
+          const photoFilename = `photo_${Date.now()}${ext}`
+          const filepath = path.join(userUploadsDir, photoFilename)
+
+          fs.writeFileSync(filepath, imageData)
+
+          const photoUrl = `/uploads/${userId}/${photoFilename}`
+          
+          const result = await usersCol.updateOne(
+            { _id: userId },
+            { $push: { photos: photoUrl } }
+          )
+          
+          const user = await usersCol.findOne({ _id: userId })
+          
+          sendJson(response, 200, { photos: user.photos || [] })
           resolve()
         } catch (err) {
           sendJson(response, 500, { error: err.message })
