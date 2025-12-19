@@ -97,7 +97,7 @@ function Calendar({ apiUrl, expanded, onToggleExpand }) {
                 <path d="M9 18l6-6-6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
               </svg>
             </button>
-            <ExpandArrow onClick={onToggleExpand} expanded={expanded} color={'#fff'} />
+            <ExpandArrow onClick={onToggleExpand} expanded={expanded} color={'var(--background)'} />
           </div>
 
           <div className="calendar-week-grid">
@@ -170,7 +170,7 @@ function Calendar({ apiUrl, expanded, onToggleExpand }) {
             <path d="M9 18l6-6-6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
           </svg>
         </button>
-        <ExpandArrow onClick={onToggleExpand} expanded={expanded} color={'#fff'} />
+        <ExpandArrow onClick={onToggleExpand} expanded={expanded} color={'var(--background)'} />
       </div>
 
       <div className="calendar-week-grid-compact">
