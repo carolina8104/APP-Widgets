@@ -14,8 +14,10 @@ function Profile({ userId, expanded, onToggleExpand, onLogout }) {
       .then(res => res.json())
       .then(data => {
         setUserData(data)
-        setSelectedTheme(data?.settings?.Theme || 'Night')
+        const savedTheme = data?.settings?.Theme || 'theme1'
+        setSelectedTheme(savedTheme)
         setAppearOnline(data?.settings?.appearOnline ?? true)
+        applyTheme(savedTheme)
         setLoading(false)
       })
       .catch(err => {
@@ -25,6 +27,7 @@ function Profile({ userId, expanded, onToggleExpand, onLogout }) {
 
   const handleThemeChange = (theme) => {
     setSelectedTheme(theme)
+    applyTheme(theme)
     fetch(`http://localhost:3001/api/users/${userId}/settings`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
