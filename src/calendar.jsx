@@ -133,7 +133,7 @@ function Calendar({ apiUrl, expanded, onToggleExpand }) {
         </div>
 
         <div className="calendar-add-task-widget">
-          <h3 style={{color: 'var(--bg)', margin: 0, fontSize: '1rem', fontWeight: 600}}>Add new task</h3>
+          <h3 style={{color: 'var(--text-default)', margin: 0, fontSize: '1rem', fontWeight: 600}}>Add new task</h3>
           <button className="calendar-add-task-btn">
             <span>+</span>
           </button>

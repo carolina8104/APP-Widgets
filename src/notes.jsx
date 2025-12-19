@@ -137,7 +137,7 @@ function Notes({ userId, apiUrl, expanded, onToggleExpand }) {
             className="note-name-input note-title-large"
             style={{ marginLeft: '1vw', flex: 1 }}
           />
-          <ExpandArrow onClick={() => { setViewMode('list'); onToggleExpand(); }} expanded={true} color="var(--bg)" />
+          <ExpandArrow onClick={() => { setViewMode('list'); onToggleExpand(); }} expanded={true} color="var(--background)" />
         </div>
         <div>
           <textarea
@@ -159,7 +159,7 @@ function Notes({ userId, apiUrl, expanded, onToggleExpand }) {
       <div className="notes-container notes-open-mode">
         <div className="notes-open-header">
           <h2>{selectedNote.title}</h2>
-          <ExpandArrow onClick={() => { setViewMode('list'); onToggleExpand(); }} expanded={true} color="var(--bg)" />
+          <ExpandArrow onClick={() => { setViewMode('list'); onToggleExpand(); }} expanded={true} color="var(--background)" />
         </div>
         <div>
           <small className="detail-date">
@@ -199,7 +199,7 @@ function Notes({ userId, apiUrl, expanded, onToggleExpand }) {
             className="note-name-input note-title-large"
             style={{ marginLeft: '1vw', flex: 1 }}
           />
-          <ExpandArrow onClick={() => { setViewMode('list'); onToggleExpand(); }} expanded={true} color="var(--bg)" />
+          <ExpandArrow onClick={() => { setViewMode('list'); onToggleExpand(); }} expanded={true} color="var(--background)" />
         </div>
         <div>
           <small className="detail-date">
@@ -231,7 +231,7 @@ function Notes({ userId, apiUrl, expanded, onToggleExpand }) {
       <div className="notes-container notes-open-mode notes-all-container">
         <div className="notes-open-header">
           <h2 className="notes-title">All your notes ({notes.length})</h2>
-          <ExpandArrow onClick={() => { setViewMode('list'); onToggleExpand(); }} expanded={true} color="var(--bg)" />
+          <ExpandArrow onClick={() => { setViewMode('list'); onToggleExpand(); }} expanded={true} color="var(--background)" />
         </div>
 
         {loading && <p className="loading-text">Loading...</p>}

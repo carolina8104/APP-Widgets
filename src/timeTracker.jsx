@@ -23,7 +23,7 @@ function TimeTracker({ userId, expanded, onToggleExpand }) {
         <div className={`tt-container ${expanded ? "tt-expanded" : ""}`}>
             <div className="tt-grid">
                 <div className="tt-title">Time tracker</div>
-                <ExpandArrow onClick={onToggleExpand} expanded={expanded} color="var(--accent-neon)" />
+                <ExpandArrow onClick={onToggleExpand} expanded={expanded} color="var(--color-primary-1)" />
                 <div 
                     className="tt-blocks"
                     onClick={(e) => {
@@ -42,21 +42,21 @@ function TimeTracker({ userId, expanded, onToggleExpand }) {
                     <button className="tt-circle" onClick={() => setRunning(!running)}>
                         {running ? (
                             <svg width="14" height="14" viewBox="0 0 24 24">
-                                <rect x="6" y="5" width="4" height="14" rx="1" fill="var(--panel)" />
-                                <rect x="14" y="5" width="4" height="14" rx="1" fill="var(--panel)" />
+                                <rect x="6" y="5" width="4" height="14" rx="1" fill="var(--color-neutral-2)" />
+                                <rect x="14" y="5" width="4" height="14" rx="1" fill="var(--color-neutral-2)" />
                             </svg>
                         ) : (
                             <svg width="14" height="14" viewBox="0 0 24 24">
-                                <path d="M6 4l14 8-14 8V4z" fill="var(--panel)" />
+                                <path d="M6 4l14 8-14 8V4z" fill="var(--color-neutral-2)" />
                             </svg>
                         )}
                     </button>
 
                     <button className="tt-circle" onClick={reset}>
                         <svg width="14" height="14" viewBox="0 0 24 24">
-                            <path d="M12 5v2a5 5 0 1 1-5 5" stroke="var(--panel)" strokeWidth="2"
+                            <path d="M12 5v2a5 5 0 1 1-5 5" stroke="var(--color-neutral-2)" strokeWidth="2"
                                 strokeLinecap="round" strokeLinejoin="round"/>
-                            <path d="M12 2v3H9" stroke="var(--panel)" strokeWidth="2"
+                            <path d="M12 2v3H9" stroke="var(--color-neutral-2)" strokeWidth="2"
                                 strokeLinecap="round" strokeLinejoin="round"/>
                         </svg>
                     </button>

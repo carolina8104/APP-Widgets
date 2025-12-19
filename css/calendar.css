@@ -19,7 +19,7 @@
 }
 
 .calendar-title {
-  color: var(--accent-yellow);
+  color: var(--text-accent-2);
   margin: 0;
   font-size: 1.25rem;
 }
@@ -53,7 +53,7 @@
 .calendar-main-widget {
   grid-row: 1 / 4;
   grid-column: 1;
-  background-color: var(--panel);
+  background-color: var(--color-neutral-2);
   border-radius: 20px;
   padding: 2rem;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
@@ -62,7 +62,7 @@
 .calendar-add-task-widget {
   grid-row: 1;
   grid-column: 2;
-  background-color: var(--white);
+  background-color: var(--color-neutral-1);
   border-radius: 20px;
   padding: 1.5rem;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
@@ -75,7 +75,7 @@
 .calendar-mini-widget {
   grid-row: 2;
   grid-column: 2;
-  background-color: var(--accent-orange);
+  background-color: var(--color-primary-3);
   border-radius: 20px;
   padding: 1.5rem;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
@@ -84,14 +84,14 @@
 .calendar-sticker-widget {
   grid-row: 3;
   grid-column: 2;
-  background-color: var(--accent-yellow);
+  background-color: var(--color-primary-2);
   border-radius: 20px;
   padding: 1.5rem;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
 .calendar-add-task-btn {
-  background-color: var(--bg);
+  background-color: var(--background);
   color: white;
   border: none;
   padding: 0.75rem 1.5rem;
@@ -156,7 +156,7 @@
 .calendar-day-number {
   font-size: 1.25rem;
   font-weight: 800;
-  color: var(--accent-yellow);
+  color: var(--text-accent-2);
   line-height: 1;
 }
 
@@ -194,7 +194,7 @@
 .calendar-event-title {
   font-size: 0.85rem;
   font-weight: 700;
-  color: var(--bg);
+  color: var(--text-default);
   margin-bottom: 0.25rem;
   line-height: 1.2;
 }
@@ -230,7 +230,7 @@
   justify-content: center;
   cursor: pointer;
   transition: all 0.2s ease;
-  color: var(--accent-yellow);
+  color: var(--color-primary-2);
 }
 
 .calendar-nav-btn:hover {
@@ -252,7 +252,7 @@
 }
 
 .calendar-title-compact {
-  color: var(--accent-yellow);
+  color: var(--text-accent-2);
   margin: 0;
   font-size: 0.95rem;
   font-weight: 700;
@@ -272,7 +272,7 @@
   justify-content: center;
   cursor: pointer;
   transition: all 0.2s ease;
-  color: var(--accent-yellow);
+  color: var(--color-primary-2);
   flex-shrink: 0;
 }
 
@@ -298,7 +298,7 @@
 }
 
 .calendar-day-header-compact {
-  background: var(--accent-yellow);
+  background: var(--color-primary-2);
   border-radius: 0.75rem;
   padding: 0.35rem 0.25rem;
   text-align: center;

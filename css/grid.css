@@ -3,7 +3,7 @@
     height: calc(95vh);
     padding: 1.2rem 12vw;
     gap: 1.2rem;
-    background: var(--bg);
+    background: var(--background);
     max-width: 1900px;
     margin: 0 auto;
     box-sizing: border-box;
