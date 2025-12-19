@@ -42,40 +42,40 @@ const THEMES = {
       '--color-neutral-2': '#242424',
 
       '--text-default': '#0F0F0F',
-      '--text-accent-1': 'var(--color-primary-1)',
-      '--text-accent-2': 'var(--color-primary-2)',
-      '--text-accent-3': 'var(--color-primary-3)',
+      '--text-accent-1': '#242424',
+      '--text-accent-2':  '#242424',
+      '--text-accent-3': '#242424',
 
     }
   },
   theme4: {
     colors: {
-      '--background': '#0F0F0F',
-      '--color-primary-1': '#FFAED7',
-      '--color-primary-2': '#FF6B9D',
-      '--color-primary-3': '#2801E8',
-      '--color-neutral-1': '#FFFFFF',
-      '--color-neutral-2': '#242424',
+      '--background': '#dccfcfff',
+      '--color-primary-1': '#EB1D15',
+      '--color-primary-2': '#E2EB15',
+      '--color-primary-3': '#0081EA',
+      '--color-neutral-1': '#6e8293ff',
+      '--color-neutral-2': '#aaa4a4ff',
 
        '--text-default': '#0F0F0F',     
-      '--text-accent-1': 'var(--color-primary-1)',
-      '--text-accent-2': 'var(--color-primary-2)',
-      '--text-accent-3': 'var(--color-primary-3)',
+      '--text-accent-1': '#0F0F0F', 
+      '--text-accent-2': '#0F0F0F', 
+      '--text-accent-3': '#0F0F0F', 
 
     }
   },
   theme5: {
     colors: {
       '--background': '#c3bdbdff',
-      '--color-primary-1': '#D71A21',
+      '--color-primary-1': '#FFFFFF',
       '--color-primary-2': '#dbd9d9ff',
       '--color-primary-3': '#d6d6d6ff',
       '--color-neutral-1': '#FFFFFF',
       '--color-neutral-2': '#242424',
 
-      '--text-default': '#ffffffff',
-      '--text-inverse': '#000000ff',
-      '--text-accent-1': '#000000ff',
+      '--text-default': '#000000ff',
+      '--text-inverse': '#FFFFFF',
+      '--text-accent-1': '#D71A21',
       '--text-accent-2': '#1d1b1bff',
       '--text-accent-3': '#D71A21',
     }
@@ -90,9 +90,9 @@ const THEMES = {
       '--color-neutral-2': '#242424',
 
       '--text-default': '#0F0F0F',
-      '--text-accent-1': 'var(--color-primary-1)',
-      '--text-accent-2': 'var(--color-primary-2)',
-      '--text-accent-3': 'var(--color-primary-3)',
+      '--text-accent-1': '#242424',
+      '--text-accent-2': '#242424',
+      '--text-accent-3': '#242424',
 
     }
   }

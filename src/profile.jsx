@@ -188,7 +188,7 @@ function Profile({ userId, expanded, onToggleExpand, onLogout }) {
           <div className="profile-stat-card">
             <div className="profile-stat-icon">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-                <path d="M12 15l-2 5l-1-5l-5-1l5-2l2-5l1 5l5 1l-5 2z" stroke="var(--background)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" fill="var(--background)" opacity="0.2"/>
+                <path d="M12 15l-2 5l-1-5l-5-1l5-2l2-5l1 5l5 1l-5 2z" stroke="var(--text-default)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" fill="var(--background)" opacity="0.2"/>
               </svg>
             </div>
             <span className="profile-stat-value">{userData?.level || 1}</span>
@@ -198,7 +198,7 @@ function Profile({ userId, expanded, onToggleExpand, onLogout }) {
           <div className="profile-stat-card">
             <div className="profile-stat-icon">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-                <path d="M13 2L3 14h9l-1 8l10-12h-9l1-8z" stroke="var(--background)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" fill="var(--background)" opacity="0.2"/>
+                <path d="M13 2L3 14h9l-1 8l10-12h-9l1-8z" stroke="var(--text-default)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" fill="var(--background)" opacity="0.2"/>
               </svg>
             </div>
             <span className="profile-stat-value">{userData?.xp || 0}</span>
@@ -208,8 +208,8 @@ function Profile({ userId, expanded, onToggleExpand, onLogout }) {
           <div className="profile-stat-card">
             <div className="profile-stat-icon">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-                <circle cx="12" cy="12" r="10" stroke="var(--background)" strokeWidth="2" fill="var(--background)" opacity="0.2"/>
-                <path d="M8 14s1.5 2 4 2 4-2 4-2M9 9h.01M15 9h.01" stroke="var(--background)" strokeWidth="2" strokeLinecap="round"/>
+                <circle cx="12" cy="12" r="10" stroke="var(--text-default)" strokeWidth="2" fill="var(--background)" opacity="0.2"/>
+                <path d="M8 14s1.5 2 4 2 4-2 4-2M9 9h.01M15 9h.01" stroke="var(--text-default)" strokeWidth="2" strokeLinecap="round"/>
               </svg>
             </div>
             <span className="profile-stat-value">{userData?.stickersUnlocked?.length || 0}</span>
@@ -219,7 +219,7 @@ function Profile({ userId, expanded, onToggleExpand, onLogout }) {
           <div className="profile-stat-card">
             <div className="profile-stat-icon">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-                <rect x="3" y="3" width="18" height="18" rx="2" stroke="var(--background)" strokeWidth="2" fill="var(--background)" opacity="0.2"/>
+                <rect x="3" y="3" width="18" height="18" rx="2" stroke="var(--text-default)" strokeWidth="2" fill="var(--background)" opacity="0.2"/>
                 <circle cx="8.5" cy="8.5" r="1.5" fill="var(--background)"/>
                 <circle cx="15.5" cy="8.5" r="1.5" fill="var(--background)"/>
                 <circle cx="8.5" cy="15.5" r="1.5" fill="var(--background)"/>
