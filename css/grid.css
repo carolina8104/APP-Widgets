@@ -81,7 +81,7 @@
     pointer-events: none;
 }
 
-@media (max-width: 1200px) {
+@media (max-width: 1400px) {
     .dashboard-grid {
         grid-template-columns: 1fr 1fr;
         grid-template-rows: auto;
@@ -108,5 +108,19 @@
             "calendar";
         padding: 1rem;
         gap: 1rem;
+    }
+}
+
+@media (max-height: 800px) {
+    .dashboard-grid {
+        padding-left: 2vw;
+        padding-right: 2vw;
+    }
+}
+
+@media (max-height: 650px) {
+    .dashboard-grid {
+        padding-left: 1rem;
+        padding-right: 1rem;
     }
 }
