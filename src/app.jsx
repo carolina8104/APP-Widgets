@@ -143,11 +143,12 @@ function App() {
             <div className={getWidgetClassName('tasks')} 
                  style={{ display: isWidgetVisible('tasks') ? 'block' : 'none' }}>
                 <Widget color="var(--color-neutral-1)" content={
-                    <div className="widget-placeholder">
-                        <h2 style={{color: 'var(--text-default)', margin: 0, fontSize: '1.25rem'}}>Tasks</h2>
-                        <p style={{color: 'var(--text-default)', opacity: 0.6, fontSize: '0.9rem'}}>Today: 2/8 tasks</p>
-                        <p style={{color: 'var(--text-default)', height: '49vh', opacity: 0.6, fontSize: '0.9rem'}}>This week: 123 tasks</p>
-                    </div>
+                    <Task
+                        userId={currentUser.userId}
+                        apiUrl={API_URL}
+                        expanded={expandedWidget === 'tasks'}
+                        onToggleExpand={() => toggleWidget('tasks')}
+                    />
                 } />
             </div>
 
