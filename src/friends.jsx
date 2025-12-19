@@ -1,6 +1,7 @@
 const { useState, useEffect, useRef } = React
 
 function Friends({ userId, apiUrl, expanded, onToggleExpand }) {
+function Friends({ userId, apiUrl, expanded, onToggleExpand, onFriendAccepted }) {
   const [friends, setFriends] = useState([])
   const [searchQuery, setSearchQuery] = useState('')
   const [loading, setLoading] = useState(true)
@@ -40,6 +41,12 @@ function Friends({ userId, apiUrl, expanded, onToggleExpand }) {
   }, [userId])
 
   useEffect(() => {
+    if (onFriendAccepted) {
+      onFriendAccepted.current = fetchFriends
+    }
+  }, [onFriendAccepted])
+
+  useEffect(() => {
     if (!expanded) {
       setViewMode('list')
       setSelectedFriend(null)
@@ -70,6 +77,7 @@ function Friends({ userId, apiUrl, expanded, onToggleExpand }) {
           setUserValidation({ exists: false, message: 'Already friends' })
         } else {
           setUserValidation({ exists: true, userId: data.userId, username: data.username, photos: data.photos || [] })
+          setUserValidation({ exists: true, userId: data.userId, username: data.username, settings: data.settings || {} })
         }
       } else {
         setUserValidation({ exists: false, message: 'User not found' })
@@ -175,6 +183,7 @@ function Friends({ userId, apiUrl, expanded, onToggleExpand }) {
                 } else {
                   const prefix = photoPathRaw.startsWith('/') ? '' : '/'
                   photoUrl = `${window.location.origin}${prefix}${photoPathRaw}`
+                  photoUrl = photoPathRaw.startsWith('/') ? `${apiUrl}${photoPathRaw}` : `${apiUrl}/${photoPathRaw}`
                 }
               }
 
@@ -220,6 +229,7 @@ function Friends({ userId, apiUrl, expanded, onToggleExpand }) {
       } else {
         const prefix = photoPathRaw.startsWith('/') ? '' : '/'
         photoUrl = `${window.location.origin}${prefix}${photoPathRaw}`
+        photoUrl = photoPathRaw.startsWith('/') ? `${apiUrl}${photoPathRaw}` : `${apiUrl}/${photoPathRaw}`
       }
     }
     
@@ -295,6 +305,7 @@ function Friends({ userId, apiUrl, expanded, onToggleExpand }) {
               } else {
                 const prefix = photoPathRaw.startsWith('/') ? '' : '/'
                 photoUrl = `${window.location.origin}${prefix}${photoPathRaw}`
+                photoUrl = photoPathRaw.startsWith('/') ? `${apiUrl}${photoPathRaw}` : `${apiUrl}/${photoPathRaw}`
               }
             }
             return (

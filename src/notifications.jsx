@@ -1,6 +1,6 @@
 const { useState, useEffect } = React
 
-function Notifications({ userId, apiUrl, isMac = false }) {
+function Notifications({ userId, apiUrl, isMac = false, onFriendAcceptedRef }) {
   const [isOpen, setIsOpen] = useState(false)
   const [notifications, setNotifications] = useState([])
   const [loading, setLoading] = useState(false)
@@ -38,6 +38,9 @@ function Notifications({ userId, apiUrl, isMac = false }) {
       const data = await res.json()
       if (!data.error) {
         await fetchNotifications()
+        if (onFriendAcceptedRef?.current) {
+          onFriendAcceptedRef.current()
+        }
       }
     } catch (err) {
       console.error('Error accepting request:', err)
