@@ -295,6 +295,9 @@ async function handleApi(message, response) {
     }
     
     await todosCol.insertOne(newTodo)
+    
+    broadcastSSE('todo-created', { userId: body.userId, todo: newTodo })
+    
     return sendJson(response, 201, newTodo)
   }
 
@@ -308,19 +311,32 @@ async function handleApi(message, response) {
     if (body.completed !== undefined) updateData.completed = body.completed
     if (body.content !== undefined) updateData.content = body.content
     
+    const todo = await todosCol.findOne({ _id: todoId })
+    
     await todosCol.updateOne(
       { _id: todoId },
       { $set: updateData }
     )
     
-    return sendJson(response, 200, { success: true })
+    if (todo) {
+      broadcastSSE('todo-updated', { userId: todo.userId, todoId, updates: updateData })
+    }
+    
+    return sendJson(response, 200, { success: true, ...updateData })
   }
 
   if (todoMatch && message.method === 'DELETE') {
     const todoId = todoMatch[1]
     const todosCol = getCollection('todo')
     
+    const todo = await todosCol.findOne({ _id: todoId })
+    
     await todosCol.deleteOne({ _id: todoId })
+    
+    if (todo) {
+      broadcastSSE('todo-deleted', { userId: todo.userId, todoId })
+    }
+    
     return sendJson(response, 200, { success: true })
   }
 
