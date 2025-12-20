@@ -839,11 +839,19 @@ async function handleApi(message, response) {
 
           fs.writeFileSync(filepath, imageData)
 
-          const photoUrl = `/uploads/${userId}/profile/${profileFilename}`          
+          const photoUrl = `/uploads/${userId}/profile/${profileFilename}`
+          
+          const userBefore = await usersCol.findOne({ _id: userId })
+          const isFirstPhoto = !userBefore?.settings?.profilePhoto
+          
           const result = await usersCol.updateOne(
             { _id: userId },
             { $set: { 'settings.profilePhoto': photoUrl } }
           )
+          
+          if (isFirstPhoto) {
+            await giveXP(userId, 5, 'Added first profile photo!')
+          }
           
           sendJson(response, 200, { profilePhoto: photoUrl })
           resolve()
