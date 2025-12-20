@@ -112,9 +112,18 @@ async function giveXP(userId, amount, reason) {
   const usersCol = getCollection('users')
   const notificationsCol = getCollection('notifications')
   
+  const userBefore = await usersCol.findOne({ _id: userId })
+  const oldLevel = userBefore?.level || 1
+  const oldXP = userBefore?.xp || 0
+  const newXP = oldXP + amount
+  const newLevel = Math.floor(newXP / 100) + 1
+  
   await usersCol.updateOne(
     { _id: userId },
-    { $inc: { xp: amount } }
+    { 
+      $inc: { xp: amount },
+      $set: { level: newLevel }
+    }
   )
   
   const notification = {
@@ -129,6 +138,21 @@ async function giveXP(userId, amount, reason) {
   
   await notificationsCol.insertOne(notification)
   broadcastSSE('notification', { userId, notification })
+  
+  if (newLevel > oldLevel) {
+    const levelNotification = {
+      _id: `notif${Date.now() + 1}`,
+      userId,
+      type: 'level-up',
+      level: newLevel,
+      reason: `Congratulations! You leveled up to level ${newLevel}!`,
+      read: false,
+      createdAt: new Date().toISOString()
+    }
+    
+    await notificationsCol.insertOne(levelNotification)
+    broadcastSSE('notification', { userId, notification: levelNotification })
+  }
   
   return notification
 }

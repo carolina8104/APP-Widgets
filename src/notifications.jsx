@@ -152,6 +152,29 @@ function Notifications({ userId, apiUrl, isMac = false, onFriendAcceptedRef }) {
                       </div>
                     )
                   }
+                  if (notif.type === 'level-up') {
+                    return (
+                      <div key={notif._id} className="notification-item xp-notification level-up-notification">
+                        <div className="notification-content" style={{ alignItems: 'center' }}>
+                          <div className="notification-icon xp-icon">
+                            <span>🎉</span>
+                          </div>
+                          <div className="notification-text" style={{ flex: 1 }}>
+                            <strong>Level {notif.level}!</strong>
+                            <span className="notification-reason">{notif.reason}</span>
+                          </div>
+                          <button 
+                            className="notification-dismiss"
+                            onClick={() => handleDismissXP(notif._id)}
+                            aria-label="Dismiss"
+                            style={{ alignSelf: 'flex-start', marginLeft: 8 }}
+                          >
+                            ✕
+                          </button>
+                        </div>
+                      </div>
+                    )
+                  }
                   return (
                     <div key={notif._id} className="notification-item">
                       <div className="notification-content">
