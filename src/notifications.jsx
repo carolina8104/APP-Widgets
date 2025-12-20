@@ -128,49 +128,74 @@ function Notifications({ userId, apiUrl, isMac = false, onFriendAcceptedRef }) {
                   No notifications
                 </div>
               ) : (
-                notifications.map(notif => (
-                  <div key={notif._id} className="notification-item">
-                    <div className="notification-content">
-                      <div className="notification-avatar">
-                        {notif.fromUser.settings?.profilePhoto ? (
-                          <img 
-                            src={notif.fromUser.settings.profilePhoto.startsWith('/') 
-                              ? `${apiUrl}${notif.fromUser.settings.profilePhoto}` 
-                              : notif.fromUser.settings.profilePhoto
-                            }
-                            alt={`${notif.fromUser.username} avatar`} 
-                          />
-                        ) : (
-                          <span>{notif.fromUser.username.charAt(0).toUpperCase()}</span>
-                        )}
+                allNotifications.map(notif => {
+                  if (notif.type === 'xp') {
+                    return (
+                      <div key={notif._id} className="notification-item xp-notification">
+                        <div className="notification-content" style={{ alignItems: 'center' }}>
+                          <div className="notification-icon xp-icon">
+                            <span>⭐</span>
+                          </div>
+                          <div className="notification-text" style={{ flex: 1 }}>
+                            <strong>+{notif.amount} XP</strong>
+                            <span className="notification-reason">{notif.reason}</span>
+                          </div>
+                          <button 
+                            className="notification-dismiss"
+                            onClick={() => handleDismissXP(notif._id)}
+                            aria-label="Dismiss"
+                            style={{ alignSelf: 'flex-start', marginLeft: 8 }}
+                          >
+                            ✕
+                          </button>
+                        </div>
                       </div>
-                      <div className="notification-text">
-                        <strong>{notif.fromUser.username}</strong> sent a friends request
+                    )
+                  }
+                  return (
+                    <div key={notif._id} className="notification-item">
+                      <div className="notification-content">
+                        <div className="notification-avatar">
+                          {notif.fromUser.settings?.profilePhoto ? (
+                            <img 
+                              src={notif.fromUser.settings.profilePhoto.startsWith('/') 
+                                ? `${apiUrl}${notif.fromUser.settings.profilePhoto}` 
+                                : notif.fromUser.settings.profilePhoto
+                              }
+                              alt={`${notif.fromUser.username} avatar`} 
+                            />
+                          ) : (
+                            <span>{notif.fromUser.username.charAt(0).toUpperCase()}</span>
+                          )}
+                        </div>
+                        <div className="notification-text">
+                          <strong>{notif.fromUser.username}</strong> sent a friends request
+                        </div>
+                      </div>
+                      <div className="notification-actions">
+                        <button 
+                          className="notification-btn accept"
+                          onClick={() => handleAccept(notif._id, notif.fromUser._id)}
+                          disabled={loading}
+                        >
+                          Accept
+                        </button>
+                        <button 
+                          className="notification-btn reject"
+                          onClick={() => handleReject(notif._id)}
+                          disabled={loading}
+                        >
+                          Decline
+                        </button>
                       </div>
                     </div>
-                    <div className="notification-actions">
-                      <button 
-                        className="notification-btn accept"
-                        onClick={() => handleAccept(notif._id, notif.fromUser._id)}
-                        disabled={loading}
-                      >
-                        Accept
-                      </button>
-                      <button 
-                        className="notification-btn reject"
-                        onClick={() => handleReject(notif._id)}
-                        disabled={loading}
-                      >
-                        Decline
-                      </button>
-                    </div>
-                  </div>
-                ))
+                  )
+                })
               )}
+              </div>
             </div>
-          </div>
-        </>
-      )}
-    </div>
-  )
-}
+          </>
+        )}
+      </div>
+    )
+  }
