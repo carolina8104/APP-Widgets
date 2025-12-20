@@ -706,6 +706,40 @@ async function handleApi(message, response) {
     })
   }
 
+  if (url.pathname === '/api/tasks' && message.method === 'GET') {
+    const tasksCol = getCollection('calendar')
+    const tasks = await tasksCol.find().toArray()
+    return sendJson(response, 200, tasks)
+  }
+
+  if (url.pathname === '/api/tasks' && message.method === 'POST') {
+    try {
+      const body = await parseBody(message)
+      const tasksCol = getCollection('calendar')
+      
+      const newTask = {
+        _id: `task${Date.now()}`,
+        userId: body.userId || 'user123',
+        title: body.title,
+        description: body.description || '',
+        type: body.type || 'study',
+        difficulty: body.difficulty || 'medium',
+        startTime: body.startTime,
+        endTime: body.endTime,
+        duration: body.duration || 3600,
+        completed: body.completed || false,
+        calendarDate: body.calendarDate,
+        xpEarned: 0,
+        createdAt: new Date().toISOString()
+      }
+      
+      await tasksCol.insertOne(newTask)
+      return sendJson(response, 201, newTask)
+    } catch (err) {
+      return sendJson(response, 500, { error: err.message })
+    }
+  }
+
   sendJson(response, 404, { error: 'Not found' })
 
 }
