@@ -94,6 +94,31 @@ function serveStatic(url, response) {
 
 const { getCollection } = require('./db')
 
+async function giveXP(userId, amount, reason) {
+  const usersCol = getCollection('users')
+  const notificationsCol = getCollection('notifications')
+  
+  await usersCol.updateOne(
+    { _id: userId },
+    { $inc: { xp: amount } }
+  )
+  
+  const notification = {
+    _id: `notif${Date.now()}`,
+    userId,
+    type: 'xp',
+    amount,
+    reason,
+    read: false,
+    createdAt: new Date().toISOString()
+  }
+  
+  await notificationsCol.insertOne(notification)
+  broadcastSSE('notification', { userId, notification })
+  
+  return notification
+}
+
 async function handleApi(message, response) {
   const url = new URL(message.url, `http://${message.headers.host}`)
 
@@ -205,6 +230,11 @@ async function handleApi(message, response) {
     body.createdAt = new Date()
     body.lastModified = new Date()
     const result = await notesCol.insertOne(body)
+    
+    if (body.userId) {
+      await giveXP(body.userId, 5, 'Note created')
+    }
+    
     return sendJson(response, 201, { insertedId: result.insertedId, ...body })
   }
 
@@ -274,10 +304,18 @@ async function handleApi(message, response) {
       return sendJson(response, 200, friendsData)
     }
 
-  if (url.pathname === '/api/todo' && message.method === 'GET') {
+  if (url.pathname === '/api/todo/all' && message.method === 'GET') {
     const todosCol = getCollection('todo')
     const userId = url.searchParams.get('userId')
     const filter = userId ? { userId: userId } : {}
+    const todos = await todosCol.find(filter).toArray()
+    return sendJson(response, 200, todos)
+  }
+
+  if (url.pathname === '/api/todo' && message.method === 'GET') {
+    const todosCol = getCollection('todo')
+    const userId = url.searchParams.get('userId')
+    const filter = userId ? { userId: userId, deleted: { $ne: true } } : { deleted: { $ne: true } }
     const todos = await todosCol.find(filter).toArray()
     return sendJson(response, 200, todos)
   }
@@ -308,7 +346,14 @@ async function handleApi(message, response) {
     const todosCol = getCollection('todo')
     
     const updateData = {}
-    if (body.completed !== undefined) updateData.completed = body.completed
+    if (body.completed !== undefined) {
+      updateData.completed = body.completed
+      if (body.completed === 'true' || body.completed === true) {
+        updateData.completedAt = new Date().toISOString()
+      } else {
+        updateData.completedAt = null
+      }
+    }
     if (body.content !== undefined) updateData.content = body.content
     
     const todo = await todosCol.findOne({ _id: todoId })
@@ -331,7 +376,10 @@ async function handleApi(message, response) {
     
     const todo = await todosCol.findOne({ _id: todoId })
     
-    await todosCol.deleteOne({ _id: todoId })
+    await todosCol.updateOne(
+      { _id: todoId },
+      { $set: { deleted: true } }
+    )
     
     if (todo) {
       broadcastSSE('todo-deleted', { userId: todo.userId, todoId })
@@ -488,6 +536,32 @@ async function handleApi(message, response) {
     const validRequests = requestsWithUserData.filter(r => r !== null)
 
     return sendJson(response, 200, validRequests)
+  }
+
+  if (url.pathname.match(/^\/api\/users\/([a-zA-Z0-9\-_]+)\/notifications$/) && message.method === 'GET') {
+    const match = url.pathname.match(/^\/api\/users\/([a-zA-Z0-9\-_]+)\/notifications$/)
+    const userId = match[1]
+    const notificationsCol = getCollection('notifications')
+    
+    const notifications = await notificationsCol.find({ 
+      userId,
+      read: false
+    }).sort({ createdAt: -1 }).toArray()
+    
+    return sendJson(response, 200, notifications)
+  }
+
+  const notificationMatch = url.pathname.match(/^\/api\/notifications\/([a-zA-Z0-9\-_]+)$/)
+  if (notificationMatch && message.method === 'DELETE') {
+    const notificationId = notificationMatch[1]
+    const notificationsCol = getCollection('notifications')
+    
+    await notificationsCol.updateOne(
+      { _id: notificationId },
+      { $set: { read: true } }
+    )
+    
+    return sendJson(response, 200, { success: true })
   }
 
   if (url.pathname === '/api/friend-requests' && message.method === 'POST') {
