@@ -97,8 +97,13 @@ function Progress({ userId, apiUrl, expanded, onToggleExpand, hideExpandArrow = 
           const adjustedIndex = dayIndex === 0 ? 6 : dayIndex - 1
           
           created[adjustedIndex]++
-          
-          if (todo.completed === 'true' || todo.completed === true) {
+        }
+        
+        if ((todo.completed === 'true' || todo.completed === true) && todo.completedAt) {
+          const completedDate = new Date(todo.completedAt)
+          if (completedDate >= monday && completedDate <= sunday) {
+            const dayIndex = completedDate.getDay()
+            const adjustedIndex = dayIndex === 0 ? 6 : dayIndex - 1
             completed[adjustedIndex]++
           }
         }

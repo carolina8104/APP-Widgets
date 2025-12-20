@@ -316,7 +316,14 @@ async function handleApi(message, response) {
     const todosCol = getCollection('todo')
     
     const updateData = {}
-    if (body.completed !== undefined) updateData.completed = body.completed
+    if (body.completed !== undefined) {
+      updateData.completed = body.completed
+      if (body.completed === 'true' || body.completed === true) {
+        updateData.completedAt = new Date().toISOString()
+      } else {
+        updateData.completedAt = null
+      }
+    }
     if (body.content !== undefined) updateData.content = body.content
     
     const todo = await todosCol.findOne({ _id: todoId })
