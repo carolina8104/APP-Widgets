@@ -53,12 +53,10 @@ function TimeTracker({ userId, expanded, onToggleExpand }) {
                     </button>
 
                     <button className="tt-circle" onClick={reset}>
-                        <svg width="14" height="14" viewBox="0 0 24 24">
-                            <path d="M12 5v2a5 5 0 1 1-5 5" stroke="var(--color-neutral-2)" strokeWidth="2"
-                                strokeLinecap="round" strokeLinejoin="round"/>
-                            <path d="M12 2v3H9" stroke="var(--color-neutral-2)" strokeWidth="2"
-                                strokeLinecap="round" strokeLinejoin="round"/>
-                        </svg>
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+                                <path d="M21 12a9 9 0 1 1-2.6-6.1" stroke="var(--color-neutral-2)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                                <path d="M21 3v6h-6" stroke="var(--color-neutral-2)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                            </svg>
                     </button>
                 </div>
             </div>
