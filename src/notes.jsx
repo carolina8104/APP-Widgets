@@ -26,102 +26,98 @@ function Notes({ userId, apiUrl, expanded, onToggleExpand }) {
     }
   }, [expanded])
 
-  function fetchNotes() {
-    fetch(`${apiUrl}/api/notes?userId=${encodeURIComponent(userId)}`)
-      .then(response => response.json())
-      .then(data => {
-        const sorted = data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
-        setNotes(sorted)
-        setLoading(false)
-      })
-      .catch(error => {
-        console.error('Error fetching notes:', error)
-        setLoading(false)
-      })
+  async function fetchNotes() {
+    try {
+      const response = await fetch(`${apiUrl}/api/notes?userId=${encodeURIComponent(userId)}`)
+      const data = await response.json()
+      const sorted = data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+      setNotes(sorted)
+      setLoading(false)
+    } catch (error) {
+      console.error('Error fetching notes:', error)
+      setLoading(false)
+    }
   }
 
-  function handleSaveNote() {
+  async function handleSaveNote() {
     if (!newTitle.trim()) {
       alert('Title is required!')
       return
     }
 
-    fetch(apiUrl + '/api/notes', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        _id: `note-${Date.now()}`,
-        userId: userId,
-        title: newTitle,
-        content: newContent,
-        createdAt: new Date().toISOString(),
-        lastModified: new Date().toISOString()
+    try {
+      const response = await fetch(apiUrl + '/api/notes', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          _id: `note-${Date.now()}`,
+          userId: userId,
+          title: newTitle,
+          content: newContent,
+          createdAt: new Date().toISOString(),
+          lastModified: new Date().toISOString()
+        })
       })
-    })
-      .then(res => res.json())
-      .then(() => {
-        setNewTitle('')
-        setNewContent('')
-        setViewMode('list')
-        onToggleExpand()
-        fetchNotes()
-      })
-      .catch(error => console.error('Error saving note:', error))
+      await response.json()
+      setNewTitle('')
+      setNewContent('')
+      setViewMode('list')
+      onToggleExpand()
+      fetchNotes()
+    } catch (error) {
+      console.error('Error saving note:', error)
+    }
   }
 
-  function handleSaveEdit() {
+  async function handleSaveEdit() {
     if (!editTitle.trim()) {
       alert('Title is required!')
       return
     }
 
-    fetch(`${apiUrl}/api/notes/${selectedNote._id}`, {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        title: editTitle,
-        content: editContent,
-        lastModified: new Date().toISOString()
+    try {
+      const response = await fetch(`${apiUrl}/api/notes/${selectedNote._id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          title: editTitle,
+          content: editContent,
+          lastModified: new Date().toISOString()
+        })
       })
-    })
-      .then(response => response.json())
-      .then(() => {
-        const updatedNotes = notes.map(note =>
-          note._id === selectedNote._id
-            ? { ...note, title: editTitle, content: editContent, lastModified: new Date().toISOString() }
-            : note
-        )
-        setNotes(updatedNotes)
+      await response.json()
+      const updatedNotes = notes.map(note =>
+        note._id === selectedNote._id
+          ? { ...note, title: editTitle, content: editContent, lastModified: new Date().toISOString() }
+          : note
+      )
+      setNotes(updatedNotes)
+      setSelectedNote(null)
+      setViewMode('list')
+      onToggleExpand()
+    } catch (error) {
+      console.error('Error updating note:', error)
+      alert('Error saving: ' + error.message)
+    }
+  }
+
+  async function handleDeleteNote(noteId) {
+    if (!confirm('Delete this note?')) return
+
+    try {
+      const response = await fetch(`${apiUrl}/api/notes/${noteId}`, { method: 'DELETE' })
+      if (!response.ok) throw new Error(`HTTP Error: ${response.status}`)
+      await response.json()
+      fetchNotes()
+      if (viewMode === 'view') {
         setSelectedNote(null)
         setViewMode('list')
         onToggleExpand()
-      })
-      .catch(error => {
-        console.error('Error updating note:', error)
-        alert('Error saving: ' + error.message)
-      })
-  }
-
-  function handleDeleteNote(noteId) {
-    if (!confirm('Delete this note?')) return
-
-    fetch(`${apiUrl}/api/notes/${noteId}`, { method: 'DELETE' })
-      .then(response => {
-        if (!response.ok) throw new Error(`HTTP Error: ${response.status}`)
-        return response.json()
-      })
-      .then(() => {
-        fetchNotes()
-        if (viewMode === 'view') {
-          setSelectedNote(null)
-          setViewMode('list')
-          onToggleExpand()
-        }
-      })
-      .catch(error => {
-        console.error('Error deleting note:', error)
-        alert('Error deleting note: ' + error.message)
-      })
+      }
+    } catch (error) {
+      console.error('Error deleting note:', error)
+      alert('Error deleting note: ' + error.message)
+    }
   }
 
   if (viewMode === 'create') {
