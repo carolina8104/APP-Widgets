@@ -94,6 +94,31 @@ function serveStatic(url, response) {
 
 const { getCollection } = require('./db')
 
+async function giveXP(userId, amount, reason) {
+  const usersCol = getCollection('users')
+  const notificationsCol = getCollection('notifications')
+  
+  await usersCol.updateOne(
+    { _id: userId },
+    { $inc: { xp: amount } }
+  )
+  
+  const notification = {
+    _id: `notif${Date.now()}`,
+    userId,
+    type: 'xp',
+    amount,
+    reason,
+    read: false,
+    createdAt: new Date().toISOString()
+  }
+  
+  await notificationsCol.insertOne(notification)
+  broadcastSSE('notification', { userId, notification })
+  
+  return notification
+}
+
 async function handleApi(message, response) {
   const url = new URL(message.url, `http://${message.headers.host}`)
 
@@ -205,6 +230,11 @@ async function handleApi(message, response) {
     body.createdAt = new Date()
     body.lastModified = new Date()
     const result = await notesCol.insertOne(body)
+    
+    if (body.userId) {
+      await giveXP(body.userId, 5, 'Note created')
+    }
+    
     return sendJson(response, 201, { insertedId: result.insertedId, ...body })
   }
 
