@@ -539,6 +539,19 @@ function Calendar({ apiUrl, expanded, onToggleExpand }) {
                 </span>
               </div>
             </div>
+            <div className="event-info-time">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="2"/>
+                <path d="M12 6v6l4 2" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+              </svg>
+              <span>{selectedEventInfo.time}</span>
+            </div>
+            {selectedEventInfo.description && (
+              <div className="event-info-section">
+                <div className="event-info-label">Description</div>
+                <div className="event-info-desc">{selectedEventInfo.description}</div>
+              </div>
+            )}
           </div>
         )}
 
