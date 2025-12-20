@@ -2,27 +2,45 @@ const { useState, useEffect } = React
 
 function Notifications({ userId, apiUrl, isMac = false, onFriendAcceptedRef }) {
   const [isOpen, setIsOpen] = useState(false)
-  const [notifications, setNotifications] = useState([])
+  const [friendRequests, setFriendRequests] = useState([])
+  const [xpNotifications, setXpNotifications] = useState([])
   const [loading, setLoading] = useState(false)
 
   useEffect(() => {
     if (!userId) return
     fetchNotifications()
     
+    const eventSource = new EventSource(`${apiUrl}/api/events`)
+    
+    eventSource.addEventListener('notification', (e) => {
+      const data = JSON.parse(e.data)
+      if (data.userId === userId) {
+        fetchNotifications()
+      }
+    })
+    
     const interval = setInterval(() => {
       fetchNotifications()
-    }, 5000)
-    return () => clearInterval(interval)
+    }, 30000)
+    
+    return () => {
+      eventSource.close()
+      clearInterval(interval)
+    }
   }, [userId])
 
   const fetchNotifications = async () => {
     try {
-      const res = await fetch(`${apiUrl}/api/users/${userId}/friend-requests`)
-      const data = await res.json()
-      if (!data.error) {
-        setNotifications(data)
-        console.log('Notifications updated:', data.length)
-      }
+      const [friendRes, xpRes] = await Promise.all([
+        fetch(`${apiUrl}/api/users/${userId}/friend-requests`),
+        fetch(`${apiUrl}/api/users/${userId}/notifications`)
+      ])
+      
+      const friendData = await friendRes.json()
+      const xpData = await xpRes.json()
+      
+      if (!friendData.error) setFriendRequests(friendData)
+      if (!xpData.error) setXpNotifications(xpData)
     } catch (err) {
       console.error('Error fetching notifications:', err)
     }
@@ -64,11 +82,23 @@ function Notifications({ userId, apiUrl, isMac = false, onFriendAcceptedRef }) {
     setLoading(false)
   }
 
+  const handleDismissXP = async (notificationId) => {
+    try {
+      await fetch(`${apiUrl}/api/notifications/${notificationId}`, {
+        method: 'DELETE'
+      })
+      await fetchNotifications()
+    } catch (err) {
+      console.error('Error dismissing notification:', err)
+    }
+  }
+
   const toggleOpen = () => {
     setIsOpen(!isOpen)
   }
 
-  const notificationCount = notifications.length
+  const notificationCount = friendRequests.length + xpNotifications.length
+  const allNotifications = [...xpNotifications, ...friendRequests]
 
   return (
     <div className={`notifications-container ${isMac ? 'mac' : 'windows'}`}>
@@ -93,7 +123,7 @@ function Notifications({ userId, apiUrl, isMac = false, onFriendAcceptedRef }) {
             </div>
             
             <div className="notifications-list">
-              {notifications.length === 0 ? (
+              {allNotifications.length === 0 ? (
                 <div className="notifications-empty">
                   No notifications
                 </div>
