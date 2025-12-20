@@ -14,14 +14,37 @@ function Progress({ userId, apiUrl, expanded, onToggleExpand, hideExpandArrow = 
     fetchTotalStats()
     fetchYearData()
     
-    const interval = setInterval(() => {
-      fetchWeeklyProgress()
-      fetchTotalStats()
-      fetchYearData()
-    }, 5000)
+    const eventSource = new EventSource(`${apiUrl}/api/events`)
     
-    return () => clearInterval(interval)
-  }, [userId])
+    eventSource.addEventListener('todo-created', (e) => {
+      const data = JSON.parse(e.data)
+      if (data.userId === userId) {
+        fetchWeeklyProgress()
+      }
+    })
+    
+    eventSource.addEventListener('todo-updated', (e) => {
+      const data = JSON.parse(e.data)
+      if (data.userId === userId) {
+        fetchWeeklyProgress()
+      }
+    })
+    
+    eventSource.addEventListener('todo-deleted', (e) => {
+      const data = JSON.parse(e.data)
+      if (data.userId === userId) {
+        fetchWeeklyProgress()
+      }
+    })
+    
+    eventSource.onerror = (error) => {
+      console.error('SSE error in Progress widget:', error)
+    }
+    
+    return () => {
+      eventSource.close()
+    }
+  }, [userId, apiUrl])
 
   async function fetchTotalStats() {
     try {
