@@ -126,7 +126,7 @@ function Calendar({ apiUrl, expanded, onToggleExpand }) {
       return { ...event, heightClass, topPercent, heightPercent }
     })
 
-    const gapPercent = 3.0
+    const gapPercent = 12
 
     items.forEach((cur, i) => {
       const next = items[i + 1]
@@ -144,9 +144,36 @@ function Calendar({ apiUrl, expanded, onToggleExpand }) {
     return items.map(it => ({ ...it }))
     }
 
+    const getDaysInMonth = (date) => {
+      const year = date.getFullYear()
+      const month = date.getMonth()
+      const firstDay = new Date(year, month, 1)
+      const lastDay = new Date(year, month + 1, 0)
+      const daysInMonth = lastDay.getDate()
+      const startingDayOfWeek = (firstDay.getDay() + 6) % 7 
     
       const days = []
     
+      const prevMonthLastDay = new Date(year, month, 0).getDate()
+
+      Array.from({ length: startingDayOfWeek }).forEach((_, idx) => {
+        const i = startingDayOfWeek - 1 - idx
+        days.push({
+          day: prevMonthLastDay - i,
+          isCurrentMonth: false,
+          date: new Date(year, month - 1, prevMonthLastDay - i)
+        })
+      })
+
+      Array.from({ length: daysInMonth }).forEach((_, d) => {
+        const day = d + 1
+        days.push({
+          day,
+          isCurrentMonth: true,
+          date: new Date(year, month, day)
+        })
+      })
+
       const remainingDays = 42 - days.length
       Array.from({ length: remainingDays }).forEach((_, d) => {
         const day = d + 1
