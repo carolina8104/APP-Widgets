@@ -94,6 +94,20 @@ function serveStatic(url, response) {
 
 const { getCollection } = require('./db')
 
+async function hasReceivedXPToday(userId, reason) {
+  const notificationsCol = getCollection('notifications')
+  const today = new Date().toISOString().slice(0, 10)
+  
+  const existingNotification = await notificationsCol.findOne({
+    userId,
+    type: 'xp',
+    reason,
+    createdAt: { $gte: today }
+  })
+  
+  return !!existingNotification
+}
+
 async function giveXP(userId, amount, reason) {
   const usersCol = getCollection('users')
   const notificationsCol = getCollection('notifications')
@@ -232,7 +246,26 @@ async function handleApi(message, response) {
     const result = await notesCol.insertOne(body)
     
     if (body.userId) {
-      await giveXP(body.userId, 5, 'Note created')
+      const noteCount = await notesCol.countDocuments({ userId: body.userId })
+      
+      if (noteCount === 1) {
+        await giveXP(body.userId, 5, 'You just created your first note!')
+      }
+      
+      if (noteCount % 10 === 0) {
+        const rewardReason = `Already ${noteCount} notes created!`;
+        const alreadyRewarded = await hasReceivedXPToday(body.userId, rewardReason);
+        if (!alreadyRewarded) {
+          await giveXP(body.userId, 15, rewardReason);
+        }
+      }
+      
+      if (body.content && body.content.length > 2000) {
+        const alreadyRewardedLong = await hasReceivedXPToday(body.userId, 'You just created a long note! Keep it up!')
+        if (!alreadyRewardedLong) {
+          await giveXP(body.userId, 10, 'You just created a long note! Keep it up!')
+        }
+      }
     }
     
     return sendJson(response, 201, { insertedId: result.insertedId, ...body })
@@ -251,7 +284,21 @@ async function handleApi(message, response) {
     if (message.method === 'PUT') {
       const body = await parseBody(message)
       body.lastModified = new Date()
+      const note = await notesCol.findOne({ _id: id })
+      
       await notesCol.updateOne({ _id: id }, { $set: body })
+      
+      if (note && note.userId && note.createdAt) {
+        const noteAge = Date.now() - new Date(note.createdAt).getTime()
+        const fiveDaysInMs = 5 * 24 * 60 * 60 * 1000
+        if (noteAge > fiveDaysInMs) {
+          const alreadyRewarded = await hasReceivedXPToday(note.userId, 'Its always good to revise old work!')
+          if (!alreadyRewarded) {
+            await giveXP(note.userId, 5, 'Its always good to revise old work!')
+          }
+        }
+      }
+      
       return sendJson(response, 200, { updated: true })
     }
 
@@ -334,6 +381,13 @@ async function handleApi(message, response) {
     
     await todosCol.insertOne(newTodo)
     
+    if (body.userId) {
+      const taskCount = await todosCol.countDocuments({ userId: body.userId })
+      if (taskCount === 1) {
+        await giveXP(body.userId, 5, 'You just created your first task!')
+      }
+    }
+    
     broadcastSSE('todo-created', { userId: body.userId, todo: newTodo })
     
     return sendJson(response, 201, newTodo)
@@ -362,6 +416,68 @@ async function handleApi(message, response) {
       { _id: todoId },
       { $set: updateData }
     )
+    
+    if (todo && todo.userId && (body.completed === 'true' || body.completed === true)) {
+      const today = new Date().toISOString().slice(0, 10)
+      const completedTodayCount = await todosCol.countDocuments({
+        userId: todo.userId,
+        completed: 'true',
+        completedAt: { $gte: today }
+      })
+      
+      if (completedTodayCount % 10 === 0) {
+        const rewardReason = `Completed ${completedTodayCount} tasks today!`
+        const alreadyRewarded = await hasReceivedXPToday(todo.userId, rewardReason)
+        if (!alreadyRewarded) {
+          await giveXP(todo.userId, 10, rewardReason)
+        }
+      }
+      
+      const oneWeekAgo = new Date()
+      oneWeekAgo.setDate(oneWeekAgo.getDate() - 7)
+      const weekStart = oneWeekAgo.toISOString()
+      
+      const completedThisWeekCount = await todosCol.countDocuments({
+        userId: todo.userId,
+        completed: 'true',
+        completedAt: { $gte: weekStart }
+      })
+      
+      if (completedThisWeekCount >= 150) {
+        const alreadyRewardedWeek = await hasReceivedXPToday(todo.userId, 'Completed 150+ tasks this week!')
+        if (!alreadyRewardedWeek) {
+          await giveXP(todo.userId, 20, 'Completed 150+ tasks this week!')
+        }
+      }
+      
+      let streak = 0
+      let hasStreak = true
+      for (let i = 0; i < 7; i++) {
+        const checkDate = new Date()
+        checkDate.setDate(checkDate.getDate() - i)
+        const dayStart = checkDate.toISOString().slice(0, 10)
+        
+        const completedThatDay = await todosCol.countDocuments({
+          userId: todo.userId,
+          completed: 'true',
+          completedAt: { $gte: dayStart, $lt: dayStart + 'T23:59:59' }
+        })
+        
+        if (completedThatDay >= 7) {
+          streak++
+        } else {
+          hasStreak = false
+          break
+        }
+      }
+      
+      if (streak >= 7 && hasStreak) {
+        const alreadyRewardedStreak = await hasReceivedXPToday(todo.userId, '7-day streak: 7+ tasks daily!')
+        if (!alreadyRewardedStreak) {
+          await giveXP(todo.userId, 25, '7-day streak: 7+ tasks daily!')
+        }
+      }
+    }
     
     if (todo) {
       broadcastSSE('todo-updated', { userId: todo.userId, todoId, updates: updateData })
