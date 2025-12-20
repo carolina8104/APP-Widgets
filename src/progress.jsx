@@ -68,7 +68,7 @@ function Progress({ userId, apiUrl, expanded, onToggleExpand, hideExpandArrow = 
 
   async function fetchWeeklyProgress() {
     try {
-      const response = await fetch(`${apiUrl}/api/todo?userId=${userId}`)
+      const response = await fetch(`${apiUrl}/api/todo/all?userId=${userId}`)
       const todos = await response.json()
       
       if (!Array.isArray(todos)) {

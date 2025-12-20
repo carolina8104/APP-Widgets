@@ -274,10 +274,18 @@ async function handleApi(message, response) {
       return sendJson(response, 200, friendsData)
     }
 
-  if (url.pathname === '/api/todo' && message.method === 'GET') {
+  if (url.pathname === '/api/todo/all' && message.method === 'GET') {
     const todosCol = getCollection('todo')
     const userId = url.searchParams.get('userId')
     const filter = userId ? { userId: userId } : {}
+    const todos = await todosCol.find(filter).toArray()
+    return sendJson(response, 200, todos)
+  }
+
+  if (url.pathname === '/api/todo' && message.method === 'GET') {
+    const todosCol = getCollection('todo')
+    const userId = url.searchParams.get('userId')
+    const filter = userId ? { userId: userId, deleted: { $ne: true } } : { deleted: { $ne: true } }
     const todos = await todosCol.find(filter).toArray()
     return sendJson(response, 200, todos)
   }
@@ -331,7 +339,10 @@ async function handleApi(message, response) {
     
     const todo = await todosCol.findOne({ _id: todoId })
     
-    await todosCol.deleteOne({ _id: todoId })
+    await todosCol.updateOne(
+      { _id: todoId },
+      { $set: { deleted: true } }
+    )
     
     if (todo) {
       broadcastSSE('todo-deleted', { userId: todo.userId, todoId })
