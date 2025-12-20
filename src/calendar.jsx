@@ -16,8 +16,40 @@ function Calendar({ apiUrl, expanded, onToggleExpand }) {
     endTime: '10:00'
   })
 
+      .then(res => {
+        console.log('Response status:', res.status)
+        return res.json()
+      })
+      .then(tasks => {
+        console.log('Received tasks:', tasks)
+        if (!Array.isArray(tasks)) {
+          console.error('Tasks is not an array:', tasks)
+          setEvents([])
+          return
+        }
+        const formattedEvents = tasks.map(task => {
+          console.log('Processing task:', task)
+          return {
+            _id: task._id,
+            title: task.title || 'Untitled',
+            time: formatTimeFromISO(task.startTime, task.endTime),
+            date: task.calendarDate,
+            color: getColorByType(task.type),
+            userId: task.userId,
+            type: task.type,
+            completed: task.completed
+          }
+        })
+        console.log('Formatted events:', formattedEvents)
+        setEvents(formattedEvents)
+      })
+      .catch(err => {
+        console.error('Error fetching tasks:', err)
+        setEvents([])
+      })
 
   useEffect(() => {
+    fetchEvents()
   }, [apiUrl])
 
   const getWeekDates = (startDate) => {
@@ -207,6 +239,56 @@ function Calendar({ apiUrl, expanded, onToggleExpand }) {
     if (!match) return 0
     return parseInt(match[1]) + parseInt(match[2]) / 60
   }
+  const handleCreateTask = async (e) => {
+    e.preventDefault()
+    const startDateTime = new Date(`${newTask.date}T${newTask.startTime}:00`)
+    const endDateTime = new Date(`${newTask.date}T${newTask.endTime}:00`)
+    const duration = (endDateTime - startDateTime) / 1000
+
+    const taskData = {
+      userId: 'user123',
+      title: newTask.title,
+      description: newTask.description,
+      type: newTask.type,
+      difficulty: newTask.difficulty,
+      startTime: startDateTime.toISOString(),
+      endTime: endDateTime.toISOString(),
+      duration: duration,
+      calendarDate: newTask.date,
+      completed: false
+    }
+
+    console.log('Creating task:', taskData)
+
+    try {
+      const response = await fetch(`${apiUrl}/api/tasks`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(taskData)
+      })
+      console.log('Create response status:', response.status)
+      const result = await response.json()
+      console.log('Created task result:', result)
+      
+      if (response.ok) {
+        setShowTaskModal(false)
+        setNewTask({
+          title: '',
+          description: '',
+          type: 'study',
+          difficulty: 'medium',
+          date: new Date().toISOString().split('T')[0],
+          startTime: '09:00',
+          endTime: '10:00'
+        })
+        fetchEvents()
+      } else {
+        console.error('Failed to create task:', result)
+      }
+    } catch (err) {
+      console.error('Error creating task:', err)
+    }
+  }
   
 
   if (expanded) {
@@ -295,10 +377,44 @@ function Calendar({ apiUrl, expanded, onToggleExpand }) {
                   />
                 </div>
                 <div className="task-form-group">
+                  <label>Description</label>
+                  <textarea
+                    value={newTask.description}
+                    onChange={(e) => setNewTask({...newTask, description: e.target.value})}
+                  />
+                </div>
+                <div className="task-form-row">
+                  <div className="task-form-group">
+                    <label>Type</label>
+                    <select
+                      value={newTask.type}
+                      onChange={(e) => setNewTask({...newTask, type: e.target.value})}
+                    >
+                      <option value="study">Study</option>
+                      <option value="work">Work</option>
+                      <option value="personal">Personal</option>
+                      <option value="exercise">Exercise</option>
+                      <option value="meeting">Meeting</option>
+                    </select>
+                  </div>
+                  <div className="task-form-group">
+                    <label>Difficulty</label>
+                    <select
+                      value={newTask.difficulty}
+                      onChange={(e) => setNewTask({...newTask, difficulty: e.target.value})}
+                    >
+                      <option value="easy">Easy</option>
+                      <option value="medium">Medium</option>
+                      <option value="hard">Hard</option>
+                    </select>
+                  </div>
+                </div>
+                <div className="task-form-group">
                   <label>Date</label>
                   <input
                     type="date"
                     value={newTask.date}
+                    onChange={(e) => setNewTask({...newTask, date: e.target.value})}
                     required
                   />
                 </div>
@@ -308,6 +424,7 @@ function Calendar({ apiUrl, expanded, onToggleExpand }) {
                     <input
                       type="time"
                       value={newTask.startTime}
+                      onChange={(e) => setNewTask({...newTask, startTime: e.target.value})}
                       required
                     />
                   </div>
@@ -316,6 +433,7 @@ function Calendar({ apiUrl, expanded, onToggleExpand }) {
                     <input
                       type="time"
                       value={newTask.endTime}
+                      onChange={(e) => setNewTask({...newTask, endTime: e.target.value})}
                       required
                     />
                   </div>

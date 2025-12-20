@@ -549,3 +549,71 @@
   z-index: 1000;
   animation: fadeIn 0.2s ease;
 }
+.task-form-group label {
+  display: block;
+  color: var(--text-accent-2);
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.task-form-group input,
+.task-form-group textarea,
+.task-form-group select {
+  width: 100%;
+  padding: 0.75rem;
+  border-radius: 10px;
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text-default);
+  font-size: 0.95rem;
+  font-family: inherit;
+  transition: all 0.2s ease;
+  box-sizing: border-box;
+}
+
+.task-form-group input:focus,
+.task-form-group textarea:focus,
+.task-form-group select:focus {
+  outline: none;
+  border-color: var(--color-primary-2);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.task-form-group textarea {
+  min-height: 80px;
+  resize: none;
+}
+
+.task-form-row {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1.2rem;
+}
+
+.task-form-row .task-form-group {
+  flex: 1;
+  min-width: 0;
+}
+
+.task-form-actions {
+  display: flex;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+.task-btn-cancel,
+.task-btn-create {
+  flex: 1;
+  padding: 0.85rem;
+  border-radius: 10px;
+  border: none;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.task-btn-create {
+  background: var(--color-primary-2);
+  color: var(--background);
+}
