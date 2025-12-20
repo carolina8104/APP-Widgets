@@ -94,6 +94,20 @@ function serveStatic(url, response) {
 
 const { getCollection } = require('./db')
 
+async function hasReceivedXPToday(userId, reason) {
+  const notificationsCol = getCollection('notifications')
+  const today = new Date().toISOString().slice(0, 10)
+  
+  const existingNotification = await notificationsCol.findOne({
+    userId,
+    type: 'xp',
+    reason,
+    createdAt: { $gte: today }
+  })
+  
+  return !!existingNotification
+}
+
 async function giveXP(userId, amount, reason) {
   const usersCol = getCollection('users')
   const notificationsCol = getCollection('notifications')
