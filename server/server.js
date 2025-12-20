@@ -7,6 +7,19 @@ const { connect } = require('./db')
 
 const PORT = process.env.PORT || 3001
 
+const sseClients = []
+
+function broadcastSSE(eventType, data) {
+  const message = `event: ${eventType}\ndata: ${JSON.stringify(data)}\n\n`
+  sseClients.forEach(client => {
+    try {
+      client.write(message)
+    } catch (error) {
+      console.error('Error sending SSE to client:', error)
+    }
+  })
+}
+
 function sendJson(response, status, payload) {
   response.writeHead(status, {
     'Content-Type': 'application/json',
@@ -92,6 +105,28 @@ async function handleApi(message, response) {
       'Access-Control-Allow-Headers': 'Content-Type'
     })
     return response.end()
+  }
+
+  if (url.pathname === '/api/events' && message.method === 'GET') {
+    response.writeHead(200, {
+      'Content-Type': 'text/event-stream',
+      'Cache-Control': 'no-cache',
+      'Connection': 'keep-alive',
+      'Access-Control-Allow-Origin': '*'
+    })
+
+    response.write('data: {"type":"connected"}\n\n')
+
+    sseClients.push(response)
+
+    message.on('close', () => {
+      const index = sseClients.indexOf(response)
+      if (index !== -1) {
+        sseClients.splice(index, 1)
+      }
+    })
+
+    return
   }
 
   if (url.pathname === '/api/register' && message.method === 'POST') {
@@ -260,6 +295,9 @@ async function handleApi(message, response) {
     }
     
     await todosCol.insertOne(newTodo)
+    
+    broadcastSSE('todo-created', { userId: body.userId, todo: newTodo })
+    
     return sendJson(response, 201, newTodo)
   }
 
@@ -273,19 +311,32 @@ async function handleApi(message, response) {
     if (body.completed !== undefined) updateData.completed = body.completed
     if (body.content !== undefined) updateData.content = body.content
     
+    const todo = await todosCol.findOne({ _id: todoId })
+    
     await todosCol.updateOne(
       { _id: todoId },
       { $set: updateData }
     )
     
-    return sendJson(response, 200, { success: true })
+    if (todo) {
+      broadcastSSE('todo-updated', { userId: todo.userId, todoId, updates: updateData })
+    }
+    
+    return sendJson(response, 200, { success: true, ...updateData })
   }
 
   if (todoMatch && message.method === 'DELETE') {
     const todoId = todoMatch[1]
     const todosCol = getCollection('todo')
     
+    const todo = await todosCol.findOne({ _id: todoId })
+    
     await todosCol.deleteOne({ _id: todoId })
+    
+    if (todo) {
+      broadcastSSE('todo-deleted', { userId: todo.userId, todoId })
+    }
+    
     return sendJson(response, 200, { success: true })
   }
 

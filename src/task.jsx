@@ -6,9 +6,40 @@ function Task({ userId, apiUrl, expanded, onToggleExpand }) {
 
   useEffect(() => {
     fetchTasks()
-    const interval = setInterval(fetchTasks, 5000)
-    return () => clearInterval(interval)
-  }, [userId])
+    
+    const eventSource = new EventSource(`${apiUrl}/api/events`)
+    
+    eventSource.addEventListener('todo-created', (e) => {
+      const data = JSON.parse(e.data)
+      if (data.userId === userId) {
+        setTasks(prev => [data.todo, ...prev])
+      }
+    })
+    
+    eventSource.addEventListener('todo-updated', (e) => {
+      const data = JSON.parse(e.data)
+      if (data.userId === userId) {
+        setTasks(prev => prev.map(task => 
+          task._id === data.todoId ? { ...task, ...data.updates } : task
+        ))
+      }
+    })
+    
+    eventSource.addEventListener('todo-deleted', (e) => {
+      const data = JSON.parse(e.data)
+      if (data.userId === userId) {
+        setTasks(prev => prev.filter(task => task._id !== data.todoId))
+      }
+    })
+    
+    eventSource.onerror = (error) => {
+      console.error('SSE error in Task widget:', error)
+    }
+    
+    return () => {
+      eventSource.close()
+    }
+  }, [userId, apiUrl])
 
   async function fetchTasks() {
     try {
@@ -39,8 +70,6 @@ function Task({ userId, apiUrl, expanded, onToggleExpand }) {
       })
 
       if (response.ok) {
-        const task = await response.json()
-        setTasks([task, ...tasks])
         setNewTask('')
       }
     } catch (error) {
@@ -58,9 +87,6 @@ function Task({ userId, apiUrl, expanded, onToggleExpand }) {
       })
 
       if (response.ok) {
-        setTasks(tasks.map(task => 
-          task._id === taskId ? { ...task, completed: newStatus } : task
-        ))
       }
     } catch (error) {
       console.error('Error toggling task:', error)
@@ -74,7 +100,6 @@ function Task({ userId, apiUrl, expanded, onToggleExpand }) {
       })
 
       if (response.ok) {
-        setTasks(tasks.filter(task => task._id !== taskId))
       }
     } catch (error) {
       console.error('Error deleting task:', error)
