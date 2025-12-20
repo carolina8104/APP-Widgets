@@ -16,6 +16,9 @@ function Calendar({ apiUrl, expanded, onToggleExpand }) {
     endTime: '10:00'
   })
 
+  const fetchEvents = () => {
+    console.log('Fetching tasks from:', `${apiUrl}/api/tasks`)
+    fetch(`${apiUrl}/api/tasks`)
       .then(res => {
         console.log('Response status:', res.status)
         return res.json()
@@ -47,6 +50,7 @@ function Calendar({ apiUrl, expanded, onToggleExpand }) {
         console.error('Error fetching tasks:', err)
         setEvents([])
       })
+  }
 
   useEffect(() => {
     fetchEvents()
@@ -239,6 +243,29 @@ function Calendar({ apiUrl, expanded, onToggleExpand }) {
     if (!match) return 0
     return parseInt(match[1]) + parseInt(match[2]) / 60
   }
+
+  const formatTimeFromISO = (startISO, endISO) => {
+    const startDate = new Date(startISO)
+    const endDate = new Date(endISO)
+    const formatTime = (date) => {
+      const hours = date.getHours().toString().padStart(2, '0')
+      const minutes = date.getMinutes().toString().padStart(2, '0')
+      return `${hours}:${minutes}h`
+    }
+    return `${formatTime(startDate)} - ${formatTime(endDate)}`
+  }
+
+  const getColorByType = (type) => {
+    const colors = {
+      study: '#ff7b54',
+      work: '#c5ff41',
+      personal: '#ffe066',
+      exercise: '#87ceeb',
+      meeting: '#ffffff'
+    }
+    return colors[type] || '#ffd600'
+  }
+
   const handleCreateTask = async (e) => {
     e.preventDefault()
     const startDateTime = new Date(`${newTask.date}T${newTask.startTime}:00`)
@@ -483,7 +510,10 @@ function Calendar({ apiUrl, expanded, onToggleExpand }) {
                 } ${isToday(dayObj.date) ? 'today' : ''} ${
                   isSelected(dayObj.date) ? 'selected' : ''
                 }`}
-                onClick={() => setSelectedDate(dayObj.date)}
+                onClick={() => {
+                  setSelectedDate(dayObj.date)
+                  setCurrentWeekStart(dayObj.date)
+                }}
               >
                 {dayObj.day}
               </div>
