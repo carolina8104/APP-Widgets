@@ -524,6 +524,24 @@ function Calendar({ apiUrl, expanded, onToggleExpand }) {
           </div>
         </div>
 
+        {selectedEventInfo && (
+          <div className="event-info-panel" onClick={(e) => e.stopPropagation()}>
+            <button className="event-info-close" onClick={() => setSelectedEventInfo(null)}>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+              </svg>
+            </button>
+            <div className="event-info-header">
+              <h4 className="event-info-title">{selectedEventInfo.title}</h4>
+              <div className="event-info-badges">
+                <span className="event-badge event-type" style={{backgroundColor: selectedEventInfo.color}}>
+                  {selectedEventInfo.type}
+                </span>
+              </div>
+            </div>
+          </div>
+        )}
+
         <div className="calendar-sticker-widget">
           <h3 className="calendar-mini-title">Sticker collection</h3>
           <div className="calendar-placeholder-text">

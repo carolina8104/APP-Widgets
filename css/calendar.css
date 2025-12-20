@@ -692,4 +692,56 @@
   border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
+@keyframes eventPanelSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.event-info-panel.compact {
+  position: fixed;
+  right: 1rem;
+  bottom: 1rem;
+  top: auto;
+}
+
+.event-info-close {
+  position: absolute;
+  right: 10px;
+  top: 10px;
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-default);
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.event-info-close:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.event-info-close svg {
+  opacity: 0.8;
+}
+
+.event-info-header {
+  margin-bottom: 1rem;
+  padding-right: 2rem;
+}
+.event-status-indicator {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  box-shadow: 0 0 8px currentColor;
 }
