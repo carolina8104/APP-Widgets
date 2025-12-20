@@ -2,27 +2,45 @@ const { useState, useEffect } = React
 
 function Notifications({ userId, apiUrl, isMac = false, onFriendAcceptedRef }) {
   const [isOpen, setIsOpen] = useState(false)
-  const [notifications, setNotifications] = useState([])
+  const [friendRequests, setFriendRequests] = useState([])
+  const [xpNotifications, setXpNotifications] = useState([])
   const [loading, setLoading] = useState(false)
 
   useEffect(() => {
     if (!userId) return
     fetchNotifications()
     
+    const eventSource = new EventSource(`${apiUrl}/api/events`)
+    
+    eventSource.addEventListener('notification', (e) => {
+      const data = JSON.parse(e.data)
+      if (data.userId === userId) {
+        fetchNotifications()
+      }
+    })
+    
     const interval = setInterval(() => {
       fetchNotifications()
-    }, 5000)
-    return () => clearInterval(interval)
+    }, 30000)
+    
+    return () => {
+      eventSource.close()
+      clearInterval(interval)
+    }
   }, [userId])
 
   const fetchNotifications = async () => {
     try {
-      const res = await fetch(`${apiUrl}/api/users/${userId}/friend-requests`)
-      const data = await res.json()
-      if (!data.error) {
-        setNotifications(data)
-        console.log('Notifications updated:', data.length)
-      }
+      const [friendRes, xpRes] = await Promise.all([
+        fetch(`${apiUrl}/api/users/${userId}/friend-requests`),
+        fetch(`${apiUrl}/api/users/${userId}/notifications`)
+      ])
+      
+      const friendData = await friendRes.json()
+      const xpData = await xpRes.json()
+      
+      if (!friendData.error) setFriendRequests(friendData)
+      if (!xpData.error) setXpNotifications(xpData)
     } catch (err) {
       console.error('Error fetching notifications:', err)
     }
@@ -64,11 +82,23 @@ function Notifications({ userId, apiUrl, isMac = false, onFriendAcceptedRef }) {
     setLoading(false)
   }
 
+  const handleDismissXP = async (notificationId) => {
+    try {
+      await fetch(`${apiUrl}/api/notifications/${notificationId}`, {
+        method: 'DELETE'
+      })
+      await fetchNotifications()
+    } catch (err) {
+      console.error('Error dismissing notification:', err)
+    }
+  }
+
   const toggleOpen = () => {
     setIsOpen(!isOpen)
   }
 
-  const notificationCount = notifications.length
+  const notificationCount = friendRequests.length + xpNotifications.length
+  const allNotifications = [...xpNotifications, ...friendRequests]
 
   return (
     <div className={`notifications-container ${isMac ? 'mac' : 'windows'}`}>
@@ -93,54 +123,79 @@ function Notifications({ userId, apiUrl, isMac = false, onFriendAcceptedRef }) {
             </div>
             
             <div className="notifications-list">
-              {notifications.length === 0 ? (
+              {allNotifications.length === 0 ? (
                 <div className="notifications-empty">
                   No notifications
                 </div>
               ) : (
-                notifications.map(notif => (
-                  <div key={notif._id} className="notification-item">
-                    <div className="notification-content">
-                      <div className="notification-avatar">
-                        {notif.fromUser.settings?.profilePhoto ? (
-                          <img 
-                            src={notif.fromUser.settings.profilePhoto.startsWith('/') 
-                              ? `${apiUrl}${notif.fromUser.settings.profilePhoto}` 
-                              : notif.fromUser.settings.profilePhoto
-                            }
-                            alt={`${notif.fromUser.username} avatar`} 
-                          />
-                        ) : (
-                          <span>{notif.fromUser.username.charAt(0).toUpperCase()}</span>
-                        )}
+                allNotifications.map(notif => {
+                  if (notif.type === 'xp') {
+                    return (
+                      <div key={notif._id} className="notification-item xp-notification">
+                        <div className="notification-content" style={{ alignItems: 'center' }}>
+                          <div className="notification-icon xp-icon">
+                            <span>⭐</span>
+                          </div>
+                          <div className="notification-text" style={{ flex: 1 }}>
+                            <strong>+{notif.amount} XP</strong>
+                            <span className="notification-reason">{notif.reason}</span>
+                          </div>
+                          <button 
+                            className="notification-dismiss"
+                            onClick={() => handleDismissXP(notif._id)}
+                            aria-label="Dismiss"
+                            style={{ alignSelf: 'flex-start', marginLeft: 8 }}
+                          >
+                            ✕
+                          </button>
+                        </div>
                       </div>
-                      <div className="notification-text">
-                        <strong>{notif.fromUser.username}</strong> sent a friends request
+                    )
+                  }
+                  return (
+                    <div key={notif._id} className="notification-item">
+                      <div className="notification-content">
+                        <div className="notification-avatar">
+                          {notif.fromUser.settings?.profilePhoto ? (
+                            <img 
+                              src={notif.fromUser.settings.profilePhoto.startsWith('/') 
+                                ? `${apiUrl}${notif.fromUser.settings.profilePhoto}` 
+                                : notif.fromUser.settings.profilePhoto
+                              }
+                              alt={`${notif.fromUser.username} avatar`} 
+                            />
+                          ) : (
+                            <span>{notif.fromUser.username.charAt(0).toUpperCase()}</span>
+                          )}
+                        </div>
+                        <div className="notification-text">
+                          <strong>{notif.fromUser.username}</strong> sent a friends request
+                        </div>
+                      </div>
+                      <div className="notification-actions">
+                        <button 
+                          className="notification-btn accept"
+                          onClick={() => handleAccept(notif._id, notif.fromUser._id)}
+                          disabled={loading}
+                        >
+                          Accept
+                        </button>
+                        <button 
+                          className="notification-btn reject"
+                          onClick={() => handleReject(notif._id)}
+                          disabled={loading}
+                        >
+                          Decline
+                        </button>
                       </div>
                     </div>
-                    <div className="notification-actions">
-                      <button 
-                        className="notification-btn accept"
-                        onClick={() => handleAccept(notif._id, notif.fromUser._id)}
-                        disabled={loading}
-                      >
-                        Accept
-                      </button>
-                      <button 
-                        className="notification-btn reject"
-                        onClick={() => handleReject(notif._id)}
-                        disabled={loading}
-                      >
-                        Decline
-                      </button>
-                    </div>
-                  </div>
-                ))
+                  )
+                })
               )}
+              </div>
             </div>
-          </div>
-        </>
-      )}
-    </div>
-  )
-}
+          </>
+        )}
+      </div>
+    )
+  }
