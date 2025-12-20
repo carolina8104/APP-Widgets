@@ -381,6 +381,13 @@ async function handleApi(message, response) {
     
     await todosCol.insertOne(newTodo)
     
+    if (body.userId) {
+      const taskCount = await todosCol.countDocuments({ userId: body.userId })
+      if (taskCount === 1) {
+        await giveXP(body.userId, 5, 'You just created your first task!')
+      }
+    }
+    
     broadcastSSE('todo-created', { userId: body.userId, todo: newTodo })
     
     return sendJson(response, 201, newTodo)
@@ -409,6 +416,68 @@ async function handleApi(message, response) {
       { _id: todoId },
       { $set: updateData }
     )
+    
+    if (todo && todo.userId && (body.completed === 'true' || body.completed === true)) {
+      const today = new Date().toISOString().slice(0, 10)
+      const completedTodayCount = await todosCol.countDocuments({
+        userId: todo.userId,
+        completed: 'true',
+        completedAt: { $gte: today }
+      })
+      
+      if (completedTodayCount % 10 === 0) {
+        const rewardReason = `Completed ${completedTodayCount} tasks today!`
+        const alreadyRewarded = await hasReceivedXPToday(todo.userId, rewardReason)
+        if (!alreadyRewarded) {
+          await giveXP(todo.userId, 10, rewardReason)
+        }
+      }
+      
+      const oneWeekAgo = new Date()
+      oneWeekAgo.setDate(oneWeekAgo.getDate() - 7)
+      const weekStart = oneWeekAgo.toISOString()
+      
+      const completedThisWeekCount = await todosCol.countDocuments({
+        userId: todo.userId,
+        completed: 'true',
+        completedAt: { $gte: weekStart }
+      })
+      
+      if (completedThisWeekCount >= 150) {
+        const alreadyRewardedWeek = await hasReceivedXPToday(todo.userId, 'Completed 150+ tasks this week!')
+        if (!alreadyRewardedWeek) {
+          await giveXP(todo.userId, 20, 'Completed 150+ tasks this week!')
+        }
+      }
+      
+      let streak = 0
+      let hasStreak = true
+      for (let i = 0; i < 7; i++) {
+        const checkDate = new Date()
+        checkDate.setDate(checkDate.getDate() - i)
+        const dayStart = checkDate.toISOString().slice(0, 10)
+        
+        const completedThatDay = await todosCol.countDocuments({
+          userId: todo.userId,
+          completed: 'true',
+          completedAt: { $gte: dayStart, $lt: dayStart + 'T23:59:59' }
+        })
+        
+        if (completedThatDay >= 7) {
+          streak++
+        } else {
+          hasStreak = false
+          break
+        }
+      }
+      
+      if (streak >= 7 && hasStreak) {
+        const alreadyRewardedStreak = await hasReceivedXPToday(todo.userId, '7-day streak: 7+ tasks daily!')
+        if (!alreadyRewardedStreak) {
+          await giveXP(todo.userId, 25, '7-day streak: 7+ tasks daily!')
+        }
+      }
+    }
     
     if (todo) {
       broadcastSSE('todo-updated', { userId: todo.userId, todoId, updates: updateData })
