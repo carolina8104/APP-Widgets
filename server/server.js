@@ -538,6 +538,32 @@ async function handleApi(message, response) {
     return sendJson(response, 200, validRequests)
   }
 
+  if (url.pathname.match(/^\/api\/users\/([a-zA-Z0-9\-_]+)\/notifications$/) && message.method === 'GET') {
+    const match = url.pathname.match(/^\/api\/users\/([a-zA-Z0-9\-_]+)\/notifications$/)
+    const userId = match[1]
+    const notificationsCol = getCollection('notifications')
+    
+    const notifications = await notificationsCol.find({ 
+      userId,
+      read: false
+    }).sort({ createdAt: -1 }).toArray()
+    
+    return sendJson(response, 200, notifications)
+  }
+
+  const notificationMatch = url.pathname.match(/^\/api\/notifications\/([a-zA-Z0-9\-_]+)$/)
+  if (notificationMatch && message.method === 'DELETE') {
+    const notificationId = notificationMatch[1]
+    const notificationsCol = getCollection('notifications')
+    
+    await notificationsCol.updateOne(
+      { _id: notificationId },
+      { $set: { read: true } }
+    )
+    
+    return sendJson(response, 200, { success: true })
+  }
+
   if (url.pathname === '/api/friend-requests' && message.method === 'POST') {
     const body = await parseBody(message)
     const { fromUserId, toUserId } = body
