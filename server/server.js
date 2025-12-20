@@ -246,7 +246,26 @@ async function handleApi(message, response) {
     const result = await notesCol.insertOne(body)
     
     if (body.userId) {
-      await giveXP(body.userId, 5, 'Note created')
+      const noteCount = await notesCol.countDocuments({ userId: body.userId })
+      
+      if (noteCount === 1) {
+        await giveXP(body.userId, 5, 'You just created your first note!')
+      }
+      
+      if (noteCount % 10 === 0) {
+        const rewardReason = `Already ${noteCount} notes created!`;
+        const alreadyRewarded = await hasReceivedXPToday(body.userId, rewardReason);
+        if (!alreadyRewarded) {
+          await giveXP(body.userId, 15, rewardReason);
+        }
+      }
+      
+      if (body.content && body.content.length > 2000) {
+        const alreadyRewardedLong = await hasReceivedXPToday(body.userId, 'You just created a long note! Keep it up!')
+        if (!alreadyRewardedLong) {
+          await giveXP(body.userId, 10, 'You just created a long note! Keep it up!')
+        }
+      }
     }
     
     return sendJson(response, 201, { insertedId: result.insertedId, ...body })
@@ -265,7 +284,21 @@ async function handleApi(message, response) {
     if (message.method === 'PUT') {
       const body = await parseBody(message)
       body.lastModified = new Date()
+      const note = await notesCol.findOne({ _id: id })
+      
       await notesCol.updateOne({ _id: id }, { $set: body })
+      
+      if (note && note.userId && note.createdAt) {
+        const noteAge = Date.now() - new Date(note.createdAt).getTime()
+        const fiveDaysInMs = 5 * 24 * 60 * 60 * 1000
+        if (noteAge > fiveDaysInMs) {
+          const alreadyRewarded = await hasReceivedXPToday(note.userId, 'Its always good to revise old work!')
+          if (!alreadyRewarded) {
+            await giveXP(note.userId, 5, 'Its always good to revise old work!')
+          }
+        }
+      }
+      
       return sendJson(response, 200, { updated: true })
     }
 
