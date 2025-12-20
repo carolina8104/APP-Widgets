@@ -736,10 +736,21 @@ async function handleApi(message, response) {
     const requestId = acceptMatch[1]
     const friendshipCol = getCollection('friendship')
 
+    const friendship = await friendshipCol.findOne({ _id: requestId })
+
     await friendshipCol.updateOne(
       { _id: requestId },
       { $set: { status: 'accepted' } }
     )
+    
+    if (friendship) {
+      if (friendship.user1) {
+        await giveXP(friendship.user1, 10, 'Added a new friend!')
+      }
+      if (friendship.user2) {
+        await giveXP(friendship.user2, 10, 'Added a new friend!')
+      }
+    }
 
     return sendJson(response, 200, { success: true })
   }
