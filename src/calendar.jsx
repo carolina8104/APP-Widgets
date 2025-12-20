@@ -5,38 +5,19 @@ function Calendar({ apiUrl, expanded, onToggleExpand }) {
   const [currentWeekStart, setCurrentWeekStart] = useState(new Date())
   const [miniCalendarDate, setMiniCalendarDate] = useState(new Date())
   const [selectedDate, setSelectedDate] = useState(new Date())
+  const [showTaskModal, setShowTaskModal] = useState(false)
+  const [newTask, setNewTask] = useState({
+    title: '',
+    description: '',
+    type: 'study',
+    difficulty: 'medium',
+    date: new Date().toISOString().split('T')[0],
+    startTime: '09:00',
+    endTime: '10:00'
+  })
+
 
   useEffect(() => {
-
-    const today = new Date()
-    const currentWeekDates = getWeekDates(today)
-    
-    const mockEvents = [
-      { title: 'Visual class', time: '9:00h - 11:00h', date: currentWeekDates[0].toISOString().split('T')[0], color: '#ffffff', userId: 'user1' },
-      { title: 'Meeting DW', time: '11:00h - 11:45h', date: currentWeekDates[0].toISOString().split('T')[0], color: '#c5ff41' },
-      { title: 'DS Class', time: '9:00h - 11:00h', date: currentWeekDates[1].toISOString().split('T')[0], color: '#ffffff', userId: 'user1' },
-      { title: 'Study session', time: '14:00h - 16:00h', date: currentWeekDates[1].toISOString().split('T')[0], color: '#ff7b54' },
-      { title: 'Meeting LE', time: '11:00h - 11:45h', date: currentWeekDates[2].toISOString().split('T')[0], color: '#c5ff41' },
-      { title: 'Cafe', time: '16:00h - 17:00h', date: currentWeekDates[2].toISOString().split('T')[0], color: '#ffe066', userId: 'user2' },
-      { title: 'LE Class', time: '11:20h', date: currentWeekDates[3].toISOString().split('T')[0], color: '#ffffff' },
-      { title: 'English class', time: '13:00h - 14:45h', date: currentWeekDates[4].toISOString().split('T')[0], color: '#ffffff' },
-      { title: 'DS projeto', time: '15:00h - 18:30h', date: currentWeekDates[4].toISOString().split('T')[0], color: '#ff7b54' },
-      { title: 'Morning run', time: '7:00h - 8:00h', date: currentWeekDates[4].toISOString().split('T')[0], color: '#c5ff41' },
-      { title: 'Morning run', time: '7:00h - 8:00h', date: currentWeekDates[5].toISOString().split('T')[0], color: '#c5ff41' },
-      { title: 'Meeting DW', time: '11:00h - 11:45h', date: currentWeekDates[5].toISOString().split('T')[0], color: '#c5ff41' },
-      { title: 'Almoço família', time: '13:00h - 15:00h', date: currentWeekDates[5].toISOString().split('T')[0], color: '#c5ff41' },
-      { title: 'VI projeto', time: '15:30h - 18:00h', date: currentWeekDates[5].toISOString().split('T')[0], color: '#ff7b54' },
-      { title: 'DS Class', time: '9:00h - 11:00h', date: currentWeekDates[6].toISOString().split('T')[0], color: '#ffffff', userId: 'user1' },
-      { title: 'Gym', time: '14:30h - 16:30h', date: currentWeekDates[6].toISOString().split('T')[0], color: '#ffe066', userId: 'user3' },
-      { title: 'Afternoon run', time: '17:00h - 18:00h', date: currentWeekDates[6].toISOString().split('T')[0], color: '#ffe066' },
-      { title: 'Cinema', time: '22:30h - 00:00h', date: currentWeekDates[6].toISOString().split('T')[0], color: '#ffe066', userId: 'user2' }
-    ]
-    setEvents(mockEvents)
-    
-    // fetch(`${apiUrl}/api/calendar`)
-    //   .then(res => res.json())
-    //   .then(data => setEvents(data || []))
-    //   .catch(err => console.error('Error fetching calendar events:', err))
   }, [apiUrl])
 
   const getWeekDates = (startDate) => {
@@ -294,10 +275,63 @@ function Calendar({ apiUrl, expanded, onToggleExpand }) {
 
         <div className="calendar-add-task-widget">
           <h3 style={{color: 'var(--text-default)', margin: 0, fontSize: '1rem', fontWeight: 600}}>Add new task</h3>
-          <button className="calendar-add-task-btn">
+          <button className="calendar-add-task-btn" onClick={() => setShowTaskModal(true)}>
             <span>+</span>
           </button>
         </div>
+
+        {showTaskModal && (
+          <div className="task-modal-overlay" onClick={() => setShowTaskModal(false)}>
+            <div className="task-modal" onClick={(e) => e.stopPropagation()}>
+              <h2>Create New Task</h2>
+              <form onSubmit={handleCreateTask}>
+                <div className="task-form-group">
+                  <label>Title</label>
+                  <input
+                    type="text"
+                    value={newTask.title}
+                    onChange={(e) => setNewTask({...newTask, title: e.target.value})}
+                    required
+                  />
+                </div>
+                <div className="task-form-group">
+                  <label>Date</label>
+                  <input
+                    type="date"
+                    value={newTask.date}
+                    required
+                  />
+                </div>
+                <div className="task-form-row">
+                  <div className="task-form-group">
+                    <label>Start Time</label>
+                    <input
+                      type="time"
+                      value={newTask.startTime}
+                      required
+                    />
+                  </div>
+                  <div className="task-form-group">
+                    <label>End Time</label>
+                    <input
+                      type="time"
+                      value={newTask.endTime}
+                      required
+                    />
+                  </div>
+                </div>
+                <div className="task-form-actions">
+                  <button type="button" className="task-btn-cancel" onClick={() => setShowTaskModal(false)}>
+                    Cancel
+                  </button>
+                  <button type="submit" className="task-btn-create">
+                    Create Task
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        )}
 
         <div className="calendar-mini-widget">
           <div className="mini-calendar-header">
