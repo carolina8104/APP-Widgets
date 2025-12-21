@@ -5,6 +5,7 @@ const THEMES = {
       '--color-primary-1': '#B7FF2F',
       '--color-primary-2': '#FFE86D',
       '--color-primary-3': '#F9773B',
+      '--color-primary-4': '#97B9FF',
 
       '--color-neutral-1': '#FFFFFF',
       '--color-neutral-2': '#242424',
@@ -13,6 +14,7 @@ const THEMES = {
       '--text-accent-1': '#0F0F0F',
       '--text-accent-2': '#0F0F0F',
       '--text-accent-3': '#0F0F0F',
+      '--bar-elements': '#FFFFFF',
 
     }
   },
@@ -66,18 +68,21 @@ const THEMES = {
   },
   theme5: {
     colors: {
-      '--background': '#c3bdbdff',
-      '--color-primary-1': '#FFFFFF',
-      '--color-primary-2': '#dbd9d9ff',
-      '--color-primary-3': '#d6d6d6ff',
-      '--color-neutral-1': '#FFFFFF',
-      '--color-neutral-2': '#242424',
+      '--background': '#181717ff',
+      '--color-primary-1':  '#812222ff',
+      '--color-primary-2': '#a5a2a2ff',
+      '--color-primary-3':  '#812222ff',
+      '--color-primary-4': '#6f3333ff',
+      '--color-neutral-1': '#ede7e7ff',
+      '--color-neutral-2': '#ede7e7ff',
 
       '--text-default': '#000000ff',
-      '--text-inverse': '#FFFFFF',
-      '--text-accent-1': '#D71A21',
+      '--text-inverse': '#ede7e7ff',
+      '--text-accent-1':  '#f0e2e3ff',
       '--text-accent-2': '#1d1b1bff',
-      '--text-accent-3': '#D71A21',
+      '--text-accent-3': '#f0e2e3ff',
+      '--bar-elements': '#181717ff',
+
     }
   },
   theme6: {

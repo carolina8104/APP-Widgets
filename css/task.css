@@ -191,3 +191,7 @@
   margin: 0;
   font-size: 0.9rem;
 }
+
+.tasks .expand-arrow {
+  stroke: var(--text-default);
+}

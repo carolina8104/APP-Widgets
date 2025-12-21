@@ -6,7 +6,6 @@
   position: relative;
   background: transparent;
   border: none;
-  color: var(--text-primary, --text-inverse);
   cursor: pointer;
   padding: 8px;
   border-radius: 50%;
@@ -16,8 +15,7 @@
   transition: background-color 0.2s;
 }
 .notifications-bell svg {
-    color: var(--text-primary, --text-inverse);
-    scale: 1;
+  scale: 1;
 }
 
 .notifications-bell:hover {
@@ -88,7 +86,7 @@
   margin: 0;
   font-size: 18px;
   font-weight: 600;
-  color: var(--text-primary, --text-inverse);
+  color: var(--bar-elements);
 }
 
 .notifications-count {
