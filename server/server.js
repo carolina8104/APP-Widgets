@@ -916,6 +916,32 @@ async function handleApi(message, response) {
   }
 
   const photosMatch = url.pathname.match(/^\/api\/users\/([a-zA-Z0-9\-_]+)\/photos$/)
+  if (photosMatch && message.method === 'DELETE') {
+    const userId = photosMatch[1]
+    const body = await parseBody(message)
+    const usersCol = getCollection('users')
+    
+    const photoUrl = body.photoUrl
+    if (!photoUrl) {
+      return sendJson(response, 400, { error: 'photoUrl is required' })
+    }
+    
+    const result = await usersCol.updateOne(
+      { _id: userId },
+      { $pull: { photos: photoUrl } }
+    )
+    
+    if (photoUrl.startsWith('/uploads/')) {
+      const filepath = path.join(__dirname, '..', photoUrl)
+      if (fs.existsSync(filepath)) {
+        fs.unlinkSync(filepath)
+      }
+    }
+    
+    const user = await usersCol.findOne({ _id: userId })
+    return sendJson(response, 200, { photos: user.photos || [] })
+  }
+  
   if (photosMatch && message.method === 'POST') {
     const userId = photosMatch[1]
     const usersCol = getCollection('users')
