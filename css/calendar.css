@@ -834,6 +834,33 @@
   box-shadow: 0 0 8px currentColor;
 }
 
+.event-delete-btn {
+  margin-top: 1rem;
+  padding: 0.75rem 1rem;
+  background: rgba(255, 59, 48, 0.15);
+  border: 1px solid rgba(255, 59, 48, 0.3);
+  border-radius: 10px;
+  color: #ff3b30;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  transition: all 0.2s ease;
+  width: 100%;
+}
+
+.event-delete-btn:hover {
+  background: rgba(255, 59, 48, 0.25);
+  border-color: rgba(255, 59, 48, 0.5);
+  transform: translateY(-1px);
+}
+
+.event-delete-btn svg {
+  stroke: currentColor;
+}
 .calendar .expand-arrow {
   stroke: var(--text-default);
 }

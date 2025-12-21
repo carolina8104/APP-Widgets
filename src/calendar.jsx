@@ -17,6 +17,22 @@ function Calendar({ apiUrl, expanded, onToggleExpand, userId }) {
     endTime: '10:00'
   })
 
+  const deleteEvent = async (eventId) => {
+    try {
+      const response = await fetch(`${apiUrl}/api/tasks/${eventId}`, {
+        method: 'DELETE'
+      })
+      if (response.ok) {
+        setSelectedEventInfo(null)
+        fetchEvents()
+      } else {
+        console.error('Failed to delete event')
+      }
+    } catch (err) {
+      console.error('Error deleting event:', err)
+    }
+  }
+
   const fetchEvents = () => {
     const url = userId ? `${apiUrl}/api/tasks?userId=${userId}` : `${apiUrl}/api/tasks`
     console.log('Fetching tasks from:', url)
@@ -555,6 +571,15 @@ function Calendar({ apiUrl, expanded, onToggleExpand, userId }) {
                 <div className="event-info-desc">{selectedEventInfo.description}</div>
               </div>
             )}
+            <button 
+              className="event-delete-btn" 
+              onClick={() => deleteEvent(selectedEventInfo._id)}
+            >
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                <path d="M10 11v6M14 11v6M4 7h16M6 7h12v11a2 2 0 01-2 2H8a2 2 0 01-2-2V7zM9 5a1 1 0 011-1h4a1 1 0 011 1v2H9V5z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+              Delete Event
+            </button>
           </div>
         )}
 
@@ -658,6 +683,15 @@ function Calendar({ apiUrl, expanded, onToggleExpand, userId }) {
               <div className="event-info-desc">{selectedEventInfo.description}</div>
             </div>
           )}
+          <button 
+            className="event-delete-btn" 
+            onClick={() => deleteEvent(selectedEventInfo._id)}
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+              <path d="M10 11v6M14 11v6M4 7h16M6 7h12v11a2 2 0 01-2 2H8a2 2 0 01-2-2V7zM9 5a1 1 0 011-1h4a1 1 0 011 1v2H9V5z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+            Delete Event
+          </button>
         </div>
       )}
     </div>

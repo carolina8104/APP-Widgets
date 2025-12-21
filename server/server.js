@@ -1070,6 +1070,17 @@ async function handleApi(message, response) {
     }
   }
 
+  const taskMatch = url.pathname.match(/^\/api\/tasks\/([^/]+)$/)
+  if (taskMatch && message.method === 'DELETE') {
+    const taskId = taskMatch[1]
+    const tasksCol = getCollection('calendar')
+    const result = await tasksCol.deleteOne({ _id: taskId })
+    if (result.deletedCount === 0) {
+      return sendJson(response, 404, { error: 'Task not found' })
+    }
+    return sendJson(response, 200, { deleted: true })
+  }
+
   sendJson(response, 404, { error: 'Not found' })
 
 }
