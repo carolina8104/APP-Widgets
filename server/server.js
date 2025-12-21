@@ -257,11 +257,28 @@ async function handleApi(message, response) {
       return sendJson(response, 401, { error: 'Incorrect password' })
     }
     
+    await usersCol.updateOne(
+      { _id: user._id },
+      { $set: { lastActivity: new Date().toISOString() } }
+    )
+    
     return sendJson(response, 200, { 
       userId: user._id,
       email: user.email,
       name: user.username || user.name 
     })
+  }
+
+  if (url.pathname === '/api/ping' && message.method === 'POST') {
+    const body = await parseBody(message)
+    const usersCol = getCollection('users')
+    
+    await usersCol.updateOne(
+      { _id: body.userId },
+      { $set: { lastActivity: new Date().toISOString() } }
+    )
+    
+    return sendJson(response, 200, { success: true })
   }
 
   if (url.pathname === '/api/notes' && message.method === 'GET') {
@@ -372,15 +389,26 @@ async function handleApi(message, response) {
         _id: { $in: friendIds }
       }).toArray()
       
-      const friendsData = friends.map(friend => ({
-        _id: friend._id,
-        name: friend.username,
-        level: friend.level,
-        email: friend.email,
-        xp: friend.xp,
-        photos: friend.photos || [],
-        settings: friend.settings || {}
-      }))
+      const now = new Date()
+      const fiveMinutesAgo = new Date(now.getTime() - 5 * 60 * 1000)
+      
+      const friendsData = friends.map(friend => {
+        const lastActivity = friend.lastActivity ? new Date(friend.lastActivity) : null
+        const isOnline = friend.settings?.appearOnline !== false && 
+                        lastActivity && 
+                        lastActivity > fiveMinutesAgo
+        
+        return {
+          _id: friend._id,
+          name: friend.username,
+          level: friend.level,
+          email: friend.email,
+          xp: friend.xp,
+          photos: friend.photos || [],
+          settings: friend.settings || {},
+          isOnline: isOnline
+        }
+      })
       
       return sendJson(response, 200, friendsData)
     }
