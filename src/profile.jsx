@@ -7,6 +7,18 @@ function Profile({ userId, expanded, onToggleExpand, onLogout }) {
   const [appearOnline, setAppearOnline] = useState(true)
   const fileInputRef = useRef(null)
 
+  const isThemeUnlocked = (themeId, userLevel) => {
+    const themeUnlockLevels = {
+      'theme1': 1,
+      'theme2': 1,
+      'theme3': 5,
+      'theme4': 10,
+      'theme5': 18,
+      'theme6': 26
+    }
+    return userLevel >= (themeUnlockLevels[themeId] || 1)
+  }
+
   useEffect(() => {
     if (!userId) return
     
@@ -212,7 +224,17 @@ function Profile({ userId, expanded, onToggleExpand, onLogout }) {
                 <path d="M8 14s1.5 2 4 2 4-2 4-2M9 9h.01M15 9h.01" stroke="var(--text-default)" strokeWidth="2" strokeLinecap="round"/>
               </svg>
             </div>
-            <span className="profile-stat-value">{userData?.stickersUnlocked?.length || 0}</span>
+            <span className="profile-stat-value">{
+              (() => {
+                const level = userData?.level || 1
+                let count = 2
+                if (level >= 5) count++
+                if (level >= 10) count++
+                if (level >= 18) count++
+                if (level >= 26) count++
+                return count
+              })()
+            }</span>
             <span className="profile-stat-label">Stickers</span>
           </div>
           
@@ -226,7 +248,7 @@ function Profile({ userId, expanded, onToggleExpand, onLogout }) {
                 <circle cx="15.5" cy="15.5" r="1.5" fill="var(--background)"/>
               </svg>
             </div>
-            <span className="profile-stat-value">{userData?.themesUnlocked?.length || 0}</span>
+            <span className="profile-stat-value">{Math.min(userData?.level ? Math.floor((userData.level - 1) / 5) + 2 : 2, 6)}</span>
             <span className="profile-stat-label">Themes</span>
           </div>
         </div>
@@ -265,26 +287,25 @@ function Profile({ userId, expanded, onToggleExpand, onLogout }) {
               { id: 'theme5', color1: '#D71A21', color2: '#3B393E', locked: true },
               { id: 'theme6', color1: '#FF6B9D', color2: '#C44569', locked: true }
             ].map((theme) => {
-              const isUnlocked = userData?.themesUnlocked?.includes(theme.id)
-              const isLocked = theme.locked && !isUnlocked
+              const isUnlocked = isThemeUnlocked(theme.id, userData?.level || 1)
               const isActive = selectedTheme === theme.id
               
               return (
                 <div 
                   key={theme.id}
-                  className={`profile-theme-dot ${isActive ? 'active' : ''} ${isLocked ? 'locked' : ''}`}
-                  onClick={!isLocked ? () => handleThemeChange(theme.id) : undefined}
+                  className={`profile-theme-dot ${isActive ? 'active' : ''} ${!isUnlocked ? 'locked' : ''}`}
+                  onClick={isUnlocked ? () => handleThemeChange(theme.id) : undefined}
                   style={{ 
                     background: `linear-gradient(135deg, ${theme.color1} 50%, ${theme.color2} 50%)`
                   }}
-                  title={isLocked ? `${theme.id} (Locked)` : theme.id}
+                  title={!isUnlocked ? `${theme.id} (Locked)` : theme.id}
                 >
-                  {isActive && !isLocked && (
+                  {isActive && isUnlocked && (
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
                       <path d="M20 6L9 17l-5-5" stroke="white" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
                     </svg>
                   )}
-                  {isLocked && (
+                  {!isUnlocked && (
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
                       <rect x="5" y="11" width="14" height="10" rx="2" stroke="white" strokeWidth="2"/>
                       <path d="M7 11V7a5 5 0 0 1 10 0v4" stroke="white" strokeWidth="2"/>

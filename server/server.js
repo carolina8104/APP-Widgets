@@ -140,12 +140,22 @@ async function giveXP(userId, amount, reason) {
   broadcastSSE('notification', { userId, notification })
   
   if (newLevel > oldLevel) {
+    const themeUnlocks = {
+      5: 'theme3',
+      10: 'theme4',
+      18: 'theme5',
+      26: 'theme6'
+    }
+    
+    const unlockedTheme = themeUnlocks[newLevel]
+    
     const levelNotification = {
       _id: `notif${Date.now() + 1}`,
       userId,
       type: 'level-up',
       level: newLevel,
       reason: `Congratulations! You leveled up to level ${newLevel}!`,
+      unlockedTheme: unlockedTheme || null,
       read: false,
       createdAt: new Date().toISOString()
     }
@@ -564,7 +574,6 @@ async function handleApi(message, response) {
       level: user.level,
       xp: user.xp,
       stickersUnlocked: user.stickersUnlocked || [],
-      themesUnlocked: user.themesUnlocked || [],
       photos: user.photos || [],
       settings: user.settings || {},
       createdAt: user.createdAt

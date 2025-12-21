@@ -157,11 +157,15 @@ function Notifications({ userId, apiUrl, isMac = false, onFriendAcceptedRef }) {
                       <div key={notif._id} className="notification-item xp-notification level-up-notification">
                         <div className="notification-content" style={{ alignItems: 'center' }}>
                           <div className="notification-icon xp-icon">
-                            <span>🎉</span>
+                            <span>{notif.unlockedTheme ? '🎨' : '🎉'}</span>
                           </div>
                           <div className="notification-text" style={{ flex: 1 }}>
                             <strong>Level {notif.level}!</strong>
-                            <span className="notification-reason">{notif.reason}</span>
+                            <span className="notification-reason">
+                              {notif.unlockedTheme 
+                                ? `Level up! You unlocked ${notif.unlockedTheme}!` 
+                                : notif.reason}
+                            </span>
                           </div>
                           <button 
                             className="notification-dismiss"
