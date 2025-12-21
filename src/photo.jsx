@@ -4,6 +4,7 @@ function Photos({ userId, apiUrl, expanded, onToggleExpand }) {
   const [photos, setPhotos] = useState([])
   const [currentIndex, setCurrentIndex] = useState(0)
   const [uploading, setUploading] = useState(false)
+  const [isHovering, setIsHovering] = useState(false)
   const transitionTimeoutRef = useRef(null)
   const fileInputRef = useRef(null)
 
@@ -88,6 +89,32 @@ function Photos({ userId, apiUrl, expanded, onToggleExpand }) {
         }
     }
 
+    const handleDeletePhoto = async () => {
+        if (!photos || photos.length === 0) return
+        
+        const photoToDelete = photos[currentIndex]
+        setUploading(true)
+        try {
+            const response = await fetch(`${apiUrl}/api/users/${userId}/photos`, {
+                method: 'DELETE',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ photoUrl: photoToDelete })
+            })
+
+            const data = await response.json()
+            if (response.ok) {
+                setPhotos(data.photos)
+                setCurrentIndex(prev => prev >= data.photos.length ? Math.max(0, data.photos.length - 1) : prev)
+            } else {
+                alert('Error deleting photo: ' + data.error)
+            }
+        } catch (err) {
+            alert('Error deleting photo: ' + err.message)
+        } finally {
+            setUploading(false)
+        }
+    }
+
     if (!photos || photos.length === 0) {
         return (
         <div className="photo-empty">
@@ -114,13 +141,26 @@ function Photos({ userId, apiUrl, expanded, onToggleExpand }) {
     }
 
   return (
-    <div className="photo-container">
+    <div className="photo-container" 
+         onMouseEnter={() => setIsHovering(true)}
+         onMouseLeave={() => setIsHovering(false)}>
       <img 
         key={currentIndex}
         src={getPhotoUrl(photos[currentIndex])} 
         alt="Photo" 
         className="photo-image"
       />
+
+      <button 
+        className="photo-delete-btn" 
+        onClick={handleDeletePhoto}
+        disabled={uploading}
+        aria-label="Delete photo"
+      >
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+          <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"/>
+        </svg>
+      </button>
 
       <button 
         className="photo-upload-btn-small" 
