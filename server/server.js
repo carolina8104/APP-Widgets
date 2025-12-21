@@ -1036,7 +1036,9 @@ async function handleApi(message, response) {
 
   if (url.pathname === '/api/tasks' && message.method === 'GET') {
     const tasksCol = getCollection('calendar')
-    const tasks = await tasksCol.find().toArray()
+    const userId = url.searchParams.get('userId')
+    const filter = userId ? { userId } : {}
+    const tasks = await tasksCol.find(filter).toArray()
     return sendJson(response, 200, tasks)
   }
 

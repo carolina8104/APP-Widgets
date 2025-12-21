@@ -197,7 +197,7 @@ color:var(--text-default);
 }
 
 .dashboard-grid > div.tasks > .widget {
-    height: 96.5%;
+    height: 96.35%;
     min-height: 0;
     display: flex;
     flex-direction: column;

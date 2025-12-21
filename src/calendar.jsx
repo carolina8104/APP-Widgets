@@ -1,6 +1,6 @@
 const { useState, useEffect } = React
 
-function Calendar({ apiUrl, expanded, onToggleExpand }) {
+function Calendar({ apiUrl, expanded, onToggleExpand, userId }) {
   const [events, setEvents] = useState([])
   const [currentWeekStart, setCurrentWeekStart] = useState(new Date())
   const [miniCalendarDate, setMiniCalendarDate] = useState(new Date())
@@ -18,8 +18,9 @@ function Calendar({ apiUrl, expanded, onToggleExpand }) {
   })
 
   const fetchEvents = () => {
-    console.log('Fetching tasks from:', `${apiUrl}/api/tasks`)
-    fetch(`${apiUrl}/api/tasks`)
+    const url = userId ? `${apiUrl}/api/tasks?userId=${userId}` : `${apiUrl}/api/tasks`
+    console.log('Fetching tasks from:', url)
+    fetch(url)
       .then(res => {
         console.log('Response status:', res.status)
         return res.json()
@@ -55,8 +56,10 @@ function Calendar({ apiUrl, expanded, onToggleExpand }) {
   }
 
   useEffect(() => {
-    fetchEvents()
-  }, [apiUrl])
+    if (userId) {
+      fetchEvents()
+    }
+  }, [apiUrl, userId])
 
   const getWeekDates = (startDate) => {
     const dates = []
@@ -275,7 +278,7 @@ function Calendar({ apiUrl, expanded, onToggleExpand }) {
     const duration = (endDateTime - startDateTime) / 1000
 
     const taskData = {
-      userId: 'user123',
+      userId: userId,
       title: newTask.title,
       description: newTask.description,
       type: newTask.type,
