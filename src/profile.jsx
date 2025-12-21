@@ -280,12 +280,12 @@ function Profile({ userId, expanded, onToggleExpand, onLogout, apiUrl }) {
           <div className="profile-settings-card">
             <div className="profile-themes-row">
             {[
-              { id: 'theme1', color1: '#FFE86D', color2: '#F9773B' },
+              { id: 'theme1', color1: '#FFE86D', color2: '#B7FF2F' },
               { id: 'theme2', color1: '#F4721E', color2: '#4D6080' },
-              { id: 'theme3', color1: '#F2B5FA', color2: '#A3B665', locked: true },
-              { id: 'theme4', color1: '#2801E8', color2: '#FFAED7', locked: true },
-              { id: 'theme5', color1: '#D71A21', color2: '#3B393E', locked: true },
-              { id: 'theme6', color1: '#FF6B9D', color2: '#C44569', locked: true }
+              { id: 'theme3', color1: '#D6D2C8', color2: '#6F7472', locked: true },
+              { id: 'theme4', color1: '#B7382D', color2: '#D8B23A', locked: true },
+              { id: 'theme5', color1: '#812222ff', color2: '#a5a2a2ff', locked: true },
+              { id: 'theme6', color1: '#FF6F9F', color2: '#FFD1E6', locked: true }
             ].map((theme) => {
               const isUnlocked = isThemeUnlocked(theme.id, userData?.level || 1)
               const isActive = selectedTheme === theme.id
