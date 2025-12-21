@@ -209,6 +209,7 @@ function App() {
                 <Widget color="var(--color-neutral-2)" content={
                     <Calendar 
                         apiUrl={API_URL}
+                        userId={currentUser.userId}
                         expanded={expandedWidget === 'calendar'}
                         onToggleExpand={() => toggleWidget('calendar')}
                     />

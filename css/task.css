@@ -196,6 +196,21 @@ color:var(--text-default);
   font-size: 0.9rem;
 }
 
+.dashboard-grid > div.tasks > .widget {
+    height: 96.35%;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.tasks.widget-expanded {
+
+  width: 30vw !important;
+  max-width: 30vw !important;
+  left: 35% !important;
+}
+
 .tasks .expand-arrow {
   stroke: var(--text-default);
 }
+
