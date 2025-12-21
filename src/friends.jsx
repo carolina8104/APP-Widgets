@@ -123,6 +123,9 @@ function Friends({ userId, apiUrl, expanded, onToggleExpand, onFriendAccepted })
         setTimeout(() => {
           setViewMode('list')
           setUserValidation(null)
+          try {
+            if (expanded && typeof onToggleExpand === 'function') onToggleExpand()
+          } catch (e) {}
         }, 1500)
       } else {
         setUserValidation({ exists: false, message: data.error || 'Failed to send request' })
