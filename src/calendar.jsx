@@ -263,7 +263,7 @@ function Calendar({ apiUrl, expanded, onToggleExpand }) {
       work: 'var(--color-primary-2)',
       personal: 'var(--color-primary-3)',
       exercise: 'var(--color-neutral-2)',
-      meeting: 'var(--color-neutral-1)'
+      meeting: 'var(--color-primary-4)'
     }
     return colors[type] || 'var(--graph-4)'
   }
@@ -570,13 +570,13 @@ function Calendar({ apiUrl, expanded, onToggleExpand }) {
       <div className="calendar-compact-header">
         <button className="calendar-nav-btn-compact" onClick={goToPreviousWeek}>
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-            <path d="M15 18l-6-6 6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+            <path d="M15 18l-6-6 6-6" stroke="var(--background)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
           </svg>
         </button>
         <h2 className="calendar-title-compact">{weekTitle}</h2>
         <button className="calendar-nav-btn-compact" onClick={goToNextWeek}>
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-            <path d="M9 18l6-6-6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+            <path d="M9 18l6-6-6-6" stroke="var(--background)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
           </svg>
         </button>
         <ExpandArrow onClick={onToggleExpand} expanded={expanded} />

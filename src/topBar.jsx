@@ -40,8 +40,8 @@ function TopBar({apiUrl, userId, onLogout, onProfileClick, onFriendAcceptedRef }
           aria-label="Profile"
         >
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none">
-            <circle cx="12" cy="8" r="4" stroke="currentColor" strokeWidth="2" />
-            <path d="M6 21c0-3.866 2.686-7 6-7s6 3.134 6 7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+            <circle cx="12" cy="8" r="4" strokeWidth="2" fill="none"/>
+            <path d="M6 21c0-3.866 2.686-7 6-7s6 3.134 6 7" strokeWidth="2" strokeLinecap="round" fill="none"/>
           </svg>
         </button>
 

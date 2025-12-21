@@ -90,8 +90,8 @@ svg {
     scale: 1.7;
 }
 
-.timeTracker .expand-arrow svg {
-    color: var(--color-primary-1);
+.timeTracker .expand-arrow {
+    stroke: var(--color-primary-1);
 }
 
 .tt-circle:hover {

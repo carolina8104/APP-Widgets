@@ -13,6 +13,10 @@
   align-items: center;
 }
 
+.task-header h2{
+color:var(--text-default);
+}
+
 .task-input-form {
   display: flex;
   gap: 0.5rem;
@@ -204,5 +208,9 @@
   width: 30vw !important;
   max-width: 30vw !important;
   left: 35% !important;
+}
+
+.tasks .expand-arrow {
+  stroke: var(--text-default);
 }
 

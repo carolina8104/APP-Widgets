@@ -167,7 +167,7 @@ function Task({ userId, apiUrl, expanded, onToggleExpand }) {
                 onClick={() => toggleTask(task._id, task.completed)}
               >
                 <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                  <circle cx="8" cy="8" r="7" fill="currentColor"/>
+                  <circle cx="8" cy="8" r="7" fill="var(--color-primary-4)"/>
                   <path d="M5 8L7 10L11 6" stroke="var(--color-neutral-1)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                 </svg>
               </button>

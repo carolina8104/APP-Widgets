@@ -5,6 +5,7 @@
   --color-primary-1: #B7FF2F;
   --color-primary-2: #FFE86D;
   --color-primary-3: #F9773B;
+  --color-primary-4: #97B9FF;
 
   --color-neutral-1: #FFFFFF;
   --color-neutral-2: #242424;
@@ -15,6 +16,7 @@
   --text-accent-2: var(--color-primary-2);
   --text-accent-3: var(--color-primary-3);
   --text-inverse:  #FFFFFF;
+  --bar-elements: #ffffff;
 
   --graph-1:rgb(137, 137, 188);
   --graph-2:rgb(226, 178, 178);

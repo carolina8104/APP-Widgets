@@ -30,7 +30,6 @@
     left: 50%;
     transform: translateX(-50%);
     font-size: 14px;
-    color: var(--text-inverse);
     pointer-events: none;
 }
 
@@ -86,8 +85,10 @@
     background: rgba(255, 255, 255, 0.1);
 }
 
-#top-bar svg {
-    color: var(--text-inverse);
+#top-bar svg , .top-bar-title{
+    stroke: var(--bar-elements);
+    color: var(--bar-elements);
+    fill: var(--bar-elements);
 }
 
 #root {
