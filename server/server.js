@@ -257,28 +257,11 @@ async function handleApi(message, response) {
       return sendJson(response, 401, { error: 'Incorrect password' })
     }
     
-    await usersCol.updateOne(
-      { _id: user._id },
-      { $set: { lastActivity: new Date().toISOString() } }
-    )
-    
     return sendJson(response, 200, { 
       userId: user._id,
       email: user.email,
       name: user.username || user.name 
     })
-  }
-
-  if (url.pathname === '/api/ping' && message.method === 'POST') {
-    const body = await parseBody(message)
-    const usersCol = getCollection('users')
-    
-    await usersCol.updateOne(
-      { _id: body.userId },
-      { $set: { lastActivity: new Date().toISOString() } }
-    )
-    
-    return sendJson(response, 200, { success: true })
   }
 
   if (url.pathname === '/api/notes' && message.method === 'GET') {
@@ -389,26 +372,15 @@ async function handleApi(message, response) {
         _id: { $in: friendIds }
       }).toArray()
       
-      const now = new Date()
-      const fiveMinutesAgo = new Date(now.getTime() - 5 * 60 * 1000)
-      
-      const friendsData = friends.map(friend => {
-        const lastActivity = friend.lastActivity ? new Date(friend.lastActivity) : null
-        const isOnline = friend.settings?.appearOnline !== false && 
-                        lastActivity && 
-                        lastActivity > fiveMinutesAgo
-        
-        return {
-          _id: friend._id,
-          name: friend.username,
-          level: friend.level,
-          email: friend.email,
-          xp: friend.xp,
-          photos: friend.photos || [],
-          settings: friend.settings || {},
-          isOnline: isOnline
-        }
-      })
+      const friendsData = friends.map(friend => ({
+        _id: friend._id,
+        name: friend.username,
+        level: friend.level,
+        email: friend.email,
+        xp: friend.xp,
+        photos: friend.photos || [],
+        settings: friend.settings || {}
+      }))
       
       return sendJson(response, 200, friendsData)
     }
@@ -618,7 +590,15 @@ async function handleApi(message, response) {
     
     const updateFields = {}
     if (body.Theme !== undefined) updateFields['settings.Theme'] = body.Theme
-    if (body.appearOnline !== undefined) updateFields['settings.appearOnline'] = body.appearOnline
+    if (body.appearOnline !== undefined) {
+      updateFields['settings.appearOnline'] = body.appearOnline
+      updateFields.isOnline = body.appearOnline
+      broadcastSSE('status-change', { userId, isOnline: body.appearOnline })
+    }
+    if (body.isOnline !== undefined) {
+      updateFields.isOnline = body.isOnline
+      broadcastSSE('status-change', { userId, isOnline: body.isOnline })
+    }
     
     const result = await usersCol.updateOne(
       { _id: userId },
