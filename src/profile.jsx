@@ -1,6 +1,6 @@
 const { useState, useEffect, useRef } = React
 
-function Profile({ userId, expanded, onToggleExpand, onLogout }) {
+function Profile({ userId, expanded, onToggleExpand, onLogout, apiUrl }) {
   const [userData, setUserData] = useState(null)
   const [loading, setLoading] = useState(true)
   const [selectedTheme, setSelectedTheme] = useState('')
@@ -22,7 +22,7 @@ function Profile({ userId, expanded, onToggleExpand, onLogout }) {
   useEffect(() => {
     if (!userId) return
     
-    fetch(`http://localhost:3001/api/users/${userId}`)
+    fetch(`${apiUrl}/api/users/${userId}`)
       .then(res => res.json())
       .then(data => {
         setUserData(data)
@@ -40,7 +40,7 @@ function Profile({ userId, expanded, onToggleExpand, onLogout }) {
   const handleThemeChange = (theme) => {
     setSelectedTheme(theme)
     applyTheme(theme)
-    fetch(`http://localhost:3001/api/users/${userId}/settings`, {
+    fetch(`${apiUrl}/api/users/${userId}/settings`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ Theme: theme })
@@ -52,7 +52,7 @@ function Profile({ userId, expanded, onToggleExpand, onLogout }) {
   const handleAppearOnlineToggle = () => {
     const newValue = !appearOnline
     setAppearOnline(newValue)
-    fetch(`http://localhost:3001/api/users/${userId}/settings`, {
+    fetch(`${apiUrl}/api/users/${userId}/settings`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ appearOnline: newValue, isOnline: newValue })
@@ -69,7 +69,7 @@ function Profile({ userId, expanded, onToggleExpand, onLogout }) {
     formData.append('photo', file)
 
     try {
-      const response = await fetch(`http://localhost:3001/api/users/${userId}/photo`, {
+      const response = await fetch(`${apiUrl}/api/users/${userId}/photo`, {
         method: 'POST',
         body: formData
       })
@@ -98,9 +98,9 @@ function Profile({ userId, expanded, onToggleExpand, onLogout }) {
     }
     if (!photoPath.startsWith('/uploads/')) {
       const cleanPath = photoPath.startsWith('/') ? photoPath.substring(1) : photoPath
-      return `http://localhost:3001/uploads/${cleanPath}`
+      return `${apiUrl}/uploads/${cleanPath}`
     }
-    return `http://localhost:3001${photoPath}`
+    return `${apiUrl}${photoPath}`
   }
 
   const photoUrl = userData?.settings?.profilePhoto

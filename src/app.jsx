@@ -1,7 +1,7 @@
 const { useState, useEffect, useRef } = React
 
 
-const API_URL = 'http://localhost:3001' //10.17.0.27; //localhost:3001
+const API_URL = 'http://10.17.0.27:80' //10.17.0.27:80; //localhost:80
 
 function App() {
     const [currentUser, setCurrentUser] = useState(null)
@@ -224,6 +224,7 @@ function App() {
                             expanded={true}
                             onToggleExpand={() => toggleWidget('profile')}
                             onLogout={handleLogout}
+                            apiUrl={API_URL}
                         />
                     } />
                 </div>

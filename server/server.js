@@ -5,7 +5,8 @@ const { URL } = require('url')
 const bcrypt = require('bcrypt')
 const { connect } = require('./db')
 
-const PORT = process.env.PORT || 3001
+const PORT = process.env.PORT || 80
+const STATIC_DIR = process.env.STATIC_DIR || null
 
 const sseClients = []
 
@@ -52,10 +53,10 @@ function serveStatic(url, response) {
   if (safeUrl.startsWith('/')) safeUrl = safeUrl.slice(1)
 
 
-  const candidates = [
-    path.join(__dirname, safeUrl),
-    path.join(__dirname, '..', safeUrl)
-  ]
+  const candidates = []
+  if (STATIC_DIR) candidates.push(path.join(STATIC_DIR, safeUrl))
+  candidates.push(path.join(__dirname, safeUrl))
+  candidates.push(path.join(__dirname, '..', safeUrl))
 
   let tried = 0
   const tryNext = () => {
@@ -1082,8 +1083,8 @@ async function main() {
     }
   })
 
-  server.listen(PORT, () => {
-    console.log(`Server running at http://localhost:${PORT}`)
+  server.listen(PORT, '0.0.0.0', () => {
+    console.log(`Server listening on http://0.0.0.0:${PORT}`)
   })
 }
 
