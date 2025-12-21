@@ -43,6 +43,15 @@ function Friends({ userId, apiUrl, expanded, onToggleExpand, onFriendAccepted })
   useEffect(() => {
     if (!userId) return
     fetchFriends()
+    
+    const eventSource = new EventSource(`${apiUrl}/api/events`)
+    eventSource.addEventListener('status-change', (e) => {
+      const { userId: changedUserId, isOnline } = JSON.parse(e.data)
+      setFriends(prev => prev.map(f => 
+        f._id === changedUserId ? { ...f, isOnline } : f
+      ))
+    })
+    return () => eventSource.close()
   }, [userId])
 
   useEffect(() => {
@@ -320,8 +329,9 @@ function Friends({ userId, apiUrl, expanded, onToggleExpand, onFriendAccepted })
                 style={{ cursor: 'pointer' }}
               >
                 {photoUrl ? (
-                  <div className="fw-avatar">
+                  <div className="fw-avatar" style={{ position: 'relative' }}>
                     <img src={photoUrl} alt={`${f.name} avatar`} />
+                    {f.isOnline && <div style={{ position: 'absolute', bottom: 0, right: 0, width: 10, height: 10, borderRadius: '50%', backgroundColor: '#4ade80', border: '2px solid var(--background)' }}></div>}
                   </div>
                 ) : (
                   <div className="fw-avatar" aria-hidden></div>
