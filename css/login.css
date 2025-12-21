@@ -5,10 +5,11 @@
   border: 1.5px solid #fff;
   box-shadow: 0 0 0 2px rgba(255,255,255,0.15);
 }
+
 .login-container {
   max-width: 350px;
   min-height: 0;
-  background: var(--color-neutral-2, #23272e);
+  background: #242424;
   border-radius: 12px;
   box-shadow: 0 2px 16px 0 rgba(0,0,0,0.10);
   padding: 2.5rem 2rem 2rem 2rem;
@@ -25,7 +26,7 @@
   margin-bottom: 1.5rem;
   text-align: center;
   font-size: 2rem;
-  color: var(--text-accent-2, #ffd600);
+  color: #ffd600;
   animation: yellow-to-blue 6s infinite alternate;
   transition: color 0.5s;
 }
@@ -43,7 +44,7 @@
 }
 
 .login-container label {
-  color: var(--white, #fff);
+  color: #fff;
   font-size: 1rem;
   margin-bottom: 0.3rem;
   display: block;
@@ -55,9 +56,9 @@
   width: 100%;
   padding: 0.6rem 0.8rem;
   border-radius: 6px;
-  border: 1px solid var(--panel, #23272e);
-  background: var(--bg, #181a20);
-  color: var(--white, #fff);
+  border: 1px solid #23272e;
+  background: #0F0F0F;
+  color: #fff;
   font-size: 1rem;
   margin-top: 0.2rem;
   box-sizing: border-box;
@@ -67,7 +68,7 @@
   width: 100%;
   padding: 0.7rem;
   color: #111;
-  background: var(--color-primary-2, #ffd600);
+  background: #FFE86D, #ffd600;
   animation: yellow-to-blue-bg 6s infinite alternate;
   transition: background 0.5s;
    border: none;
@@ -98,7 +99,7 @@
 .login-container p {
   text-align: center;
   margin-top: 1.2rem;
-  color: var(--white, #fff);
+  color: #fff;
 }
 
 .login-container .error {
@@ -112,19 +113,19 @@
   transition: color 0.5s;
 }
 @keyframes yellow-to-blue {
-  0%   { color: var(--accent-yellow, #ffd600); }
+  0%   { color: #FFE86D; }
   20%  { color: #ff9800; }  
   40%  { color: #00e676; }   
   60%  { color: #e040fb; }  
   80%  { color: #00bfff; }   
-  100% { color: var(--accent-yellow, #ffd600); }
+  100% { color: #FFE86D; }
 }
 
 @keyframes yellow-to-blue-bg {
-  0%   { background: var(--accent-yellow, #ffd600); }
+  0%   { background: #ffd600; }
   20%  { background: #ff9800; }
   40%  { background: #00e676; }
   60%  { background: #e040fb; }
   80%  { background: #00bfff; }
-  100% { background: var(--accent-yellow, #ffd600); }
+  100% { background: #ffd600; }
 }

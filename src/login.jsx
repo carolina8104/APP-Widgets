@@ -1,6 +1,12 @@
 const { useState } = React
 
 function Login({ apiUrl, onLoginSuccess }) {
+    React.useEffect(() => {
+        const prev = document.body.style.backgroundColor;
+        document.body.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--background-login') || '#0F0F0F';
+        return () => { document.body.style.backgroundColor = prev; };
+    }, []);
+
     const [isRegister, setIsRegister] = useState(false)
     const [username, setUsername] = useState('')
     const [email, setEmail] = useState('')
