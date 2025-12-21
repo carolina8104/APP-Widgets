@@ -1064,6 +1064,38 @@ async function handleApi(message, response) {
       }
       
       await tasksCol.insertOne(newTask)
+      
+      if (body.userId) {
+        const taskCount = await tasksCol.countDocuments({ userId: body.userId })
+        
+        if (taskCount === 1) {
+          await giveXP(body.userId, 5, 'You just added your first calendar event!')
+        }
+        
+        if (taskCount % 20 === 0) {
+          const rewardReason = `Added ${taskCount} calendar events!`
+          const alreadyRewarded = await hasReceivedXPToday(body.userId, rewardReason)
+          if (!alreadyRewarded) {
+            await giveXP(body.userId, 15, rewardReason)
+          }
+        }
+      
+        if (body.calendarDate) {
+          const tasksToday = await tasksCol.countDocuments({ 
+            userId: body.userId, 
+            calendarDate: body.calendarDate 
+          })
+          
+          if (tasksToday >= 10) {
+            const rewardReason = 'Added 10+ events in one day!'
+            const alreadyRewarded = await hasReceivedXPToday(body.userId, rewardReason)
+            if (!alreadyRewarded) {
+              await giveXP(body.userId, 10, rewardReason)
+            }
+          }
+        }
+      }
+      
       return sendJson(response, 201, newTask)
     } catch (err) {
       return sendJson(response, 500, { error: err.message })
