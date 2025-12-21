@@ -1,6 +1,16 @@
 const { useState, useEffect } = React
 
 function Calendar({ apiUrl, expanded, onToggleExpand, userId }) {
+    const EVENT_TYPES = [
+      { value: 'study', label: 'Study' },
+      { value: 'work', label: 'Work' },
+      { value: 'personal', label: 'Personal' },
+      { value: 'exercise', label: 'Exercise' },
+      { value: 'meeting', label: 'Meeting' },
+      { value: 'social', label: 'Social' },
+      { value: 'hobby', label: 'Hobby' },
+      { value: 'other', label: 'Other' }
+    ]
   const [events, setEvents] = useState([])
   const [currentWeekStart, setCurrentWeekStart] = useState(new Date())
   const [miniCalendarDate, setMiniCalendarDate] = useState(new Date())
@@ -74,6 +84,20 @@ function Calendar({ apiUrl, expanded, onToggleExpand, userId }) {
   useEffect(() => {
     if (userId) {
       fetchEvents()
+      const eventSource = new EventSource(`${apiUrl}/api/events`)
+      const updateCalendar = (data) => {
+        if (data.userId === userId) {
+          fetchEvents()
+        }
+      }
+      eventSource.addEventListener('calendar-created', (event) => updateCalendar(JSON.parse(event.data)))
+      eventSource.addEventListener('calendar-deleted', (event) => updateCalendar(JSON.parse(event.data)))
+      eventSource.onerror = (error) => {
+        console.error('SSE error in Calendar widget:', error)
+      }
+      return () => {
+        eventSource.close()
+      }
     }
   }, [apiUrl, userId])
 
@@ -282,7 +306,10 @@ function Calendar({ apiUrl, expanded, onToggleExpand, userId }) {
       work: 'var(--color-primary-2)',
       personal: 'var(--color-primary-3)',
       exercise: 'var(--color-neutral-2)',
-      meeting: 'var(--color-primary-4)'
+      meeting: 'var(--color-primary-4)',
+      social: 'var(--graph-1)',
+      hobby: 'var(--graph-3)',
+      other: 'var(--graph-4)'
     }
     return colors[type] || 'var(--graph-4)'
   }
@@ -439,11 +466,9 @@ function Calendar({ apiUrl, expanded, onToggleExpand, userId }) {
                       value={newTask.type}
                       onChange={(e) => setNewTask({...newTask, type: e.target.value})}
                     >
-                      <option value="study">Study</option>
-                      <option value="work">Work</option>
-                      <option value="personal">Personal</option>
-                      <option value="exercise">Exercise</option>
-                      <option value="meeting">Meeting</option>
+                      {EVENT_TYPES.map(opt => (
+                        <option key={opt.value} value={opt.value}>{opt.label}</option>
+                      ))}
                     </select>
                   </div>
                   <div className="task-form-group">

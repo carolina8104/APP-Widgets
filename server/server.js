@@ -1064,14 +1064,11 @@ async function handleApi(message, response) {
       }
       
       await tasksCol.insertOne(newTask)
-      
       if (body.userId) {
         const taskCount = await tasksCol.countDocuments({ userId: body.userId })
-        
         if (taskCount === 1) {
           await giveXP(body.userId, 5, 'You just added your first calendar event!')
         }
-        
         if (taskCount % 20 === 0) {
           const rewardReason = `Added ${taskCount} calendar events!`
           const alreadyRewarded = await hasReceivedXPToday(body.userId, rewardReason)
@@ -1079,13 +1076,8 @@ async function handleApi(message, response) {
             await giveXP(body.userId, 15, rewardReason)
           }
         }
-      
         if (body.calendarDate) {
-          const tasksToday = await tasksCol.countDocuments({ 
-            userId: body.userId, 
-            calendarDate: body.calendarDate 
-          })
-          
+          const tasksToday = await tasksCol.countDocuments({ userId: body.userId, calendarDate: body.calendarDate })
           if (tasksToday >= 10) {
             const rewardReason = 'Added 10+ events in one day!'
             const alreadyRewarded = await hasReceivedXPToday(body.userId, rewardReason)
@@ -1095,7 +1087,7 @@ async function handleApi(message, response) {
           }
         }
       }
-      
+      broadcastSSE('calendar-created', { userId: newTask.userId, task: newTask })
       return sendJson(response, 201, newTask)
     } catch (err) {
       return sendJson(response, 500, { error: err.message })
@@ -1106,9 +1098,13 @@ async function handleApi(message, response) {
   if (taskMatch && message.method === 'DELETE') {
     const taskId = taskMatch[1]
     const tasksCol = getCollection('calendar')
+    const task = await tasksCol.findOne({ _id: taskId })
     const result = await tasksCol.deleteOne({ _id: taskId })
     if (result.deletedCount === 0) {
       return sendJson(response, 404, { error: 'Task not found' })
+    }
+    if (task) {
+      broadcastSSE('calendar-deleted', { userId: task.userId, taskId })
     }
     return sendJson(response, 200, { deleted: true })
   }
