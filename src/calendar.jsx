@@ -259,13 +259,13 @@ function Calendar({ apiUrl, expanded, onToggleExpand }) {
 
   const getColorByType = (type) => {
     const colors = {
-      study: '#ff7b54',
-      work: '#c5ff41',
-      personal: '#ffe066',
-      exercise: '#87ceeb',
-      meeting: '#ffffff'
+      study: 'var(--color-primary-1)',
+      work: 'var(--color-primary-2)',
+      personal: 'var(--color-primary-3)',
+      exercise: 'var(--color-neutral-2)',
+      meeting: 'var(--color-neutral-1)'
     }
-    return colors[type] || '#ffd600'
+    return colors[type] || 'var(--graph-4)'
   }
 
   const handleCreateTask = async (e) => {
@@ -356,7 +356,7 @@ function Calendar({ apiUrl, expanded, onToggleExpand }) {
                         className={`calendar-event ${event.heightClass}`}
                         onClick={() => setSelectedEventInfo(event)}
                         style={{ 
-                          backgroundColor: event.color || '#ffd600',
+                          backgroundColor: event.color || 'var(--graph-4)',
                           top: `${event.topPercent}%`,
                           height: `${event.heightPercent}%`
                         }}
@@ -579,7 +579,7 @@ function Calendar({ apiUrl, expanded, onToggleExpand }) {
             <path d="M9 18l6-6-6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
           </svg>
         </button>
-        <ExpandArrow onClick={onToggleExpand} expanded={expanded} color={'var(--background)'} />
+        <ExpandArrow onClick={onToggleExpand} expanded={expanded} />
       </div>
 
       <div className="calendar-week-grid-compact">
@@ -599,7 +599,7 @@ function Calendar({ apiUrl, expanded, onToggleExpand }) {
                     className={`calendar-event-compact ${event.heightClass}`}
                     onClick={() => setSelectedEventInfo(event)}
                     style={{ 
-                      backgroundColor: event.color || '#ffd600',
+                      backgroundColor: event.color || 'var(--graph-4)',
                       top: `${event.topPercent}%`,
                       height: `${event.heightPercent}%`
                     }}
