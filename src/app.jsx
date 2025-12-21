@@ -25,10 +25,31 @@ function App() {
                         applyTheme(savedTheme)
                     })
                     .catch(err => console.error('Error loading theme:', err))
+                
+                fetch(`${API_URL}/api/users/${user.userId}/settings`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ isOnline: true })
+                })
             } catch (e) {
                 localStorage.removeItem('currentUser')
             }
         }
+
+        const handleBeforeUnload = () => {
+            const user = localStorage.getItem('currentUser')
+            if (user) {
+                const { userId } = JSON.parse(user)
+                fetch(`${API_URL}/api/users/${userId}/settings`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ isOnline: false }),
+                    keepalive: true
+                })
+            }
+        }
+        window.addEventListener('beforeunload', handleBeforeUnload)
+        return () => window.removeEventListener('beforeunload', handleBeforeUnload)
     }, [])
 
     const handleLoginSuccess = (userData) => {
@@ -49,6 +70,13 @@ function App() {
     }
 
     function handleLogout() {
+        if (currentUser) {
+            fetch(`${API_URL}/api/users/${currentUser.userId}/settings`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ isOnline: false })
+            }).catch(() => {})
+        }
         setCurrentUser(null)
         localStorage.removeItem('currentUser')
     }
