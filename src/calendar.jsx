@@ -16,6 +16,8 @@ function Calendar({ apiUrl, expanded, onToggleExpand, userId }) {
     startTime: '09:00',
     endTime: '10:00'
   })
+  const [draggedSticker, setDraggedSticker] = useState(null)
+  const [eventStickers, setEventStickers] = useState({})
 
   const deleteEvent = async (eventId) => {
     try {
@@ -74,6 +76,7 @@ function Calendar({ apiUrl, expanded, onToggleExpand, userId }) {
   useEffect(() => {
     if (userId) {
       fetchEvents()
+      fetchEventStickers()
     }
   }, [apiUrl, userId])
 
@@ -585,8 +588,20 @@ function Calendar({ apiUrl, expanded, onToggleExpand, userId }) {
 
         <div className="calendar-sticker-widget">
           <h3 className="calendar-mini-title">Sticker collection</h3>
-          <div className="calendar-placeholder-text">
-            Sticker collection placeholder
+          <div className="sticker-grid">
+            {availableStickers.map(sticker => (
+              <div 
+                key={sticker.id}
+                className="sticker-item"
+                draggable
+                onDragStart={() => handleStickerDragStart(sticker.id)}
+              >
+                <div 
+                  className="sticker-svg"
+                  dangerouslySetInnerHTML={{ __html: sticker.svg }}
+                />
+              </div>
+            ))}
           </div>
         </div>
       </div>

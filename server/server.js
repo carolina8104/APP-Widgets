@@ -1081,6 +1081,44 @@ async function handleApi(message, response) {
     return sendJson(response, 200, { deleted: true })
   }
 
+  if (url.pathname === '/api/event-stickers' && message.method === 'GET') {
+    const eventStickersCol = getCollection('eventStickers')
+    const userId = url.searchParams.get('userId')
+    const filter = userId ? { userId } : {}
+    const stickers = await eventStickersCol.find(filter).toArray()
+    return sendJson(response, 200, stickers)
+  }
+
+  if (url.pathname === '/api/event-stickers' && message.method === 'POST') {
+    try {
+      const body = await parseBody(message)
+      const eventStickersCol = getCollection('eventStickers')
+      
+      await eventStickersCol.deleteOne({ eventId: body.eventId })
+      
+      const newSticker = {
+        _id: `sticker${Date.now()}`,
+        eventId: body.eventId,
+        stickerId: body.stickerId,
+        userId: body.userId,
+        createdAt: new Date().toISOString()
+      }
+      
+      await eventStickersCol.insertOne(newSticker)
+      return sendJson(response, 201, newSticker)
+    } catch (err) {
+      return sendJson(response, 500, { error: err.message })
+    }
+  }
+
+  const stickerMatch = url.pathname.match(/^\/api\/event-stickers\/([^/]+)$/)
+  if (stickerMatch && message.method === 'DELETE') {
+    const eventId = stickerMatch[1]
+    const eventStickersCol = getCollection('eventStickers')
+    const result = await eventStickersCol.deleteOne({ eventId: eventId })
+    return sendJson(response, 200, { deleted: true })
+  }
+
   sendJson(response, 404, { error: 'Not found' })
 
 }
