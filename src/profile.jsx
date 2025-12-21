@@ -55,7 +55,7 @@ function Profile({ userId, expanded, onToggleExpand, onLogout }) {
     fetch(`http://localhost:3001/api/users/${userId}/settings`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ appearOnline: newValue })
+      body: JSON.stringify({ appearOnline: newValue, isOnline: newValue })
     })
       .then(res => res.json())
       .catch(err => console.error('Error updating appear online:', err))
