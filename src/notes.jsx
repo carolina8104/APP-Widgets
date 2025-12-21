@@ -231,7 +231,9 @@ function Notes({ userId, apiUrl, expanded, onToggleExpand }) {
         </div>
 
         {loading && <p className="loading-text">Loading...</p>}
-        {!loading && notes.length === 0 && <p className="text-muted">No notes.</p>}
+        {!loading && notes.length === 0 && (
+          <div className="notes-empty">No notes. Create your first one!</div>
+        )}
 
         {!loading && notes.length > 0 && (
           <div className="notes-grid-all">
@@ -291,7 +293,9 @@ function Notes({ userId, apiUrl, expanded, onToggleExpand }) {
         )}
       </div>
       {loading && <p>Loading...</p>}
-      {!loading && notes.length === 0 && <p>No notes. Create your first one!</p>}
+      {!loading && notes.length === 0 && (
+        <div className="notes-empty">No notes. Create your first one!</div>
+      )}
       <div className="last-notes-grid">
         {!loading && notes.slice(0, 2).map((note) => (
           <div className="last-note" key={note._id} onClick={() => {

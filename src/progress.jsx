@@ -197,9 +197,7 @@ function Progress({ userId, apiUrl, expanded, onToggleExpand, hideExpandArrow = 
                 </div>
               </div>
               {weekCount === 0 && todayCount === 0 ? (
-                <div className="progress-no-data">
-                  <p>No activity this week</p>
-                </div>
+                <div className="progress-no-data">No activity this week</div>
               ) : (
                 <svg className="progress-chart" viewBox="0 0 160 78" preserveAspectRatio="xMidYMid meet">
                   {dayLabels.map((day, i) => {
