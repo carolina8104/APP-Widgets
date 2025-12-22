@@ -65,6 +65,8 @@ function Calendar({ apiUrl, expanded, onToggleExpand, userId }) {
     endTime: '10:00',
     participants: []
   })
+  const [draggedSticker, setDraggedSticker] = useState(null)
+  const [eventStickers, setEventStickers] = useState({})
 
   const deleteEvent = async (eventId) => {
     try {
@@ -126,6 +128,7 @@ function Calendar({ apiUrl, expanded, onToggleExpand, userId }) {
     if (userId) {
       fetchEvents()
       fetchFriends()
+      fetchEventStickers()
       const eventSource = new EventSource(`${apiUrl}/api/events`)
       const updateCalendar = (data) => {
         if (data.userId === userId || (data.participants && data.participants.includes(userId))) {
@@ -143,6 +146,23 @@ function Calendar({ apiUrl, expanded, onToggleExpand, userId }) {
     }
   }, [apiUrl, userId])
 
+  useEffect(() => {
+    const handleBeforeUnload = () => {
+      saveEventStickers({ keepalive: true })
+    }
+
+    const handleAppLogout = () => {
+      saveEventStickers()
+    }
+
+    window.addEventListener('beforeunload', handleBeforeUnload)
+    window.addEventListener('app:logout', handleAppLogout)
+    return () => {
+      window.removeEventListener('beforeunload', handleBeforeUnload)
+      window.removeEventListener('app:logout', handleAppLogout)
+    }
+  }, [eventStickers, userId])
+
   const fetchFriends = async () => {
     try {
       const response = await fetch(`${apiUrl}/api/users/${userId}/friends`)
@@ -154,6 +174,106 @@ function Calendar({ apiUrl, expanded, onToggleExpand, userId }) {
       console.error('Error fetching friends:', err)
     }
   }
+
+  const fetchEventStickers = async () => {
+    try {
+      const response = await fetch(`${apiUrl}/api/event-stickers?userId=${userId}`)
+      if (response.ok) {
+        const stickers = await response.json()
+        console.log('Fetched event stickers:', stickers)
+        const stickerMap = {}
+        stickers.forEach(s => {
+          stickerMap[s.eventId] = s.stickerId
+        })
+        console.log('Sticker map:', stickerMap)
+        setEventStickers(stickerMap)
+      }
+    } catch (err) {
+      console.error('Error fetching event stickers:', err)
+    }
+  }
+
+  const saveEventStickers = async (opts = {}) => {
+    try {
+      const stickers = Object.keys(eventStickers).map(eventId => ({
+        eventId,
+        stickerId: eventStickers[eventId],
+        userId
+      }))
+      if (stickers.length === 0) return
+      await fetch(`${apiUrl}/api/event-stickers/bulk`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ stickers }),
+        keepalive: !!opts.keepalive
+      })
+      console.log('Saved event stickers (bulk):', stickers.length)
+    } catch (err) {
+      console.error('Error saving event stickers bulk:', err)
+    }
+  }
+
+  const attachStickerToEvent = async (eventId, stickerId) => {
+    try {
+      console.log('Attaching sticker:', stickerId, 'to event:', eventId)
+      const response = await fetch(`${apiUrl}/api/event-stickers`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ eventId, stickerId, userId })
+      })
+      if (response.ok) {
+        const result = await response.json()
+        console.log('Sticker attached:', result)
+        setEventStickers(prev => ({ ...prev, [eventId]: stickerId }))
+      }
+    } catch (err) {
+      console.error('Error attaching sticker:', err)
+    }
+  }
+
+  const removeStickerFromEvent = async (eventId) => {
+    try {
+      const response = await fetch(`${apiUrl}/api/event-stickers/${eventId}`, {
+        method: 'DELETE'
+      })
+      if (response.ok) {
+        setEventStickers(prev => {
+          const newMap = { ...prev }
+          delete newMap[eventId]
+          return newMap
+        })
+      }
+    } catch (err) {
+      console.error('Error removing sticker:', err)
+    }
+  }
+
+  const handleStickerDragStart = (stickerId) => {
+    setDraggedSticker(stickerId)
+  }
+
+  const handleEventDrop = (e, eventId) => {
+    e.preventDefault()
+    if (draggedSticker) {
+      setEventStickers(prev => ({ ...prev, [eventId]: draggedSticker }))
+      const stickerId = draggedSticker
+      setDraggedSticker(null)
+      attachStickerToEvent(eventId, stickerId)
+    }
+  }
+
+  const handleEventDragOver = (e) => {
+    e.preventDefault()
+  }
+
+  const availableStickers = [
+    { id: 'star', name: 'Star', svg: '<svg viewBox="0 0 24 24" fill="#FFD700"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>' },
+    { id: 'heart', name: 'Heart', svg: '<svg viewBox="0 0 24 24" fill="#FF6B6B"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>' },
+    { id: 'trophy', name: 'Trophy', svg: '<svg viewBox="0 0 24 24" fill="#FFA500"><path d="M7 3v2H3v4c0 2.21 1.79 4 4 4v1c0 2.76 2.24 5 5 5s5-2.24 5-5v-1c2.21 0 4-1.79 4-4V5h-4V3H7zm10 6c1.1 0 2-.9 2-2V7h2v2c0 1.1-.9 2-2 2zm-4 8c-1.66 0-3-1.34-3-3v-1h6v1c0 1.66-1.34 3-3 3zM5 7h2v2c0 1.1.9 2 2 2V7h2v4c0 1.66-1.34 3-3 3s-3-1.34-3-3V7zm7 13h2v2h-2v-2z"/></svg>' },
+    { id: 'fire', name: 'Fire', svg: '<svg viewBox="0 0 24 24" fill="#FF4500"><path d="M13.5 0c-1.25 2.5-.75 5.5 0 7.5-2.5-1.5-3.5-3.5-3.5-6C6.5 3.5 4 7 4 10.5c0 4.14 3.36 7.5 7.5 7.5s7.5-3.36 7.5-7.5c0-2.5-1-5-3.5-7 .75 2 1.25 5 0 7.5.5-2.5-.5-5.5-2-7.5z"/></svg>' },
+    { id: 'check', name: 'Check', svg: '<svg viewBox="0 0 24 24" fill="#4CAF50"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg>' },
+    { id: 'bolt', name: 'Lightning', svg: '<svg viewBox="0 0 24 24" fill="#FFEB3B"><path d="M7 2v11h3v9l7-12h-4l4-8z"/></svg>' }
+  ]
 
   const getWeekDates = (startDate) => {
     const dates = []
@@ -212,7 +332,8 @@ function Calendar({ apiUrl, expanded, onToggleExpand, userId }) {
       return getEventStartTime(a.time) - getEventStartTime(b.time)
     })
 
-    const DAY_START = 6
+
+    const DAY_START = 0
 
     const items = sorted.map(event => {
       const duration = getEventDuration(event.time)
@@ -457,23 +578,48 @@ function Calendar({ apiUrl, expanded, onToggleExpand, userId }) {
                         key={eventIndex} 
                         className={`calendar-event ${event.heightClass}`}
                         onClick={() => setSelectedEventInfo(event)}
+                        onDragOver={handleEventDragOver}
+                        onDrop={(e) => handleEventDrop(e, event._id)}
                         style={{ 
                           backgroundColor: event.color || 'var(--graph-4)',
                           top: `${event.topPercent}%`,
-                          height: `${event.heightPercent}%`
+                          height: `${event.heightPercent}%`,
+                          left: `${event.leftPercent != null ? event.leftPercent + '%' : '0.1rem'}`,
+                          width: `${event.widthPercent != null ? event.widthPercent + '%' : 'calc(100% - 0.2rem)'}`
                         }}
                       >
                         <div className="calendar-event-title">{event.title}</div>
-                            {(() => {
-                              const parts = event.time && event.time.includes('-') ? event.time.split('-').map(p => p.trim()) : [event.time]
-                              return (
-                                <div className="calendar-event-time">
-                                  <span className="calendar-event-time-line">{parts[0]}{parts[1] ? ' -' : ''}</span>
-                                  {parts[1] && <span className="calendar-event-time-line">{parts[1]}</span>}
-                                </div>
-                              )
-                            })()}
+                        {(() => {
+                          const parts = event.time && event.time.includes('-') ? event.time.split('-').map(p => p.trim()) : [event.time]
+                          return (
+                            <div className="calendar-event-time">
+                              <span className="calendar-event-time-line">{parts[0]}{parts[1] ? ' -' : ''}</span>
+                              {parts[1] && <span className="calendar-event-time-line">{parts[1]}</span>}
+                            </div>
+                          )
+                        })()}
                         <ParticipantsList participants={event.participantPhotos} apiUrl={apiUrl} />
+                        <div className="event-sticker-anchor">
+                          {(() => {
+                            const stickerId = eventStickers[event._id]
+                            const sticker = availableStickers.find(s => s.id === stickerId)
+                            if (stickerId) {
+                              console.log('Rendering sticker for event', event._id, '- stickerId:', stickerId, 'sticker:', sticker)
+                            }
+                            return stickerId && sticker ? (
+                              <div 
+                                className="event-sticker"
+                                onClick={(e) => {
+                                  e.stopPropagation()
+                                  removeStickerFromEvent(event._id)
+                                }}
+                                dangerouslySetInnerHTML={{ 
+                                  __html: sticker.svg
+                                }}
+                              />
+                            ) : null
+                          })()}
+                        </div>
                       </div>
                     ))}
                   </div>
@@ -694,8 +840,20 @@ function Calendar({ apiUrl, expanded, onToggleExpand, userId }) {
 
         <div className="calendar-sticker-widget">
           <h3 className="calendar-mini-title">Sticker collection</h3>
-          <div className="calendar-placeholder-text">
-            Sticker collection placeholder
+          <div className="sticker-grid">
+            {availableStickers.map(sticker => (
+              <div 
+                key={sticker.id}
+                className="sticker-item"
+                draggable
+                onDragStart={() => handleStickerDragStart(sticker.id)}
+              >
+                <div 
+                  className="sticker-svg"
+                  dangerouslySetInnerHTML={{ __html: sticker.svg }}
+                />
+              </div>
+            ))}
           </div>
         </div>
       </div>

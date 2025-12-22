@@ -77,6 +77,11 @@ function App() {
                 body: JSON.stringify({ isOnline: false })
             }).catch(() => {})
         }
+
+        try {
+            window.dispatchEvent(new Event('app:logout'))
+        } catch (e) {}
+
         setCurrentUser(null)
         localStorage.removeItem('currentUser')
     }
