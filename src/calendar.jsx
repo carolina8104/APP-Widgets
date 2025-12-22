@@ -227,53 +227,52 @@ function Calendar({ apiUrl, expanded, onToggleExpand, userId }) {
     }
   }
 
-  const fetchUserLevel = () => {
-    if (userId) {
-      fetch(`${apiUrl}/api/users/${userId}`)
-        .then(res => res.json())
-        .then(data => setUserLevel(data?.level || 1))
-        .catch(() => setUserLevel(1))
+  const fetchUserLevel = async () => {
+    if (!userId) return
+    try {
+      const res = await fetch(`${apiUrl}/api/users/${userId}`)
+      const data = await res.json()
+      setUserLevel(data?.level || 1)
+    } catch (err) {
+      setUserLevel(1)
     }
   }
 
-  const fetchEvents = () => {
+  const fetchEvents = async () => {
     const url = userId ? `${apiUrl}/api/tasks?userId=${userId}` : `${apiUrl}/api/tasks`
     console.log('Fetching tasks from:', url)
-    fetch(url)
-      .then(res => {
-        console.log('Response status:', res.status)
-        return res.json()
-      })
-      .then(tasks => {
-        console.log('Received tasks:', tasks)
-        if (!Array.isArray(tasks)) {
-          console.error('Tasks is not an array:', tasks)
-          setEvents([])
-          return
-        }
-        const formattedEvents = tasks.map(task => {
-          console.log('Processing task:', task)
-          return {
-            _id: task._id,
-            title: task.title || 'Untitled',
-            description: task.description || '',
-            time: formatTimeFromISO(task.startTime, task.endTime),
-            date: task.calendarDate,
-            color: getColorByType(task.type),
-            userId: task.userId,
-            type: task.type,
-            completed: task.completed,
-            participants: task.participants || [],
-            participantPhotos: task.participantPhotos || []
-          }
-        })
-        console.log('Formatted events:', formattedEvents)
-        setEvents(formattedEvents)
-      })
-      .catch(err => {
-        console.error('Error fetching tasks:', err)
+    try {
+      const res = await fetch(url)
+      console.log('Response status:', res.status)
+      const tasks = await res.json()
+      console.log('Received tasks:', tasks)
+      if (!Array.isArray(tasks)) {
+        console.error('Tasks is not an array:', tasks)
         setEvents([])
+        return
+      }
+      const formattedEvents = tasks.map(task => {
+        console.log('Processing task:', task)
+        return {
+          _id: task._id,
+          title: task.title || 'Untitled',
+          description: task.description || '',
+          time: formatTimeFromISO(task.startTime, task.endTime),
+          date: task.calendarDate,
+          color: getColorByType(task.type),
+          userId: task.userId,
+          type: task.type,
+          completed: task.completed,
+          participants: task.participants || [],
+          participantPhotos: task.participantPhotos || []
+        }
       })
+      console.log('Formatted events:', formattedEvents)
+      setEvents(formattedEvents)
+    } catch (err) {
+      console.error('Error fetching tasks:', err)
+      setEvents([])
+    }
   }
 
   useEffect(() => {
@@ -517,13 +516,17 @@ function Calendar({ apiUrl, expanded, onToggleExpand, userId }) {
     })
 
 
-    const DAY_START = 0
+    const DAY_START = 3
 
     const items = sorted.map(event => {
       const duration = getEventDuration(event.time)
       const heightClass = getEventHeight(duration)
       let start = getEventStartTime(event.time)
       let end = start + duration
+      
+      if (start < 0) start = 0
+      if (start >= 24) start = 23.99
+      if (end <= 0) end = 0.01
       if (end === 0) end = 24
       if (end > 24) end = 24
 
@@ -536,13 +539,17 @@ function Calendar({ apiUrl, expanded, onToggleExpand, userId }) {
         endShifted += 24
       }
 
-      const topPercent = (startShifted / 24) * 100
+      let topPercent = (startShifted / 24) * 100
       let heightPercent = ((endShifted - startShifted) / 24) * 100
 
       const minPercent = 2.0
       if (heightPercent < minPercent) heightPercent = minPercent
 
+
+      const maxTopPercent = 100 - minPercent
+      if (topPercent > maxTopPercent) topPercent = maxTopPercent
       if (topPercent + heightPercent > 100) heightPercent = 100 - topPercent
+      if (heightPercent < 0) heightPercent = 0
 
       return { ...event, heightClass, topPercent, heightPercent }
     })

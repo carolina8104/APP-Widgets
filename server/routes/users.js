@@ -38,7 +38,6 @@ async function handleGetUser(userId, response) {
     email: user.email,
     level: user.level,
     xp: user.xp,
-    stickersUnlocked: user.stickersUnlocked || [],
     photos: user.photos || [],
     settings: user.settings || {},
     createdAt: user.createdAt
