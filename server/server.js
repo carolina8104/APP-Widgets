@@ -906,6 +906,13 @@ async function handleApi(message, response) {
           const userBefore = await usersCol.findOne({ _id: userId })
           const isFirstPhoto = !userBefore?.settings?.profilePhoto
           
+          if (!userBefore?.settings || userBefore.settings === null) {
+            await usersCol.updateOne(
+              { _id: userId },
+              { $set: { settings: {} } }
+            )
+          }
+          
           const result = await usersCol.updateOne(
             { _id: userId },
             { $set: { 'settings.profilePhoto': photoUrl } }
@@ -1090,7 +1097,6 @@ async function handleApi(message, response) {
         completed: body.completed || false,
         calendarDate: body.calendarDate,
         participants: body.participants || [],
-        xpEarned: 0,
         createdAt: new Date().toISOString()
       }
       
