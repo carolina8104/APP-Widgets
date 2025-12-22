@@ -150,6 +150,10 @@ async function giveXP(userId, amount, reason) {
     
     const unlockedTheme = themeUnlocks[newLevel]
     
+    const oldStickerCount = 1 + Math.floor((oldLevel - 1) / 3)
+    const newStickerCount = 1 + Math.floor((newLevel - 1) / 3)
+    const unlockedSticker = newStickerCount > oldStickerCount ? true : false
+    
     const levelNotification = {
       _id: `notif${Date.now() + 1}`,
       userId,
@@ -157,6 +161,7 @@ async function giveXP(userId, amount, reason) {
       level: newLevel,
       reason: `Congratulations! You leveled up to level ${newLevel}!`,
       unlockedTheme: unlockedTheme || null,
+      unlockedSticker: unlockedSticker,
       read: false,
       createdAt: new Date().toISOString()
     }
