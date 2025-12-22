@@ -176,6 +176,7 @@
   position: relative;
   height: 100%;
   overflow-y: auto;
+  overflow-x: hidden;
   min-height: 0;
   padding-bottom: 6px; 
 }
@@ -191,6 +192,88 @@
   transition: transform 0.15s ease;
   box-sizing: border-box;
   overflow: hidden;
+}
+
+.calendar-event.grouped-expandable {
+  overflow: visible;
+  transition: all 0.25s ease;
+  position: relative;
+}
+
+.event-count-indicator {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  background: rgba(0, 0, 0, 0.25);
+  color: #fff;
+  min-width: 20px;
+  height: 20px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  font-weight: 700;
+  font-size: 11px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.grouped-hover-expanded {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  width: auto;
+  background: rgba(20, 20, 25, 0.97);
+  border-radius: 0 0 0.75rem 0.75rem;
+  padding: 0.6rem;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+  z-index: 120;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-top: none;
+  margin-top: -6px;
+  gap: 4px;
+  flex-direction: column;
+  max-height: 200px;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.calendar-event.grouped-expandable:hover .grouped-hover-expanded {
+  display: flex;
+}
+
+.calendar-event.grouped-expandable:hover {
+  z-index: 100;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.45);
+}
+
+.grouped-event-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 8px;
+  padding-left: 28px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  position: relative; 
+}
+
+.grouped-event-item:hover {
+  background: rgba(255, 255, 255, 0.1);
+  transform: translateX(4px);
+}
+
+.grouped-event-bullet {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
 }
 
 .calendar-event.event-short {
