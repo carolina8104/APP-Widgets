@@ -289,6 +289,12 @@ function Calendar({ apiUrl, expanded, onToggleExpand, userId }) {
       }
       eventSource.addEventListener('calendar-created', (event) => updateCalendar(JSON.parse(event.data)))
       eventSource.addEventListener('calendar-deleted', (event) => updateCalendar(JSON.parse(event.data)))
+      eventSource.addEventListener('friend-added', (event) => {
+        const data = JSON.parse(event.data)
+        if (data.userId === userId) {
+          fetchFriends()
+        }
+      })
       eventSource.addEventListener('notification', (event) => {
         const data = JSON.parse(event.data)
         if (data.userId === userId && data.notification?.type === 'level-up') {
