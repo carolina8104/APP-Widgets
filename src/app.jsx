@@ -12,29 +12,33 @@ function App() {
     const allWidgets = ['friends', 'timeTracker', 'notes', 'tasks', 'photo', 'progress', 'calendar']
 
     useEffect(() => {
-        const savedUser = localStorage.getItem('currentUser')
-        if (savedUser) {
-            try {
-                const user = JSON.parse(savedUser)
-                setCurrentUser(user)
-                
-                fetch(`${API_URL}/api/users/${user.userId}`)
-                    .then(res => res.json())
-                    .then(data => {
+        const loadUserAndTheme = async () => {
+            const savedUser = localStorage.getItem('currentUser')
+            if (savedUser) {
+                try {
+                    const user = JSON.parse(savedUser)
+                    setCurrentUser(user)
+                    
+                    try {
+                        const res = await fetch(`${API_URL}/api/users/${user.userId}`)
+                        const data = await res.json()
                         const savedTheme = data?.settings?.Theme || 'theme1'
                         applyTheme(savedTheme)
+                    } catch (err) {
+                        console.error('Error loading theme:', err)
+                    }
+                    
+                    await fetch(`${API_URL}/api/users/${user.userId}/settings`, {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ isOnline: true })
                     })
-                    .catch(err => console.error('Error loading theme:', err))
-                
-                fetch(`${API_URL}/api/users/${user.userId}/settings`, {
-                    method: 'PUT',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ isOnline: true })
-                })
-            } catch (e) {
-                localStorage.removeItem('currentUser')
+                } catch (e) {
+                    localStorage.removeItem('currentUser')
+                }
             }
         }
+        loadUserAndTheme()
 
         const handleBeforeUnload = () => {
             const user = localStorage.getItem('currentUser')
@@ -52,30 +56,33 @@ function App() {
         return () => window.removeEventListener('beforeunload', handleBeforeUnload)
     }, [])
 
-    const handleLoginSuccess = (userData) => {
+    const handleLoginSuccess = async (userData) => {
         setCurrentUser(userData)
         localStorage.setItem('currentUser', JSON.stringify(userData))
         
-        fetch(`${API_URL}/api/users/${userData.userId}`)
-            .then(res => res.json())
-            .then(data => {
-                const savedTheme = data?.settings?.Theme || 'theme1'
-                applyTheme(savedTheme)
-            })
-            .catch(err => console.error('Error loading theme:', err))
+        try {
+            const res = await fetch(`${API_URL}/api/users/${userData.userId}`)
+            const data = await res.json()
+            const savedTheme = data?.settings?.Theme || 'theme1'
+            applyTheme(savedTheme)
+        } catch (err) {
+            console.error('Error loading theme:', err)
+        }
     }
 
     if (!currentUser) {
         return <Login apiUrl={API_URL} onLoginSuccess={handleLoginSuccess} />
     }
 
-    function handleLogout() {
+    async function handleLogout() {
         if (currentUser) {
-            fetch(`${API_URL}/api/users/${currentUser.userId}/settings`, {
-                method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ isOnline: false })
-            }).catch(() => {})
+            try {
+                await fetch(`${API_URL}/api/users/${currentUser.userId}/settings`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ isOnline: false })
+                })
+            } catch (err) {}
         }
 
         try {
