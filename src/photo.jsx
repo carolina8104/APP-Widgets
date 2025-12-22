@@ -9,16 +9,21 @@ function Photos({ userId, apiUrl, expanded, onToggleExpand }) {
   const fileInputRef = useRef(null)
 
     useEffect(() => {
-        if (!userId) return
-        
-        fetch(`${apiUrl}/api/users/${userId}`)
-        .then(res => res.json())
-        .then(data => {
-            if (data && !data.error && data.photos) {
+      if (!userId) return
+
+      const loadPhotos = async () => {
+        try {
+          const res = await fetch(`${apiUrl}/api/users/${userId}`)
+          const data = await res.json()
+          if (data && !data.error && data.photos) {
             setPhotos(data.photos)
-            }
-        })
-        .catch(err => console.error('Erro ao buscar fotos:', err))
+          }
+        } catch (err) {
+          console.error('Error fetching photos:', err)
+        }
+      }
+
+      loadPhotos()
     }, [userId])
 
     useEffect(() => {
