@@ -1111,6 +1111,31 @@ async function handleApi(message, response) {
     }
   }
 
+  if (url.pathname === '/api/event-stickers/bulk' && message.method === 'POST') {
+    try {
+      const body = await parseBody(message)
+      const eventStickersCol = getCollection('eventStickers')
+      const items = Array.isArray(body.stickers) ? body.stickers : []
+
+      for (const it of items) {
+        if (!it.eventId) continue
+        await eventStickersCol.deleteOne({ eventId: it.eventId })
+        const doc = {
+          _id: `sticker${Date.now()}${Math.floor(Math.random()*1000)}`,
+          eventId: it.eventId,
+          stickerId: it.stickerId,
+          userId: it.userId || null,
+          createdAt: new Date().toISOString()
+        }
+        await eventStickersCol.insertOne(doc)
+      }
+
+      return sendJson(response, 200, { saved: items.length })
+    } catch (err) {
+      return sendJson(response, 500, { error: err.message })
+    }
+  }
+
   const stickerMatch = url.pathname.match(/^\/api\/event-stickers\/([^/]+)$/)
   if (stickerMatch && message.method === 'DELETE') {
     const eventId = stickerMatch[1]

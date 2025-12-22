@@ -876,6 +876,21 @@
 .sticker-grid::-webkit-scrollbar {
   width: 6px;
 }
+
+.sticker-grid::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+}
+
+.sticker-grid::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 10px;
+}
+
+.sticker-grid::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.5);
+}
+
 .sticker-item {
   background: rgba(255, 255, 255, 0.05);
   border: 2px solid rgba(255, 255, 255, 0.1);
@@ -888,6 +903,18 @@
   justify-content: center;
   aspect-ratio: 1;
 }
+
+.sticker-item:active {
+  cursor: grabbing;
+  opacity: 0.5;
+}
+
+.sticker-item:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.2);
+  transform: scale(1.05);
+}
+
 .sticker-svg {
   width: 2rem;
   height: 2rem;
@@ -900,6 +927,30 @@
   width: 100%;
   height: 100%;
   filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+}
+
+.event-sticker-anchor {
+  position: absolute;
+  bottom: 0.25rem;
+  right: 0.5rem;
+  width: 1.6rem;
+  height: 1.6rem;
+  z-index: 10;
+  pointer-events: auto;
+}
+
+.calendar-event:hover {
+  transform: translateY(-4px) scale(1.04);
+  z-index: 60;
+}
+
+.event-sticker {
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+  filter: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.7));
+  animation: stickerPop 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
 }
 .calendar .expand-arrow {
   stroke: var(--text-default);
