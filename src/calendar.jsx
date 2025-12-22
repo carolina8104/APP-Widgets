@@ -70,7 +70,7 @@ function Calendar({ apiUrl, expanded, onToggleExpand, userId }) {
 
   const deleteEvent = async (eventId) => {
     try {
-      const response = await fetch(`${apiUrl}/api/tasks/${eventId}`, {
+      const response = await fetch(`${apiUrl}/api/tasks/${eventId}?userId=${userId}`, {
         method: 'DELETE'
       })
       if (response.ok) {

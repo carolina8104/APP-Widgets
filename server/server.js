@@ -1128,16 +1128,58 @@ async function handleApi(message, response) {
   const taskMatch = url.pathname.match(/^\/api\/tasks\/([^/]+)$/)
   if (taskMatch && message.method === 'DELETE') {
     const taskId = taskMatch[1]
+    const requestUserId = new URL(message.url, `http://${message.headers.host}`).searchParams.get('userId')
+    
     const tasksCol = getCollection('calendar')
     const task = await tasksCol.findOne({ _id: taskId })
-    const result = await tasksCol.deleteOne({ _id: taskId })
-    if (result.deletedCount === 0) {
+    
+    if (!task) {
       return sendJson(response, 404, { error: 'Task not found' })
     }
-    if (task) {
-      broadcastSSE('calendar-deleted', { userId: task.userId, taskId })
+    
+    if (task.userId === requestUserId) {
+      if (task.participants && task.participants.length > 0) {
+        const newOwner = task.participants[0]
+        const remainingParticipants = task.participants.slice(1)
+        
+        await tasksCol.updateOne(
+          { _id: taskId },
+          { $set: { userId: newOwner, participants: remainingParticipants } }
+        )
+        
+        broadcastSSE('calendar-deleted', { userId: requestUserId, taskId })
+        
+        broadcastSSE('calendar-created', { userId: newOwner, task: { ...task, userId: newOwner, participants: remainingParticipants } })
+        remainingParticipants.forEach(participantId => {
+          broadcastSSE('calendar-created', { userId: participantId, task: { ...task, userId: newOwner, participants: remainingParticipants } })
+        })
+        
+        return sendJson(response, 200, { deleted: false, removedFromEvent: true })
+      } else {
+        await tasksCol.deleteOne({ _id: taskId })
+        broadcastSSE('calendar-deleted', { userId: task.userId, taskId })
+        return sendJson(response, 200, { deleted: true })
+      }
+    } else {
+      if (task.participants && task.participants.includes(requestUserId)) {
+        const updatedParticipants = task.participants.filter(p => p !== requestUserId)
+        
+        await tasksCol.updateOne(
+          { _id: taskId },
+          { $set: { participants: updatedParticipants } }
+        )
+        
+        broadcastSSE('calendar-deleted', { userId: requestUserId, taskId })
+        broadcastSSE('calendar-created', { userId: task.userId, task: { ...task, participants: updatedParticipants } })
+        updatedParticipants.forEach(participantId => {
+          broadcastSSE('calendar-created', { userId: participantId, task: { ...task, participants: updatedParticipants } })
+        })
+        
+        return sendJson(response, 200, { deleted: false, removedFromEvent: true })
+      } else {
+        return sendJson(response, 403, { error: 'Not authorized to delete this event' })
+      }
     }
-    return sendJson(response, 200, { deleted: true })
   }
 
   if (url.pathname === '/api/event-stickers' && message.method === 'GET') {
