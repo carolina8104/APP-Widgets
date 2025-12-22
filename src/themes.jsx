@@ -28,31 +28,29 @@ const THEMES = {
       '--color-neutral-2': '#242424',
 
       '--text-default': '#0F0F0F',
-      '--text-accent-1': '#FFFFFF',
+      '--text-accent-1': '#242424',
       '--text-accent-2': '#242424',
       '--text-accent-3': '#FFFFFF',
       '--bar-elements': '#bdb3a9ff',
     }
   },
   theme3: {
-colors: {
-  '--background': '#F1EFEA',   
+    colors: {
+      '--background': '#FAF9F6',
+      '--color-primary-1': '#ECEAE4',
+      '--color-primary-2': '#D6D2C8',
+      '--color-primary-3': '#AEB3B0',
+      '--color-primary-4': '#8A8F8D',
+      '--color-neutral-1': '#E6E4DE',
+      '--color-neutral-2': '#FFFFFF',
 
-  '--color-primary-1': '#D6D2C8', 
-  '--color-primary-2': '#B8B1A6',
-  '--color-primary-3': '#8E9491', 
-  '--color-primary-4': '#6F7472', 
-  '--color-neutral-1': '#484747ff',
-  '--color-neutral-2': '#FFFFFF',
-
-  '--text-default': '#FFFFFF',
-  '--text-inverse': '#1F1F1F',
-  '--text-accent-1': '#1F1F1F',
-  '--text-accent-2': '#1F1F1F',
-  '--text-accent-3': '#1F1F1F',
-
-  '--bar-elements': '#A7A199',
-}
+      '--text-default': '#1F1F1F',
+      '--text-inverse': '#FFFFFF',
+      '--text-accent-1': '#1F1F1F',
+      '--text-accent-2': '#1F1F1F',
+      '--text-accent-3': '#1F1F1F',
+      '--bar-elements': '#A7A199',
+    }
 
   },
   theme4: {
@@ -63,7 +61,7 @@ colors: {
       '--color-primary-3': '#D8B23A',
       '--color-primary-4': '#224e41ff',
       
-      '--color-neutral-1': '#2A2A2A',
+      '--color-neutral-1': '#575757ff',
       '--color-neutral-2': '#c1bbbbff',
       '--text-default': '#F4F1EC',     
       '--text-accent-1': '#F4F1EC', 

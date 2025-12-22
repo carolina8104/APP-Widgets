@@ -112,7 +112,7 @@ function Profile({ userId, expanded, onToggleExpand, onLogout, apiUrl }) {
       <div className="profile-container">
         <div className="profile-header">
           <h2>Profile</h2>
-          <ExpandArrow onClick={onToggleExpand} expanded={expanded} color="var(--background)" />
+          <ExpandArrow onClick={onToggleExpand} expanded={expanded} />
         </div>
         <div className="profile-loading">Loading...</div>
       </div>
@@ -123,7 +123,7 @@ function Profile({ userId, expanded, onToggleExpand, onLogout, apiUrl }) {
     <div className="profile-container">
       <div className="profile-header">
         <h2>Profile</h2>
-        <ExpandArrow onClick={onToggleExpand} expanded={expanded} color="var(--background)" />
+        <ExpandArrow onClick={onToggleExpand} expanded={expanded}/>
       </div>
       
       <div className="profile-content">

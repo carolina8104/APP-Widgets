@@ -285,8 +285,8 @@ function Friends({ userId, apiUrl, expanded, onToggleExpand, onFriendAccepted })
               onChange={(e) => setSearchQuery(e.target.value)}
             />
             <svg className="fw-search-icon" width="16" height="16" viewBox="0 0 24 24" aria-hidden>
-              <path d="M21 21l-4.35-4.35" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-              <circle cx="11" cy="11" r="6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+              <path d="M21 21l-4.35-4.35"  strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+              <circle cx="11" cy="11" r="6" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" fill="none"/>
             </svg>
           </label>
           <button 

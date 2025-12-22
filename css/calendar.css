@@ -22,7 +22,7 @@
 .calendar-title {
   color: var(--color-primary-2);
   margin: 0;
-  font-size: 1.25rem;
+  font-size: 1.8rem;
 }
 
 .calendar-expanded-container {
@@ -277,7 +277,6 @@
 }
 
 .calendar-nav-btn {
-  background: rgba(255, 255, 255, 0.1);
   border: none;
   border-radius: 0.5rem;
   width: 2.5rem;
@@ -291,13 +290,12 @@
 }
 
 .calendar-nav-btn:hover {
-  background: rgba(255, 255, 255, 0.15);
   transform: scale(1.05);
 }
 
 .calendar-nav-btn svg {
-  width: 20px;
-  height: 20px;
+  width: 25px;
+  height: 25px;
 }
 
 .calendar-compact-header {
@@ -886,7 +884,10 @@
 .calendar .expand-arrow {
   stroke: var(--text-default);
 }
-.calendar-compact-header svg{
+
+.calendar-compact-header svg,
+.calendar-expanded-container .calendar-nav-btn svg,
+.calendar-expanded-container .expand-arrow.expanded svg {
   border-radius: 20%;
   background: color-mix(in srgb, var(--color-primary-2) 60%, transparent);
 }
