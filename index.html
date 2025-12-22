@@ -3,16 +3,6 @@
   <head>
     <meta charset="UTF-8" />
     <script src="./src/themes.jsx"></script>
-    <script>
-      (function() {
-        const savedTheme = localStorage.getItem('selectedTheme') || 'theme1';
-        const theme = THEMES[savedTheme];
-        if (theme) {
-          const root = document.documentElement;
-          Object.entries(theme.colors).forEach(([prop, val]) => root.style.setProperty(prop, val, 'important'));
-        }
-      })();
-    </script>
     <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
@@ -35,6 +25,7 @@
   <body>
     <div id="top-bar"></div>
     <div id="root"></div>
+    <script type="module" src="loadTheme.js" defer></script>
 
     <script type="text/babel" src="./src/login.jsx"></script>
     <script type="text/babel" src="./src/widget.jsx"></script>
