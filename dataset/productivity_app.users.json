@@ -1,0 +1,60 @@
+[{
+  "_id": "user1765663650863",
+  "username": "Simao",
+  "email": "simao@gmail.com",
+  "passwordHash": "$2b$10$ZAMAznA0vkVltn3/hJDpaOz3t6WuzBednaIIFbqV/tjVHu4qIPcpC",
+  "level": 1,
+  "xp": 0,
+  "photos": [],
+  "settings": {},
+  "createdAt": "2025-12-13T22:07:30.863Z"
+},
+{
+  "_id": "user1765678175080",
+  "username": "simao2",
+  "email": "s2@example.com",
+  "passwordHash": "$2b$10$PNrW.4cD0FdoJUReBVxWguIpFq.jmWjU2KfYmee.F0CiBcCxt2R5G",
+  "level": 31,
+  "xp": 3035,
+  "photos": [
+    "/uploads/user1765678175080/profile.jpg",
+    "/uploads/user1765678175080/photo_1766146707014.jpg"
+  ],
+  "settings": {
+    "profilePhoto": "/uploads/user1765678175080/profile/profile.jpg",
+    "Theme": "theme6"
+  },
+  "createdAt": "2025-12-14T02:09:35.081Z",
+  "isOnline": false
+},
+{
+  "_id": "user1765970118561",
+  "username": "RafaBelas",
+  "email": "belas@gmail.com",
+  "passwordHash": "$2b$10$h88QmVANT8MDTcoAPxbgGuhaP7CI4pLF4b54bJAFsyXbdyiQPrFE.",
+  "level": 1,
+  "xp": 0,
+  "photos": [],
+  "settings": {},
+  "createdAt": "2025-12-17T11:15:18.562Z"
+},
+{
+  "_id": "user1766441161932",
+  "username": "Diogo",
+  "email": "diogo@gmail.com",
+  "passwordHash": "$2b$10$EbHcpFJWla8x5LeBV/o/Vufu99rC/Dm6.er70Xr3ztXkvVx4m1b4W",
+  "level": 31,
+  "xp": 3030,
+  "photos": [
+    "/uploads/user1766441161932/photo_1766441895210.jpeg",
+    "/uploads/user1766441161932/photo_1766441900308.jpeg",
+    "/uploads/user1766441161932/photo_1766441905207.jpeg",
+    "/uploads/user1766441161932/photo_1766441909786.jpeg",
+    "/uploads/user1766441161932/photo_1766441913988.jpeg"
+  ],
+  "settings": {
+    "profilePhoto": "/uploads/user1766441161932/profile/profile.jpg"
+  },
+  "createdAt": "2025-12-22T22:06:01.932Z",
+  "isOnline": false
+}]

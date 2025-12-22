@@ -1,0 +1,77 @@
+[{
+  "_id": "sticker1766437705531742",
+  "eventId": "task1766354507996",
+  "stickerId": "star",
+  "userId": "user1766348796060",
+  "createdAt": "2025-12-22T21:08:25.531Z"
+},
+{
+  "_id": "sticker1766441489184784",
+  "eventId": "task1766420623400",
+  "stickerId": "check",
+  "userId": "user1765678175080",
+  "createdAt": "2025-12-22T22:11:29.184Z"
+},
+{
+  "_id": "sticker1766441489185193",
+  "eventId": "task1766420789453",
+  "stickerId": "cutlery",
+  "userId": "user1765678175080",
+  "createdAt": "2025-12-22T22:11:29.185Z"
+},
+{
+  "_id": "sticker1766441489186553",
+  "eventId": "task1766363723632",
+  "stickerId": "star",
+  "userId": "user1765678175080",
+  "createdAt": "2025-12-22T22:11:29.186Z"
+},
+{
+  "_id": "sticker1766441489187785",
+  "eventId": "task1766365548783",
+  "stickerId": "star",
+  "userId": "user1765678175080",
+  "createdAt": "2025-12-22T22:11:29.187Z"
+},
+{
+  "_id": "sticker1766441489188816",
+  "eventId": "task1766363571995",
+  "stickerId": "star",
+  "userId": "user1765678175080",
+  "createdAt": "2025-12-22T22:11:29.188Z"
+},
+{
+  "_id": "sticker1766441489189395",
+  "eventId": "task1766354783376",
+  "stickerId": "heart",
+  "userId": "user1765678175080",
+  "createdAt": "2025-12-22T22:11:29.189Z"
+},
+{
+  "_id": "sticker1766441489190874",
+  "eventId": "task1766359678564",
+  "stickerId": "star",
+  "userId": "user1765678175080",
+  "createdAt": "2025-12-22T22:11:29.190Z"
+},
+{
+  "_id": "sticker1766441489191666",
+  "eventId": "task1766363567113",
+  "stickerId": "star",
+  "userId": "user1765678175080",
+  "createdAt": "2025-12-22T22:11:29.191Z"
+},
+{
+  "_id": "sticker1766441489192981",
+  "eventId": "task1766421534866",
+  "stickerId": "check",
+  "userId": "user1765678175080",
+  "createdAt": "2025-12-22T22:11:29.192Z"
+},
+{
+  "_id": "sticker1766441722260",
+  "eventId": "task1766441705773",
+  "stickerId": "music",
+  "userId": "user1766441161932",
+  "createdAt": "2025-12-22T22:15:22.260Z"
+}]

@@ -1,0 +1,113 @@
+[{
+  "_id": "notif1766257431745",
+  "userId": "user1765678175080",
+  "type": "xp",
+  "amount": 10,
+  "reason": "Completed 20 tasks today!",
+  "read": false,
+  "createdAt": "2025-12-20T19:03:51.745Z"
+},
+{
+  "_id": "notif1766423237994",
+  "userId": "user1765678175080",
+  "type": "xp",
+  "amount": 15,
+  "reason": "Added 20 calendar events!",
+  "read": false,
+  "createdAt": "2025-12-22T17:07:17.994Z"
+},
+{
+  "_id": "notif1766423237996",
+  "userId": "user1765678175080",
+  "type": "level-up",
+  "level": 31,
+  "reason": "Congratulations! You leveled up to level 31!",
+  "unlockedTheme": null,
+  "read": false,
+  "createdAt": "2025-12-22T17:07:17.995Z"
+},
+{
+  "_id": "notif1766427873738",
+  "userId": "user1765678175080",
+  "type": "xp",
+  "amount": 5,
+  "reason": "Added first profile photo!",
+  "read": false,
+  "createdAt": "2025-12-22T18:24:33.739Z"
+},
+{
+  "_id": "notif1766435786041",
+  "userId": "user1765678175080",
+  "type": "xp",
+  "amount": 5,
+  "reason": "Added first profile photo!",
+  "read": false,
+  "createdAt": "2025-12-22T20:36:26.042Z"
+},
+{
+  "_id": "notif1766441327957",
+  "userId": "user1766441161932",
+  "type": "xp",
+  "amount": 5,
+  "reason": "You just created your first note!",
+  "read": false,
+  "createdAt": "2025-12-22T22:08:47.957Z"
+},
+{
+  "_id": "notif1766441470808",
+  "userId": "user1766441161932",
+  "type": "xp",
+  "amount": 10,
+  "reason": "Added a new friend!",
+  "read": false,
+  "createdAt": "2025-12-22T22:11:10.808Z"
+},
+{
+  "_id": "notif1766441470809",
+  "userId": "user1766441161932",
+  "type": "level-up",
+  "level": 31,
+  "reason": "Congratulations! You leveled up to level 31!",
+  "unlockedTheme": null,
+  "unlockedSticker": true,
+  "read": false,
+  "createdAt": "2025-12-22T22:11:10.809Z"
+},
+{
+  "_id": "notif1766441470829",
+  "userId": "user1765678175080",
+  "type": "xp",
+  "amount": 10,
+  "reason": "Added a new friend!",
+  "read": false,
+  "createdAt": "2025-12-22T22:11:10.829Z"
+},
+{
+  "_id": "notif1766441512513",
+  "userId": "user1766441161932",
+  "type": "xp",
+  "amount": 5,
+  "reason": "You just created your first task!",
+  "read": false,
+  "createdAt": "2025-12-22T22:11:52.513Z"
+},
+{
+  "_id": "notif1766441641114",
+  "userId": "user1766441161932",
+  "type": "xp",
+  "amount": 5,
+  "reason": "You just added your first calendar event!",
+  "read": false,
+  "createdAt": "2025-12-22T22:14:01.114Z"
+},
+{
+  "_id": "notif17664416411200.5354606919846259",
+  "userId": "user1765678175080",
+  "type": "task-added",
+  "message": "Diogo added you to \"Bike ride\"",
+  "read": false,
+  "createdAt": "2025-12-22T22:14:01.120Z",
+  "taskId": "task1766441641111",
+  "taskTitle": "Bike ride",
+  "taskDate": "2025-12-22"
+}]
