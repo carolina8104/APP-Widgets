@@ -24,15 +24,18 @@ function App() {
                         const data = await res.json()
                         const savedTheme = data?.settings?.Theme || 'theme1'
                         applyTheme(savedTheme)
+                        
+                        const appearOnline = data?.settings?.appearOnline ?? true
+                        if (appearOnline) {
+                            await fetch(`${API_URL}/api/users/${user.userId}/settings`, {
+                                method: 'PUT',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({ isOnline: true })
+                            })
+                        }
                     } catch (err) {
                         console.error('Error loading theme:', err)
                     }
-                    
-                    await fetch(`${API_URL}/api/users/${user.userId}/settings`, {
-                        method: 'PUT',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ isOnline: true })
-                    })
                 } catch (e) {
                     localStorage.removeItem('currentUser')
                 }
@@ -65,6 +68,15 @@ function App() {
             const data = await res.json()
             const savedTheme = data?.settings?.Theme || 'theme1'
             applyTheme(savedTheme)
+            
+            const appearOnline = data?.settings?.appearOnline ?? true
+            if (appearOnline) {
+                await fetch(`${API_URL}/api/users/${userData.userId}/settings`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ isOnline: true })
+                })
+            }
         } catch (err) {
             console.error('Error loading theme:', err)
         }

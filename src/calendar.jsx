@@ -282,7 +282,7 @@ function Calendar({ apiUrl, expanded, onToggleExpand, userId }) {
       fetchFriends()
       fetchEventStickers()
       fetchUserLevel()
-      const eventSource = new EventSource(`${apiUrl}/api/events`)
+      const eventSource = new EventSource(`${apiUrl}/api/events?userId=${userId}`)
       const updateCalendar = (data) => {
         if (data.userId === userId || (data.participants && data.participants.includes(userId))) {
           fetchEvents()

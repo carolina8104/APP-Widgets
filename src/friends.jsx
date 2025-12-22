@@ -44,7 +44,7 @@ function Friends({ userId, apiUrl, expanded, onToggleExpand, onFriendAccepted })
     if (!userId) return
     fetchFriends()
     
-    const eventSource = new EventSource(`${apiUrl}/api/events`)
+    const eventSource = new EventSource(`${apiUrl}/api/events?userId=${userId}`)
     eventSource.addEventListener('status-change', (e) => {
       const { userId: changedUserId, isOnline } = JSON.parse(e.data)
       setFriends(prev => prev.map(f => 

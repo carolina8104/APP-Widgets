@@ -21,7 +21,7 @@ function Progress({ userId, apiUrl, expanded, onToggleExpand, hideExpandArrow = 
     fetchTotalStats()
     fetchYearData()
     
-    const eventSource = new EventSource(`${apiUrl}/api/events`)
+    const eventSource = new EventSource(`${apiUrl}/api/events?userId=${userId}`)
 
     const updateProgress = (data) => {
       if (data.userId === userId) {
@@ -346,11 +346,20 @@ function Progress({ userId, apiUrl, expanded, onToggleExpand, hideExpandArrow = 
                           const startAngle = currentAngle
                           currentAngle += angle
                           
-                          const startRad = (startAngle * Math.PI) / 180
-                          const endRad = (currentAngle * Math.PI) / 180
-                          
                           const outerRadius = 90
                           const innerRadius = 60
+                          
+                          if (segment.percentage === 100) {
+                            return (
+                              <g key={segment.type}>
+                                <circle cx="100" cy="100" r={outerRadius} fill={segment.color} />
+                                <circle cx="100" cy="100" r={innerRadius} fill="var(--color-primary-3)" />
+                              </g>
+                            )
+                          }
+                          
+                          const startRad = (startAngle * Math.PI) / 180
+                          const endRad = (currentAngle * Math.PI) / 180
                           
                           const x1 = 100 + outerRadius * Math.cos(startRad)
                           const y1 = 100 + outerRadius * Math.sin(startRad)
