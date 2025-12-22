@@ -1075,10 +1075,34 @@ function Calendar({ apiUrl, expanded, onToggleExpand, userId }) {
                           <ParticipantsList participants={event.participantPhotos} apiUrl={apiUrl} />
                         </div>
                       )
-                    })()}
-                    <ParticipantsList participants={event.participantPhotos} apiUrl={apiUrl} />
-                  </div>
-                ))}
+                    }
+
+                    return (
+                      <div 
+                        key={`cg-${gi}-${first._id}`} 
+                        className={`calendar-event-compact grouped-compact ${first.heightClass}`}
+                        onClick={() => setSelectedEventInfo(first)}
+                        style={{ 
+                          backgroundColor: first.color || 'var(--graph-4)',
+                          top: `${first.topPercent}%`,
+                          height: `${first.heightPercent}%`
+                        }}
+                      >
+                        <div className="calendar-event-title-compact">{first.title}</div>
+                        {(() => {
+                          const parts = first.time && first.time.includes('-') ? first.time.split('-').map(p => p.trim()) : [first.time]
+                          return (
+                            <div className="calendar-event-time-compact">
+                              <span className="calendar-event-time-compact-line">{parts[0]}{parts[1] ? ' -' : ''}</span>
+                              {parts[1] && <span className="calendar-event-time-compact-line">{parts[1]}</span>}
+                            </div>
+                          )
+                        })()}
+                        <div className="event-count-badge-compact">{group.length}</div>
+                      </div>
+                    )
+                  })
+                })()}
               </div>
             </div>
           )

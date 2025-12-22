@@ -276,6 +276,36 @@
   transform: translateY(-50%);
 }
 
+.grouped-event-title {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-default);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.event-count-badge-compact {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  background: rgba(0, 0, 0, 0.3);
+  color: #fff;
+  min-width: 18px;
+  height: 18px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  font-weight: 700;
+  font-size: 11px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.calendar-event-compact.grouped-compact {
+  position: relative;
+}
+
 .calendar-event.event-short {
   min-height: 90px;
 }
@@ -1153,4 +1183,11 @@
   background-color: var(--color-primary-3);
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
   margin-right: 10px;
+}
+
+.dashboard-grid > div.calendar > .widget {
+  height: calc(100% - 1.2rem);
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
 }
