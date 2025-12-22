@@ -227,12 +227,7 @@ function Profile({ userId, expanded, onToggleExpand, onLogout, apiUrl }) {
             <span className="profile-stat-value">{
               (() => {
                 const level = userData?.level || 1
-                let count = 2
-                if (level >= 5) count++
-                if (level >= 10) count++
-                if (level >= 18) count++
-                if (level >= 26) count++
-                return count
+                return 1 + Math.floor((level - 1) / 3)
               })()
             }</span>
             <span className="profile-stat-label">Stickers</span>

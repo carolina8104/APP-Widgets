@@ -296,7 +296,7 @@ async function handleApi(message, response) {
       }
       
       if (noteCount % 10 === 0) {
-        const rewardReason = `Already ${noteCount} notes created!`;
+        const rewardReason = 'Created 10+ notes!';
         const alreadyRewarded = await hasReceivedXPToday(body.userId, rewardReason);
         if (!alreadyRewarded) {
           await giveXP(body.userId, 15, rewardReason);
@@ -470,7 +470,7 @@ async function handleApi(message, response) {
       })
       
       if (completedTodayCount % 10 === 0) {
-        const rewardReason = `Completed ${completedTodayCount} tasks today!`
+        const rewardReason = 'Completed 10+ tasks today!'
         const alreadyRewarded = await hasReceivedXPToday(todo.userId, rewardReason)
         if (!alreadyRewarded) {
           await giveXP(todo.userId, 10, rewardReason)
@@ -1101,7 +1101,7 @@ async function handleApi(message, response) {
           await giveXP(body.userId, 5, 'You just added your first calendar event!')
         }
         if (taskCount % 20 === 0) {
-          const rewardReason = `Added ${taskCount} calendar events!`
+          const rewardReason = 'Added 20+ calendar events!'
           const alreadyRewarded = await hasReceivedXPToday(body.userId, rewardReason)
           if (!alreadyRewarded) {
             await giveXP(body.userId, 15, rewardReason)

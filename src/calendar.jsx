@@ -742,7 +742,7 @@ function Calendar({ apiUrl, expanded, onToggleExpand, userId }) {
       study: 'var(--color-primary-1)',
       work: 'var(--color-primary-2)',
       personal: 'var(--color-primary-3)',
-      exercise: 'var(--color-neutral-2)',
+      exercise: 'var(--color-neutral-1)',
       meeting: 'var(--color-primary-4)',
       social: 'var(--graph-1)',
       hobby: 'var(--graph-3)',
