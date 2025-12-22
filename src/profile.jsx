@@ -21,44 +21,58 @@ function Profile({ userId, expanded, onToggleExpand, onLogout, apiUrl }) {
 
   useEffect(() => {
     if (!userId) return
-    
-    fetch(`${apiUrl}/api/users/${userId}`)
-      .then(res => res.json())
-      .then(data => {
+
+    let mounted = true
+    async function load() {
+      try {
+        const res = await fetch(`${apiUrl}/api/users/${userId}`)
+        const data = await res.json()
+        if (!mounted) return
         setUserData(data)
         const savedTheme = data?.settings?.Theme || 'theme1'
         setSelectedTheme(savedTheme)
         setAppearOnline(data?.settings?.appearOnline ?? true)
         applyTheme(savedTheme)
-        setLoading(false)
-      })
-      .catch(err => {
-        setLoading(false)
-      })
+      } catch (err) {
+        console.error('Error fetching user:', err)
+      } finally {
+        if (mounted) setLoading(false)
+      }
+    }
+
+    load()
+
+    return () => { mounted = false }
   }, [userId])
 
-  const handleThemeChange = (theme) => {
+  const handleThemeChange = async (theme) => {
     setSelectedTheme(theme)
     applyTheme(theme)
-    fetch(`${apiUrl}/api/users/${userId}/settings`, {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ Theme: theme })
-    })
-      .then(res => res.json())
-      .catch(err => console.error('Error updating theme:', err))
+    try {
+      const res = await fetch(`${apiUrl}/api/users/${userId}/settings`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ Theme: theme })
+      })
+      await res.json()
+    } catch (err) {
+      console.error('Error updating theme:', err)
+    }
   }
 
-  const handleAppearOnlineToggle = () => {
+  const handleAppearOnlineToggle = async () => {
     const newValue = !appearOnline
     setAppearOnline(newValue)
-    fetch(`${apiUrl}/api/users/${userId}/settings`, {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ appearOnline: newValue, isOnline: newValue })
-    })
-      .then(res => res.json())
-      .catch(err => console.error('Error updating appear online:', err))
+    try {
+      const res = await fetch(`${apiUrl}/api/users/${userId}/settings`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ appearOnline: newValue, isOnline: newValue })
+      })
+      await res.json()
+    } catch (err) {
+      console.error('Error updating appear online:', err)
+    }
   }
 
   const handlePhotoUpload = async (event) => {
