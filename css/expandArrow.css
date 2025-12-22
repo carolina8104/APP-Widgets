@@ -46,7 +46,6 @@
 .widget-expanded .expand-arrow {
     padding: 0.6rem;
     border-radius: 10px;
-    background: rgba(0,0,0,0.08);
     transition: background 0.25s ease, transform 0.25s ease;
 }
 

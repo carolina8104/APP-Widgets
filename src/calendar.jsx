@@ -1,12 +1,60 @@
 const { useState, useEffect } = React
 
+const ParticipantAvatar = ({ photo, apiUrl, name }) => (
+  <div className="calendar-avatar-circle">
+    {photo ? (
+      <img 
+        src={photo.startsWith('/uploads/') ? `${apiUrl}${photo}` : photo} 
+        alt={name || 'avatar'}
+        onError={(e) => { e.target.style.display = 'none'; e.target.nextSibling.style.display = 'block'; }}
+      />
+    ) : null}
+    <svg width="100%" height="100%" viewBox="0 0 20 20" fill="none" style={{ display: photo ? 'none' : 'block' }}>
+      <circle cx="10" cy="10" r="10" fill="var(--color-primary-3)" />
+      <circle cx="10" cy="8" r="4" fill="var(--background)" />
+      <rect x="4" y="13" width="12" height="5" rx="2.5" fill="var(--background)" />
+    </svg>
+  </div>
+)
+
+const ParticipantsList = ({ participants, apiUrl, maxVisible = 2 }) => {
+  if (!participants || participants.length === 0) return null
+  
+  const visible = participants.slice(0, maxVisible)
+  const hasMore = participants.length > maxVisible
+  
+  return (
+    <div className="calendar-event-avatar">
+      {visible.map((participant, idx) => (
+        <div key={participant.userId} style={{ marginLeft: idx > 0 ? '-8px' : '0' }}>
+          <ParticipantAvatar photo={participant.photo} apiUrl={apiUrl} name={participant.name} />
+        </div>
+      ))}
+      {hasMore && (
+        <div className="calendar-avatar-more" style={{ marginLeft: '-8px' }}>...</div>
+      )}
+    </div>
+  )
+}
+
 function Calendar({ apiUrl, expanded, onToggleExpand, userId }) {
+    const EVENT_TYPES = [
+      { value: 'study', label: 'Study' },
+      { value: 'work', label: 'Work' },
+      { value: 'personal', label: 'Personal' },
+      { value: 'exercise', label: 'Exercise' },
+      { value: 'meeting', label: 'Meeting' },
+      { value: 'social', label: 'Social' },
+      { value: 'hobby', label: 'Hobby' },
+      { value: 'other', label: 'Other' }
+    ]
   const [events, setEvents] = useState([])
   const [currentWeekStart, setCurrentWeekStart] = useState(new Date())
   const [miniCalendarDate, setMiniCalendarDate] = useState(new Date())
   const [selectedDate, setSelectedDate] = useState(new Date())
   const [selectedEventInfo, setSelectedEventInfo] = useState(null)
   const [showTaskModal, setShowTaskModal] = useState(false)
+  const [friends, setFriends] = useState([])
   const [newTask, setNewTask] = useState({
     title: '',
     description: '',
@@ -14,7 +62,8 @@ function Calendar({ apiUrl, expanded, onToggleExpand, userId }) {
     difficulty: 'medium',
     date: new Date().toISOString().split('T')[0],
     startTime: '09:00',
-    endTime: '10:00'
+    endTime: '10:00',
+    participants: []
   })
   const [draggedSticker, setDraggedSticker] = useState(null)
   const [eventStickers, setEventStickers] = useState({})
@@ -61,7 +110,9 @@ function Calendar({ apiUrl, expanded, onToggleExpand, userId }) {
             color: getColorByType(task.type),
             userId: task.userId,
             type: task.type,
-            completed: task.completed
+            completed: task.completed,
+            participants: task.participants || [],
+            participantPhotos: task.participantPhotos || []
           }
         })
         console.log('Formatted events:', formattedEvents)
@@ -76,7 +127,22 @@ function Calendar({ apiUrl, expanded, onToggleExpand, userId }) {
   useEffect(() => {
     if (userId) {
       fetchEvents()
+      fetchFriends()
       fetchEventStickers()
+      const eventSource = new EventSource(`${apiUrl}/api/events`)
+      const updateCalendar = (data) => {
+        if (data.userId === userId || (data.participants && data.participants.includes(userId))) {
+          fetchEvents()
+        }
+      }
+      eventSource.addEventListener('calendar-created', (event) => updateCalendar(JSON.parse(event.data)))
+      eventSource.addEventListener('calendar-deleted', (event) => updateCalendar(JSON.parse(event.data)))
+      eventSource.onerror = (error) => {
+        console.error('SSE error in Calendar widget:', error)
+      }
+      return () => {
+        eventSource.close()
+      }
     }
   }, [apiUrl, userId])
 
@@ -96,6 +162,18 @@ function Calendar({ apiUrl, expanded, onToggleExpand, userId }) {
       window.removeEventListener('app:logout', handleAppLogout)
     }
   }, [eventStickers, userId])
+
+  const fetchFriends = async () => {
+    try {
+      const response = await fetch(`${apiUrl}/api/users/${userId}/friends`)
+      const data = await response.json()
+      if (!data.error) {
+        setFriends(data)
+      }
+    } catch (err) {
+      console.error('Error fetching friends:', err)
+    }
+  }
 
   const fetchEventStickers = async () => {
     try {
@@ -187,6 +265,7 @@ function Calendar({ apiUrl, expanded, onToggleExpand, userId }) {
   const handleEventDragOver = (e) => {
     e.preventDefault()
   }
+
   const availableStickers = [
     { id: 'star', name: 'Star', svg: '<svg viewBox="0 0 24 24" fill="#FFD700"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>' },
     { id: 'heart', name: 'Heart', svg: '<svg viewBox="0 0 24 24" fill="#FF6B6B"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>' },
@@ -428,7 +507,10 @@ function Calendar({ apiUrl, expanded, onToggleExpand, userId }) {
       work: 'var(--color-primary-2)',
       personal: 'var(--color-primary-3)',
       exercise: 'var(--color-neutral-2)',
-      meeting: 'var(--color-primary-4)'
+      meeting: 'var(--color-primary-4)',
+      social: 'var(--graph-1)',
+      hobby: 'var(--graph-3)',
+      other: 'var(--graph-4)'
     }
     return colors[type] || 'var(--graph-4)'
   }
@@ -449,7 +531,8 @@ function Calendar({ apiUrl, expanded, onToggleExpand, userId }) {
       endTime: endDateTime.toISOString(),
       duration: duration,
       calendarDate: newTask.date,
-      completed: false
+      completed: false,
+      participants: newTask.participants || []
     }
 
     console.log('Creating task:', taskData)
@@ -473,7 +556,8 @@ function Calendar({ apiUrl, expanded, onToggleExpand, userId }) {
           difficulty: 'medium',
           date: new Date().toISOString().split('T')[0],
           startTime: '09:00',
-          endTime: '10:00'
+          endTime: '10:00',
+          participants: []
         })
         fetchEvents()
       } else {
@@ -611,9 +695,20 @@ function Calendar({ apiUrl, expanded, onToggleExpand, userId }) {
                                 </div>
                               )
                             })()}
-                        {event.userId && (
-                          <div className="calendar-event-avatar">
-                            <div className="calendar-avatar-circle"></div>
+                            <div className="event-count-indicator">+{group.length - 1}</div>
+                            
+                            <div className="grouped-hover-expanded">
+                              {group.map((event, idx) => (
+                                <div
+                                  key={event._id}
+                                  className="grouped-event-item"
+                                  onClick={(e) => { e.stopPropagation(); setSelectedEventInfo(event) }}
+                                >
+                                  <div className="grouped-event-bullet" style={{ backgroundColor: event.color || 'var(--graph-4)' }}></div>
+                                  <div className="grouped-event-title">{event.title}</div>
+                                </div>
+                              ))}
+                            </div>
                           </div>
                         )
                       })
@@ -660,11 +755,9 @@ function Calendar({ apiUrl, expanded, onToggleExpand, userId }) {
                       value={newTask.type}
                       onChange={(e) => setNewTask({...newTask, type: e.target.value})}
                     >
-                      <option value="study">Study</option>
-                      <option value="work">Work</option>
-                      <option value="personal">Personal</option>
-                      <option value="exercise">Exercise</option>
-                      <option value="meeting">Meeting</option>
+                      {EVENT_TYPES.map(opt => (
+                        <option key={opt.value} value={opt.value}>{opt.label}</option>
+                      ))}
                     </select>
                   </div>
                   <div className="task-form-group">
@@ -679,16 +772,16 @@ function Calendar({ apiUrl, expanded, onToggleExpand, userId }) {
                     </select>
                   </div>
                 </div>
-                <div className="task-form-group">
-                  <label>Date</label>
-                  <input
-                    type="date"
-                    value={newTask.date}
-                    onChange={(e) => setNewTask({...newTask, date: e.target.value})}
-                    required
-                  />
-                </div>
                 <div className="task-form-row">
+                  <div className="task-form-group">
+                    <label>Date</label>
+                    <input
+                      type="date"
+                      value={newTask.date}
+                      onChange={(e) => setNewTask({...newTask, date: e.target.value})}
+                      required
+                    />
+                  </div>
                   <div className="task-form-group">
                     <label>Start Time</label>
                     <input
@@ -706,6 +799,38 @@ function Calendar({ apiUrl, expanded, onToggleExpand, userId }) {
                       onChange={(e) => setNewTask({...newTask, endTime: e.target.value})}
                       required
                     />
+                  </div>
+                </div>
+                <div className="task-form-group">
+                  <label>Share with Friends (Optional)</label>
+                  <div className="task-participants-selector">
+                    {friends.map(friend => {
+                      const isSelected = newTask.participants.includes(friend._id)
+                      const toggleSelection = () => {
+                        setNewTask({
+                          ...newTask,
+                          participants: isSelected
+                            ? newTask.participants.filter(p => p !== friend._id)
+                            : [...newTask.participants, friend._id]
+                        })
+                      }
+                      
+                      return (
+                        <div 
+                          key={friend._id} 
+                          className={`task-participant-option ${isSelected ? 'selected' : ''}`}
+                          onClick={toggleSelection}
+                        >
+                          <div className="participant-avatar">
+                            <ParticipantAvatar photo={friend.profilePhoto} apiUrl={apiUrl} name={friend.name} />
+                          </div>
+                          <span className="participant-name">{friend.name}</span>
+                        </div>
+                      )
+                    })}
+                    {friends.length === 0 && (
+                      <p style={{ color: 'var(--text-secondary)', fontSize: '0.85rem', margin: 0 }}>No friends to share with</p>
+                    )}
                   </div>
                 </div>
                 <div className="task-form-actions">
@@ -878,11 +1003,7 @@ function Calendar({ apiUrl, expanded, onToggleExpand, userId }) {
                         </div>
                       )
                     })()}
-                    {event.userId && (
-                      <div className="calendar-event-avatar-compact">
-                        <div className="calendar-avatar-circle-compact"></div>
-                      </div>
-                    )}
+                    <ParticipantsList participants={event.participantPhotos} apiUrl={apiUrl} />
                   </div>
                 ))}
               </div>
@@ -917,6 +1038,19 @@ function Calendar({ apiUrl, expanded, onToggleExpand, userId }) {
             <div className="event-info-section">
               <div className="event-info-label">Description</div>
               <div className="event-info-desc">{selectedEventInfo.description}</div>
+            </div>
+          )}
+          {selectedEventInfo.participantPhotos && selectedEventInfo.participantPhotos.length > 0 && (
+            <div className="event-info-section">
+              <div className="event-info-label">Participants</div>
+              <div className="event-info-participants-list">
+                {selectedEventInfo.participantPhotos.map((participant) => (
+                  <div key={participant.userId} className="event-info-participant-item">
+                    <ParticipantAvatar photo={participant.photo} apiUrl={apiUrl} name={participant.name} />
+                    <span>{participant.name || participant.userId}</span>
+                  </div>
+                ))}
+              </div>
             </div>
           )}
           <button 

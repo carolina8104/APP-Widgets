@@ -1,7 +1,7 @@
 .note-title-large {
   font-size: x-large;
-  font-weight: 700;
-  color: black;
+  font-weight: 600;  
+  color: var(--text-default); 
 }
 .notes-edit-header-row {
   display: flex;
@@ -45,7 +45,7 @@
 }
 
 .last-note {
-  background-color: var(--color-neutral-3);
+  background: color-mix(in srgb, var(--color-neutral-3) 40%, transparent);
   border-radius: 15px;
   padding: 0.5vh;
   width: 100%;
@@ -128,25 +128,19 @@
   font-family: 'Jost', sans-serif;
   font-size: medium;
   width: 95%;
-  height: 59vh;
-  min-height: -1vh;
-  background: var(--color-neutral-3);
+  height: 55vh;
+  background: color-mix(in srgb, var(--color-neutral-3) 20%, transparent);
   border: none;
   padding: 0.7em 1em;
   border-radius: 10px;
   box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.04);
-  margin: 1vh 0 1vh 0
+  margin: 1vh 0 1vh 0;
 }
 
 .notes-open-mode p {
-  max-height: 45vh;
   overflow-y: auto;
   word-break: break-word;
   white-space: pre-wrap;
-  background: var(--color-neutral-3);
-  border-radius: 10px;
-  padding: 0.7em 1em;
-  margin: 1vh 0 1vh 0;
 }
 
 .notes-open-mode textarea:focus {
@@ -243,7 +237,6 @@
 
 .all-note-delete:hover {
   transform: scale(1.08);
-  color: var(--color-primary-1);
 }
 
 textarea::-webkit-scrollbar-thumb:hover,
@@ -277,7 +270,7 @@ textarea,
 
 .note-card {
   position: relative;
-  background-color: var(--color-neutral-3);
+  background: color-mix(in srgb, var(--color-neutral-3) 50%, transparent);
   border-radius: 15px;
   padding: 1.5vh;
   width: 100%;
@@ -311,8 +304,6 @@ div input::placeholder,
 div textarea::placeholder {
   color: var(--color-neutral-3);
 }
-
-
 
 .notes p, h2, h3, svg{
     color: var(--text-accent-2);

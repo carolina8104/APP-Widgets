@@ -170,6 +170,9 @@ async function giveXP(userId, amount, reason) {
 
 async function handleApi(message, response) {
   const url = new URL(message.url, `http://${message.headers.host}`)
+  if (url.pathname.startsWith('/uploads/')) {
+    return serveStatic(url.pathname, response);
+  }
 
   if (message.method === 'OPTIONS') {
     response.writeHead(204, {
@@ -380,6 +383,7 @@ async function handleApi(message, response) {
         email: friend.email,
         xp: friend.xp,
         photos: friend.photos || [],
+        profilePhoto: friend.profilePhoto || (friend.photos && friend.photos[0]) || '',
         settings: friend.settings || {}
       }))
       
@@ -1036,10 +1040,31 @@ async function handleApi(message, response) {
 
   if (url.pathname === '/api/tasks' && message.method === 'GET') {
     const tasksCol = getCollection('calendar')
+    const usersCol = getCollection('users')
     const userId = url.searchParams.get('userId')
-    const filter = userId ? { userId } : {}
+    const filter = userId ? {
+      $or: [
+        { userId },
+        { participants: userId }
+      ]
+    } : {}
     const tasks = await tasksCol.find(filter).toArray()
-    return sendJson(response, 200, tasks)
+    
+    const enrichedTasks = await Promise.all(tasks.map(async (task) => {
+      if (task.participants && task.participants.length > 0) {
+        const participantUsers = await usersCol.find({
+          _id: { $in: task.participants }
+        }).toArray()
+        task.participantPhotos = participantUsers.map(u => ({
+          userId: u._id,
+          name: u.name || u.username || u._id,
+          photo: u.settings && u.settings.profilePhoto ? u.settings.profilePhoto : (u.photos && u.photos.length > 0 ? u.photos[0] : null)
+        }))
+      }
+      return task
+    }))
+    
+    return sendJson(response, 200, enrichedTasks)
   }
 
   if (url.pathname === '/api/tasks' && message.method === 'POST') {
@@ -1059,11 +1084,41 @@ async function handleApi(message, response) {
         duration: body.duration || 3600,
         completed: body.completed || false,
         calendarDate: body.calendarDate,
+        participants: body.participants || [],
         xpEarned: 0,
         createdAt: new Date().toISOString()
       }
       
       await tasksCol.insertOne(newTask)
+      if (body.userId) {
+        const taskCount = await tasksCol.countDocuments({ userId: body.userId })
+        if (taskCount === 1) {
+          await giveXP(body.userId, 5, 'You just added your first calendar event!')
+        }
+        if (taskCount % 20 === 0) {
+          const rewardReason = `Added ${taskCount} calendar events!`
+          const alreadyRewarded = await hasReceivedXPToday(body.userId, rewardReason)
+          if (!alreadyRewarded) {
+            await giveXP(body.userId, 15, rewardReason)
+          }
+        }
+        if (body.calendarDate) {
+          const tasksToday = await tasksCol.countDocuments({ userId: body.userId, calendarDate: body.calendarDate })
+          if (tasksToday >= 10) {
+            const rewardReason = 'Added 10+ events in one day!'
+            const alreadyRewarded = await hasReceivedXPToday(body.userId, rewardReason)
+            if (!alreadyRewarded) {
+              await giveXP(body.userId, 10, rewardReason)
+            }
+          }
+        }
+      }
+      broadcastSSE('calendar-created', { userId: newTask.userId, task: newTask, participants: newTask.participants })
+      if (newTask.participants && newTask.participants.length > 0) {
+        newTask.participants.forEach(participantId => {
+          broadcastSSE('calendar-created', { userId: participantId, task: newTask, participants: newTask.participants })
+        })
+      }
       return sendJson(response, 201, newTask)
     } catch (err) {
       return sendJson(response, 500, { error: err.message })
@@ -1074,9 +1129,13 @@ async function handleApi(message, response) {
   if (taskMatch && message.method === 'DELETE') {
     const taskId = taskMatch[1]
     const tasksCol = getCollection('calendar')
+    const task = await tasksCol.findOne({ _id: taskId })
     const result = await tasksCol.deleteOne({ _id: taskId })
     if (result.deletedCount === 0) {
       return sendJson(response, 404, { error: 'Task not found' })
+    }
+    if (task) {
+      broadcastSSE('calendar-deleted', { userId: task.userId, taskId })
     }
     return sendJson(response, 200, { deleted: true })
   }

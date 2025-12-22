@@ -28,11 +28,10 @@
   overflow: visible;
 }
 
-
 .fw-title{
   margin: 0;
-  font-size: 1.15rem;
-  font-weight: 800;
+  font-size: x-large;
+  font-weight: 600;  
   line-height: 1;
   color: var(--text-accent-1);
   letter-spacing: -0.02em;
@@ -68,7 +67,7 @@
 }
 
 .fw-search-icon{
-  color: rgba(6,33,10,0.8);
+  stroke: var(--text-default);
 }
 
 .fw-list{
@@ -240,7 +239,7 @@
 }
 
 .fw-add-btn {
-  background: var(--color-neutral-3);
+  background: color-mix(in srgb, var(--color-neutral-3) 60%, transparent);
   border: none;
   border-radius: 0.6rem;
   width: 1.8rem;
