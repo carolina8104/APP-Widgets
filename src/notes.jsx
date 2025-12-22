@@ -159,11 +159,10 @@ function Notes({ userId, apiUrl, expanded, onToggleExpand }) {
         </div>
         <div>
           <small className="detail-date">
-            {new Date(selectedNote.createdAt).toLocaleDateString('en-EN', {
-              weekday: 'long',
+            {new Date(selectedNote.createdAt).toLocaleDateString('pt-PT', {
               year: 'numeric',
-              month: 'long',
-              day: 'numeric',
+              month: '2-digit',
+              day: '2-digit',
               hour: '2-digit',
               minute: '2-digit'
             })}
@@ -199,11 +198,10 @@ function Notes({ userId, apiUrl, expanded, onToggleExpand }) {
         </div>
         <div>
           <small className="detail-date">
-            {new Date(selectedNote.createdAt).toLocaleDateString('en-EN', {
-              weekday: 'long',
+            {new Date(selectedNote.createdAt).toLocaleDateString('pt-PT', {
               year: 'numeric',
-              month: 'long',
-              day: 'numeric',
+              month: '2-digit',
+              day: '2-digit',
               hour: '2-digit',
               minute: '2-digit'
             })}
@@ -249,7 +247,7 @@ function Notes({ userId, apiUrl, expanded, onToggleExpand }) {
                 <div className="all-note-card-header">
                   <div className="all-note-head-left">
                     <h3 className="all-note-title">{note.title}</h3>
-                    <small className="all-note-date">{new Date(note.createdAt).toLocaleDateString('en-EN')}</small>
+                    <small className="all-note-date">{new Date(note.createdAt).toLocaleDateString('pt-PT')}</small>
                   </div>
                   <button
                     className="all-note-delete"
@@ -304,7 +302,7 @@ function Notes({ userId, apiUrl, expanded, onToggleExpand }) {
             setViewMode('view')
           }}>
             <p>{note.title.length > 23 ? note.title.slice(0, 23) + '...' : note.title}</p>
-            <p>{new Date(note.createdAt).toLocaleDateString('en-EN')}</p>
+            <p>{new Date(note.createdAt).toLocaleDateString('pt-PT')}</p>
           </div>
         ))}
       </div>
