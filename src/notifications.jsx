@@ -153,23 +153,95 @@ function Notifications({ userId, apiUrl, isMac = false, onFriendAcceptedRef }) {
                     )
                   }
                   if (notif.type === 'level-up') {
+                    const iconEmoji = notif.unlockedTheme && notif.unlockedSticker
+                      ? '🎨'
+                      : notif.unlockedSticker
+                      ? '🎁'
+                      : notif.unlockedTheme
+                      ? '🎨'
+                      : '🎉'
+                    
                     return (
                       <div key={notif._id} className="notification-item xp-notification level-up-notification">
                         <div className="notification-content" style={{ alignItems: 'center' }}>
                           <div className="notification-icon xp-icon">
-                            <span>{notif.unlockedTheme ? '🎨' : '🎉'}</span>
+                            <span>{iconEmoji}</span>
                           </div>
                           <div className="notification-text" style={{ flex: 1 }}>
                             <strong>Level {notif.level}!</strong>
                             <span className="notification-reason">
-                              {notif.unlockedTheme 
-                                ? `Level up! You unlocked ${notif.unlockedTheme}!` 
+                              {notif.unlockedTheme && notif.unlockedSticker
+                                ? `Level up! You unlocked ${notif.unlockedTheme} and a new sticker!`
+                                : notif.unlockedTheme 
+                                ? `Level up! You unlocked ${notif.unlockedTheme}!`
+                                : notif.unlockedSticker
+                                ? `Level up! You unlocked a new sticker!`
                                 : notif.reason}
                             </span>
                           </div>
                           <button 
                             className="notification-dismiss"
                             onClick={() => handleDismissXP(notif._id)}
+                            aria-label="Dismiss"
+                            style={{ alignSelf: 'flex-start', marginLeft: 8 }}
+                          >
+                            ✕
+                          </button>
+                        </div>
+                      </div>
+                    )
+                  }
+                  if (notif.type === 'task-added') {
+                    const formattedDate = notif.taskDate ? new Date(notif.taskDate).toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' }) : ''
+                    return (
+                      <div key={notif._id} className="notification-item xp-notification">
+                        <div className="notification-content" style={{ alignItems: 'center' }}>
+                          <div className="notification-icon xp-icon">
+                            <span>📅</span>
+                          </div>
+                          <div className="notification-text" style={{ flex: 1 }}>
+                            <strong>New Task</strong>
+                            <span className="notification-reason">
+                              {notif.message}
+                              {formattedDate && <span style={{ display: 'block', fontSize: '0.85em', opacity: 0.8, marginTop: '2px' }}>{formattedDate}</span>}
+                            </span>
+                          </div>
+                          <button 
+                            className="notification-dismiss"
+                            onClick={(e) => {
+                              e.stopPropagation()
+                              handleDismissXP(notif._id)
+                            }}
+                            aria-label="Dismiss"
+                            style={{ alignSelf: 'flex-start', marginLeft: 8 }}
+                          >
+                            ✕
+                          </button>
+                        </div>
+                      </div>
+                    )
+                  }
+                  if (notif.type === 'task-left') {
+                    const formattedDate = notif.taskDate ? new Date(notif.taskDate).toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' }) : ''
+                    return (
+                      <div key={notif._id} className="notification-item xp-notification">
+                        <div className="notification-content" style={{ alignItems: 'center' }}>
+                          <div className="notification-icon xp-icon">
+                            <span>👋</span>
+                          </div>
+                          <div className="notification-text" style={{ flex: 1 }}>
+                            <strong>Task Update</strong>
+                            <span className="notification-reason">
+                              {notif.message}
+                              {formattedDate && <span style={{ display: 'block', fontSize: '0.85em', opacity: 0.8, marginTop: '2px' }}>{formattedDate}</span>}
+                            </span>
+                          </div>
+                          <button 
+                            className="notification-dismiss"
+                            onClick={(e) => {
+                              e.stopPropagation()
+                              handleDismissXP(notif._id)
+                            }}
                             aria-label="Dismiss"
                             style={{ alignSelf: 'flex-start', marginLeft: 8 }}
                           >
