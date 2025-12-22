@@ -25,8 +25,6 @@ async function handleRegister(message, response) {
     passwordHash: passwordHash,
     level: 1,
     xp: 0,
-    stickersUnlocked: [],
-    themesUnlocked: [],
     photos: [],
     settings: {},
     createdAt: new Date().toISOString()
