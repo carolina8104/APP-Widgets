@@ -564,6 +564,38 @@ function Calendar({ apiUrl, expanded, onToggleExpand, userId }) {
                     />
                   </div>
                 </div>
+                <div className="task-form-group">
+                  <label>Share with Friends (Optional)</label>
+                  <div className="task-participants-selector">
+                    {friends.map(friend => {
+                      const isSelected = newTask.participants.includes(friend._id)
+                      const toggleSelection = () => {
+                        setNewTask({
+                          ...newTask,
+                          participants: isSelected
+                            ? newTask.participants.filter(p => p !== friend._id)
+                            : [...newTask.participants, friend._id]
+                        })
+                      }
+                      
+                      return (
+                        <div 
+                          key={friend._id} 
+                          className={`task-participant-option ${isSelected ? 'selected' : ''}`}
+                          onClick={toggleSelection}
+                        >
+                          <div className="participant-avatar">
+                            <ParticipantAvatar photo={friend.profilePhoto} apiUrl={apiUrl} name={friend.name} />
+                          </div>
+                          <span className="participant-name">{friend.name}</span>
+                        </div>
+                      )
+                    })}
+                    {friends.length === 0 && (
+                      <p style={{ color: 'var(--text-secondary)', fontSize: '0.85rem', margin: 0 }}>No friends to share with</p>
+                    )}
+                  </div>
+                </div>
                 <div className="task-form-actions">
                   <button type="button" className="task-btn-cancel" onClick={() => setShowTaskModal(false)}>
                     Cancel
@@ -719,11 +751,7 @@ function Calendar({ apiUrl, expanded, onToggleExpand, userId }) {
                         </div>
                       )
                     })()}
-                    {event.userId && (
-                      <div className="calendar-event-avatar-compact">
-                        <div className="calendar-avatar-circle-compact"></div>
-                      </div>
-                    )}
+                    <ParticipantsList participants={event.participantPhotos} apiUrl={apiUrl} />
                   </div>
                 ))}
               </div>
@@ -758,6 +786,19 @@ function Calendar({ apiUrl, expanded, onToggleExpand, userId }) {
             <div className="event-info-section">
               <div className="event-info-label">Description</div>
               <div className="event-info-desc">{selectedEventInfo.description}</div>
+            </div>
+          )}
+          {selectedEventInfo.participantPhotos && selectedEventInfo.participantPhotos.length > 0 && (
+            <div className="event-info-section">
+              <div className="event-info-label">Participants</div>
+              <div className="event-info-participants-list">
+                {selectedEventInfo.participantPhotos.map((participant) => (
+                  <div key={participant.userId} className="event-info-participant-item">
+                    <ParticipantAvatar photo={participant.photo} apiUrl={apiUrl} name={participant.name} />
+                    <span>{participant.name || participant.userId}</span>
+                  </div>
+                ))}
+              </div>
             </div>
           )}
           <button 
