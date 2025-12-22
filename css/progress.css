@@ -299,3 +299,11 @@
     min-width: 80px;
     text-align: center;
 }
+
+.dashboard-grid > div.progress > .widget {
+  height: calc(100% - 1.2rem);
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+
+}
