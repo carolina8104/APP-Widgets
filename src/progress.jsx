@@ -8,9 +8,16 @@ function Progress({ userId, apiUrl, expanded, onToggleExpand, hideExpandArrow = 
   const [weekCount, setWeekCount] = useState(0)
   const [totalStats, setTotalStats] = useState({ events: 0, tasks: 0, notes: 0, friends: 0 })
   const [yearData, setYearData] = useState({})
+  const [weekOffset, setWeekOffset] = useState(0)
+  useEffect(() => {
+    if (!expanded) {
+      setWeekOffset(0)
+    }
+  }, [expanded])
+  const [weekRange, setWeekRange] = useState('')
 
   useEffect(() => {
-    fetchWeeklyProgress()
+    fetchWeeklyProgress(weekOffset)
     fetchTotalStats()
     fetchYearData()
     
@@ -18,7 +25,7 @@ function Progress({ userId, apiUrl, expanded, onToggleExpand, hideExpandArrow = 
 
     const updateProgress = (data) => {
       if (data.userId === userId) {
-        fetchWeeklyProgress()
+        fetchWeeklyProgress(weekOffset)
         fetchYearData()
         fetchTotalStats()
       }
@@ -37,7 +44,7 @@ function Progress({ userId, apiUrl, expanded, onToggleExpand, hideExpandArrow = 
     return () => {
       eventSource.close()
     }
-  }, [userId, apiUrl])
+  }, [userId, apiUrl, weekOffset])
 
   async function fetchTotalStats() {
     try {
@@ -59,7 +66,7 @@ function Progress({ userId, apiUrl, expanded, onToggleExpand, hideExpandArrow = 
     }
   }
 
-  async function fetchWeeklyProgress() {
+  async function fetchWeeklyProgress(offset = 0) {
     try {
       const response = await fetch(`${apiUrl}/api/todo/all?userId=${userId}`)
       const todos = await response.json()
@@ -72,12 +79,15 @@ function Progress({ userId, apiUrl, expanded, onToggleExpand, hideExpandArrow = 
       const currentDay = now.getDay() 
       const mondayOffset = currentDay === 0 ? -6 : 1 - currentDay
       const monday = new Date(now)
-      monday.setDate(now.getDate() + mondayOffset)
+      monday.setDate(now.getDate() + mondayOffset + (offset * 7))
       monday.setHours(0, 0, 0, 0)
       
       const sunday = new Date(monday)
       sunday.setDate(monday.getDate() + 6)
       sunday.setHours(23, 59, 59, 999)
+      
+      const formatDate = (d) => `${d.getDate()}/${d.getMonth() + 1}`
+      setWeekRange(`${formatDate(monday)} - ${formatDate(sunday)}`)
 
       const created = [0, 0, 0, 0, 0, 0, 0]
       const completed = [0, 0, 0, 0, 0, 0, 0]
@@ -199,7 +209,8 @@ function Progress({ userId, apiUrl, expanded, onToggleExpand, hideExpandArrow = 
                     const completedCount = weeklyCompleted[i]
                     const grayBarHeight = maxBarHeight
                     const maxPossible = Math.max(...weeklyData, 1)
-                    const blackBarHeight = (completedCount / maxPossible) * maxBarHeight
+                    const safeCompletedCount = Math.min(completedCount, createdCount)
+                    const blackBarHeight = (safeCompletedCount / maxPossible) * maxBarHeight
                     return (
                       <g key={day}>
                         <rect
@@ -240,6 +251,25 @@ function Progress({ userId, apiUrl, expanded, onToggleExpand, hideExpandArrow = 
               <div className="progress-expanded-row">
                 <div className="progress-main">
                   <h3 className="progress-subtitle">Week tasks</h3>
+                  <div className="progress-weeknav">
+                    <button
+                      className="progress-weeknav-btn"
+                      onClick={() => setWeekOffset(weekOffset - 1)}
+                      onMouseOver={e => e.target.classList.add('hover')}
+                      onMouseOut={e => e.target.classList.remove('hover')}
+                    >
+                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M15 18l-6-6 6-6" stroke="var(--text-accent-3)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                    </button>
+                    <span className="progress-weeknav-label">{weekOffset === 0 ? 'This week' : weekRange}</span>
+                    <button
+                      className="progress-weeknav-btn"
+                      onClick={() => setWeekOffset(weekOffset + 1)}
+                      onMouseOver={e => e.target.classList.add('hover')}
+                      onMouseOut={e => e.target.classList.remove('hover')}
+                    >
+                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M9 18l6-6-6-6" stroke="var(--text-accent-3)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                    </button>
+                  </div>
                   <div className="progress-main-row">
                     {weekCount === 0 && todayCount === 0 ? (
                       <div className="progress-no-data">
@@ -248,13 +278,15 @@ function Progress({ userId, apiUrl, expanded, onToggleExpand, hideExpandArrow = 
                     ) : (
                       <>
                         <div className="progress-stats">
-                          <div className="progress-stat">
-                            <span className="progress-value">{todayCount}</span>
-                            <span className="progress-label">Today</span>
-                          </div>
+                          {weekOffset === 0 && (
+                            <div className="progress-stat">
+                              <span className="progress-value">{todayCount}</span>
+                              <span className="progress-label">Today</span>
+                            </div>
+                          )}
                           <div className="progress-stat">
                             <span className="progress-value">{weekCount}</span>
-                            <span className="progress-label">This week</span>
+                            <span className="progress-label">{weekOffset === 0 ? 'This week' : 'Week total'}</span>
                           </div>
                         </div>
                         <svg className="progress-chart" viewBox="0 0 160 78" preserveAspectRatio="xMidYMid meet">
@@ -264,7 +296,8 @@ function Progress({ userId, apiUrl, expanded, onToggleExpand, hideExpandArrow = 
                             const completedCount = weeklyCompleted[i]
                             const grayBarHeight = maxBarHeight
                             const maxPossible = Math.max(...weeklyData, 1)
-                            const blackBarHeight = (completedCount / maxPossible) * maxBarHeight
+                            const safeCompletedCount = Math.min(completedCount, createdCount)
+                            const blackBarHeight = (safeCompletedCount / maxPossible) * maxBarHeight
                             return (
                               <g key={day}>
                                 <rect
@@ -393,3 +426,5 @@ function Progress({ userId, apiUrl, expanded, onToggleExpand, hideExpandArrow = 
     </div>
   )
 }
+
+window.Progress = Progress
