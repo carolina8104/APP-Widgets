@@ -96,6 +96,45 @@ function Calendar({ apiUrl, expanded, onToggleExpand, userId }) {
       window.removeEventListener('app:logout', handleAppLogout)
     }
   }, [eventStickers, userId])
+
+  const fetchEventStickers = async () => {
+    try {
+      const response = await fetch(`${apiUrl}/api/event-stickers?userId=${userId}`)
+      if (response.ok) {
+        const stickers = await response.json()
+        console.log('Fetched event stickers:', stickers)
+        const stickerMap = {}
+        stickers.forEach(s => {
+          stickerMap[s.eventId] = s.stickerId
+        })
+        console.log('Sticker map:', stickerMap)
+        setEventStickers(stickerMap)
+      }
+    } catch (err) {
+      console.error('Error fetching event stickers:', err)
+    }
+  }
+
+  const saveEventStickers = async (opts = {}) => {
+    try {
+      const stickers = Object.keys(eventStickers).map(eventId => ({
+        eventId,
+        stickerId: eventStickers[eventId],
+        userId
+      }))
+      if (stickers.length === 0) return
+      await fetch(`${apiUrl}/api/event-stickers/bulk`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ stickers }),
+        keepalive: !!opts.keepalive
+      })
+      console.log('Saved event stickers (bulk):', stickers.length)
+    } catch (err) {
+      console.error('Error saving event stickers bulk:', err)
+    }
+  }
+
   const handleEventDragOver = (e) => {
     e.preventDefault()
   }
@@ -165,7 +204,8 @@ function Calendar({ apiUrl, expanded, onToggleExpand, userId }) {
       return getEventStartTime(a.time) - getEventStartTime(b.time)
     })
 
-    const DAY_START = 6
+
+    const DAY_START = 0
 
     const items = sorted.map(event => {
       const duration = getEventDuration(event.time)
