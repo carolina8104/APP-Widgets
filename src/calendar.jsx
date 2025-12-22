@@ -135,6 +135,55 @@ function Calendar({ apiUrl, expanded, onToggleExpand, userId }) {
     }
   }
 
+  const attachStickerToEvent = async (eventId, stickerId) => {
+    try {
+      console.log('Attaching sticker:', stickerId, 'to event:', eventId)
+      const response = await fetch(`${apiUrl}/api/event-stickers`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ eventId, stickerId, userId })
+      })
+      if (response.ok) {
+        const result = await response.json()
+        console.log('Sticker attached:', result)
+        setEventStickers(prev => ({ ...prev, [eventId]: stickerId }))
+      }
+    } catch (err) {
+      console.error('Error attaching sticker:', err)
+    }
+  }
+
+  const removeStickerFromEvent = async (eventId) => {
+    try {
+      const response = await fetch(`${apiUrl}/api/event-stickers/${eventId}`, {
+        method: 'DELETE'
+      })
+      if (response.ok) {
+        setEventStickers(prev => {
+          const newMap = { ...prev }
+          delete newMap[eventId]
+          return newMap
+        })
+      }
+    } catch (err) {
+      console.error('Error removing sticker:', err)
+    }
+  }
+
+  const handleStickerDragStart = (stickerId) => {
+    setDraggedSticker(stickerId)
+  }
+
+  const handleEventDrop = (e, eventId) => {
+    e.preventDefault()
+    if (draggedSticker) {
+      setEventStickers(prev => ({ ...prev, [eventId]: draggedSticker }))
+      const stickerId = draggedSticker
+      setDraggedSticker(null)
+      attachStickerToEvent(eventId, stickerId)
+    }
+  }
+
   const handleEventDragOver = (e) => {
     e.preventDefault()
   }
@@ -455,8 +504,27 @@ function Calendar({ apiUrl, expanded, onToggleExpand, userId }) {
                         }}
                       >
                         <div className="calendar-event-title">{event.title}</div>
+                                  ) : null
+                                })()}
+                              </div>
+                            </div>
+                          )
+                        }
+
+                        return (
+                          <div
+                            key={`g-${gi}-${first._id}`}
+                            className={`calendar-event ${first.heightClass} grouped-expandable`}
+                            style={{
+                              backgroundColor: first.color || 'var(--graph-4)',
+                              top: `${first.topPercent}%`,
+                              height: `${first.heightPercent}%`,
+                              left: `${first.leftPercent}%`,
+                              width: `${first.widthPercent}%`
+                            }}
+                          >
+                            <div className="calendar-event-title">{first.title}</div>
                             {(() => {
-                              const parts = event.time && event.time.includes('-') ? event.time.split('-').map(p => p.trim()) : [event.time]
                               return (
                                 <div className="calendar-event-time">
                                   <span className="calendar-event-time-line">{parts[0]}{parts[1] ? ' -' : ''}</span>
