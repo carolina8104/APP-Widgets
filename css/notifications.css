@@ -26,7 +26,7 @@
   position: absolute;
   top: 6px;
   right: 4px;
-  background-color: var(--notif-badge);
+  background-color: var(--color-primary-3);
   color: white;
   font-size: 10px;
   font-weight: bold;
@@ -90,7 +90,7 @@
 }
 
 .notifications-count {
-  background-color: var(--notif-count-bg);
+  background-color: var(--color-primary-3);
   color: var(--text-default);
   font-size: 12px;
   font-weight: bold;
@@ -166,7 +166,7 @@
 }
 
 .notification-text strong {
-  color: var(--text-primary, --text-inverse);
+  color: var(--bar-elements);
   font-weight: 600;
 }
 
@@ -249,14 +249,14 @@
 
 .notification-reason {
   font-size: 12px;
-  color: rgba(255, 255, 255, 0.6);
+  color: var(--bar-elements);
   font-weight: 400;
 }
 
 .notification-dismiss {
   background: transparent;
   border: none;
-  color: rgba(255, 255, 255, 0.5);
+  color: var(--bar-elements);
   font-size: 18px;
   cursor: pointer;
   padding: 4px 8px;
@@ -264,5 +264,5 @@
 }
 
 .notification-dismiss:hover {
-  color: rgba(255, 255, 255, 0.9);
+  color:var(--color-primary-3);
 }
