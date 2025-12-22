@@ -1085,7 +1085,6 @@ async function handleApi(message, response) {
         completed: body.completed || false,
         calendarDate: body.calendarDate,
         participants: body.participants || [],
-        xpEarned: 0,
         createdAt: new Date().toISOString()
       }
       
