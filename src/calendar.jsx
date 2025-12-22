@@ -1,5 +1,42 @@
 const { useState, useEffect } = React
 
+const ParticipantAvatar = ({ photo, apiUrl, name }) => (
+  <div className="calendar-avatar-circle">
+    {photo ? (
+      <img 
+        src={photo.startsWith('/uploads/') ? `${apiUrl}${photo}` : photo} 
+        alt={name || 'avatar'}
+        onError={(e) => { e.target.style.display = 'none'; e.target.nextSibling.style.display = 'block'; }}
+      />
+    ) : null}
+    <svg width="100%" height="100%" viewBox="0 0 20 20" fill="none" style={{ display: photo ? 'none' : 'block' }}>
+      <circle cx="10" cy="10" r="10" fill="var(--color-primary-3)" />
+      <circle cx="10" cy="8" r="4" fill="var(--background)" />
+      <rect x="4" y="13" width="12" height="5" rx="2.5" fill="var(--background)" />
+    </svg>
+  </div>
+)
+
+const ParticipantsList = ({ participants, apiUrl, maxVisible = 2 }) => {
+  if (!participants || participants.length === 0) return null
+  
+  const visible = participants.slice(0, maxVisible)
+  const hasMore = participants.length > maxVisible
+  
+  return (
+    <div className="calendar-event-avatar">
+      {visible.map((participant, idx) => (
+        <div key={participant.userId} style={{ marginLeft: idx > 0 ? '-8px' : '0' }}>
+          <ParticipantAvatar photo={participant.photo} apiUrl={apiUrl} name={participant.name} />
+        </div>
+      ))}
+      {hasMore && (
+        <div className="calendar-avatar-more" style={{ marginLeft: '-8px' }}>...</div>
+      )}
+    </div>
+  )
+}
+
 function Calendar({ apiUrl, expanded, onToggleExpand, userId }) {
     const EVENT_TYPES = [
       { value: 'study', label: 'Study' },
@@ -17,6 +54,7 @@ function Calendar({ apiUrl, expanded, onToggleExpand, userId }) {
   const [selectedDate, setSelectedDate] = useState(new Date())
   const [selectedEventInfo, setSelectedEventInfo] = useState(null)
   const [showTaskModal, setShowTaskModal] = useState(false)
+  const [friends, setFriends] = useState([])
   const [newTask, setNewTask] = useState({
     title: '',
     description: '',
@@ -24,7 +62,8 @@ function Calendar({ apiUrl, expanded, onToggleExpand, userId }) {
     difficulty: 'medium',
     date: new Date().toISOString().split('T')[0],
     startTime: '09:00',
-    endTime: '10:00'
+    endTime: '10:00',
+    participants: []
   })
 
   const deleteEvent = async (eventId) => {
@@ -69,7 +108,9 @@ function Calendar({ apiUrl, expanded, onToggleExpand, userId }) {
             color: getColorByType(task.type),
             userId: task.userId,
             type: task.type,
-            completed: task.completed
+            completed: task.completed,
+            participants: task.participants || [],
+            participantPhotos: task.participantPhotos || []
           }
         })
         console.log('Formatted events:', formattedEvents)
@@ -84,9 +125,10 @@ function Calendar({ apiUrl, expanded, onToggleExpand, userId }) {
   useEffect(() => {
     if (userId) {
       fetchEvents()
+      fetchFriends()
       const eventSource = new EventSource(`${apiUrl}/api/events`)
       const updateCalendar = (data) => {
-        if (data.userId === userId) {
+        if (data.userId === userId || (data.participants && data.participants.includes(userId))) {
           fetchEvents()
         }
       }
@@ -100,6 +142,18 @@ function Calendar({ apiUrl, expanded, onToggleExpand, userId }) {
       }
     }
   }, [apiUrl, userId])
+
+  const fetchFriends = async () => {
+    try {
+      const response = await fetch(`${apiUrl}/api/users/${userId}/friends`)
+      const data = await response.json()
+      if (!data.error) {
+        setFriends(data)
+      }
+    } catch (err) {
+      console.error('Error fetching friends:', err)
+    }
+  }
 
   const getWeekDates = (startDate) => {
     const dates = []
@@ -330,7 +384,8 @@ function Calendar({ apiUrl, expanded, onToggleExpand, userId }) {
       endTime: endDateTime.toISOString(),
       duration: duration,
       calendarDate: newTask.date,
-      completed: false
+      completed: false,
+      participants: newTask.participants || []
     }
 
     console.log('Creating task:', taskData)
@@ -354,7 +409,8 @@ function Calendar({ apiUrl, expanded, onToggleExpand, userId }) {
           difficulty: 'medium',
           date: new Date().toISOString().split('T')[0],
           startTime: '09:00',
-          endTime: '10:00'
+          endTime: '10:00',
+          participants: []
         })
         fetchEvents()
       } else {
@@ -417,11 +473,7 @@ function Calendar({ apiUrl, expanded, onToggleExpand, userId }) {
                                 </div>
                               )
                             })()}
-                        {event.userId && (
-                          <div className="calendar-event-avatar">
-                            <div className="calendar-avatar-circle"></div>
-                          </div>
-                        )}
+                        <ParticipantsList participants={event.participantPhotos} apiUrl={apiUrl} />
                       </div>
                     ))}
                   </div>
@@ -483,16 +535,16 @@ function Calendar({ apiUrl, expanded, onToggleExpand, userId }) {
                     </select>
                   </div>
                 </div>
-                <div className="task-form-group">
-                  <label>Date</label>
-                  <input
-                    type="date"
-                    value={newTask.date}
-                    onChange={(e) => setNewTask({...newTask, date: e.target.value})}
-                    required
-                  />
-                </div>
                 <div className="task-form-row">
+                  <div className="task-form-group">
+                    <label>Date</label>
+                    <input
+                      type="date"
+                      value={newTask.date}
+                      onChange={(e) => setNewTask({...newTask, date: e.target.value})}
+                      required
+                    />
+                  </div>
                   <div className="task-form-group">
                     <label>Start Time</label>
                     <input
