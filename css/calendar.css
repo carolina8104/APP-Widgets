@@ -96,8 +96,8 @@
 }
 
 .calendar-add-task-btn {
-  background-color: var(--background);
-  color: white;
+  background-color: var(--text-default);
+  color: var(--text-inverse);
   border: none;
   padding: 0.5rem 1.5rem;
   border-radius: 10px;
@@ -248,11 +248,32 @@
   line-height: 1;
 }
 .calendar-avatar-circle {
-  width: 1.5rem;
-  height: 1.5rem;
+  width: 1rem;
+  height: 1rem;
   border-radius: 50%;
-  background: rgba(0, 0, 0, 0.2);
+  background: var(--color-primary-3);
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.calendar-avatar-circle img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.calendar-avatar-more {
+  width: 1rem;
+  height: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-default);
+  font-weight: 600;
+  font-size: 0.4rem;
 }
 
 .calendar-nav-btn {
@@ -542,7 +563,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.7);
+  background: rgba(0, 0, 0, 0.25);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -556,14 +577,14 @@
 }
 
 .task-modal {
-  background: var(--color-neutral-2);
-  border-radius: 20px;
-  padding: 2rem;
-  width: 90%;
-  max-width: 500px;
-  max-height: 90vh;
+  background: var(--color-neutral-1);
+  border-radius: 16px;
+  padding: 1.2rem 1.2rem 1rem 1.2rem;
+  width: 95%;
+    max-width: 600px;
+    max-height: 85vh;
   overflow-y: auto;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.32);
   animation: slideUp 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
@@ -586,7 +607,7 @@
 }
 
 .task-form-group {
-  margin-bottom: 1.2rem;
+  margin-bottom: 0.7rem;
   flex: 1;
 }
 
@@ -605,7 +626,7 @@
   padding: 0.75rem;
   border-radius: 10px;
   border: 2px solid rgba(255, 255, 255, 0.15);
-  background: rgba(255, 255, 255, 0.15);
+  background: color-mix(in srgb, var(--color-neutral-3) 60%, transparent);
   color: var(--text-default);
   font-size: 0.95rem;
   font-family: inherit;
@@ -626,10 +647,11 @@
   resize: none;
 }
 
+
 .task-form-row {
   display: flex;
-  gap: 1rem;
-  margin-bottom: 1.2rem;
+  gap: 0.7rem;
+  margin-bottom: 0.7rem;
 }
 
 .task-form-row .task-form-group {
@@ -656,7 +678,7 @@
 }
 
 .task-btn-cancel {
-  background: rgba(255, 255, 255, 0.1);
+  background: var(--color-neutral-3);
   color: var(--text-default);
 }
 
@@ -863,4 +885,81 @@
 }
 .calendar .expand-arrow {
   stroke: var(--text-default);
+}
+.calendar-compact-header svg{
+  border-radius: 20%;
+  background: color-mix(in srgb, var(--color-primary-2) 60%, transparent);
+}
+
+.task-participants-selector {
+  display: flex;
+  flex-direction: row;
+  gap: 0.4rem;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 0.7rem;
+  background: rgba(0, 0, 0, 0.07);
+  border-radius: 10px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-primary-3) var(--color-neutral-1);
+}
+
+.task-participant-option {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  background: color-mix(in srgb, var(--color-neutral-3) 60%, transparent);
+  border: 2px solid transparent;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-width: 75px;
+  padding-top:0.5rem;
+}
+
+.task-participant-option:hover {
+  background: rgba(255, 255, 255, 0.15);
+  transform: translateY(-2px);
+}
+
+.task-participant-option.selected {
+  background: color-mix(in srgb, var(--color-primary-3) 60%, transparent);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+}
+
+.participant-avatar .calendar-avatar-circle {
+  width: 45px;
+  height: 45px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+.participant-name {
+  color: var(--text-default);
+  font-size: 0.75rem;
+  text-align: center;
+  max-width: 70px;
+  overflow: hidden;
+}
+
+.event-info-participant-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.3rem;
+}
+
+.calendar-event-avatar {
+  display: flex;
+  align-items: center;
+  margin-top: 0.25rem;
+}
+
+.calendar-event.event-medium .calendar-avatar-circle {
+  width: 25px;
+  height: 25px;
+  border-radius: 50%;
+  background-color: var(--color-primary-3);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  margin-right: 10px;
 }
