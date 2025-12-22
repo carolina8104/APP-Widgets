@@ -37,6 +37,7 @@ const ParticipantsList = ({ participants, apiUrl, maxVisible = 2 }) => {
   )
 }
 
+
 function Calendar({ apiUrl, expanded, onToggleExpand, userId }) {
     const EVENT_TYPES = [
       { value: 'study', label: 'Study' },
@@ -333,7 +334,7 @@ function Calendar({ apiUrl, expanded, onToggleExpand, userId }) {
     })
 
 
-    const DAY_START = 0
+    const DAY_START = 5
 
     const items = sorted.map(event => {
       const duration = getEventDuration(event.time)
@@ -700,6 +701,7 @@ function Calendar({ apiUrl, expanded, onToggleExpand, userId }) {
                                   </div>
                                 )
                               })()}
+                              {console.log('Expanded individual event participants:', event._id, event.participantPhotos)}
                               <ParticipantsList participants={event.participantPhotos} apiUrl={apiUrl} />
                               <div className="event-sticker-anchor">
                                 {(() => {
@@ -745,7 +747,6 @@ function Calendar({ apiUrl, expanded, onToggleExpand, userId }) {
                                 </div>
                               )
                             })()}
-                            <div className="event-count-indicator">+{group.length - 1}</div>
                             
                             <div className="grouped-hover-expanded">
                               {group.map((event, idx) => (
@@ -967,6 +968,19 @@ function Calendar({ apiUrl, expanded, onToggleExpand, userId }) {
                 <div className="event-info-desc">{selectedEventInfo.description}</div>
               </div>
             )}
+            {selectedEventInfo.participantPhotos && selectedEventInfo.participantPhotos.length > 0 && (
+              <div className="event-info-section">
+                <div className="event-info-label">Participants</div>
+                <div className="event-info-participants-list">
+                  {selectedEventInfo.participantPhotos.map((participant) => (
+                    <div key={participant.userId} className="event-info-participant-item">
+                      <ParticipantAvatar photo={participant.photo} apiUrl={apiUrl} name={participant.name} />
+                      <span>{participant.name || participant.userId}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
             <button 
               className="event-delete-btn" 
               onClick={() => deleteEvent(selectedEventInfo._id)}
@@ -1098,6 +1112,7 @@ function Calendar({ apiUrl, expanded, onToggleExpand, userId }) {
                             </div>
                           )
                         })()}
+                        
                         <div className="event-count-badge-compact">{group.length}</div>
                       </div>
                     )
