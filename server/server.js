@@ -383,7 +383,7 @@ async function handleApi(message, response) {
         email: friend.email,
         xp: friend.xp,
         photos: friend.photos || [],
-        profilePhoto: friend.profilePhoto || (friend.photos && friend.photos[0]) || '',
+        profilePhoto: friend.settings && friend.settings.profilePhoto ? friend.settings.profilePhoto : null,
         settings: friend.settings || {}
       }))
       
@@ -713,7 +713,7 @@ async function handleApi(message, response) {
     return sendJson(response, 200, notifications)
   }
 
-  const notificationMatch = url.pathname.match(/^\/api\/notifications\/([a-zA-Z0-9\-_]+)$/)
+  const notificationMatch = url.pathname.match(/^\/api\/notifications\/([a-zA-Z0-9\-_.]+)$/)
   if (notificationMatch && message.method === 'DELETE') {
     const notificationId = notificationMatch[1]
     const notificationsCol = getCollection('notifications')
@@ -1058,7 +1058,7 @@ async function handleApi(message, response) {
         task.participantPhotos = participantUsers.map(u => ({
           userId: u._id,
           name: u.name || u.username || u._id,
-          photo: u.settings && u.settings.profilePhoto ? u.settings.profilePhoto : (u.photos && u.photos.length > 0 ? u.photos[0] : null)
+          photo: u.settings && u.settings.profilePhoto ? u.settings.profilePhoto : null
         }))
       }
       return task
@@ -1115,8 +1115,27 @@ async function handleApi(message, response) {
       }
       broadcastSSE('calendar-created', { userId: newTask.userId, task: newTask, participants: newTask.participants })
       if (newTask.participants && newTask.participants.length > 0) {
-        newTask.participants.forEach(participantId => {
+        const usersCol = getCollection('users')
+        const notificationsCol = getCollection('notifications')
+        const creator = await usersCol.findOne({ _id: newTask.userId })
+        const creatorName = creator ? (creator.username || creator.name || newTask.userId) : newTask.userId
+        
+        newTask.participants.forEach(async participantId => {
           broadcastSSE('calendar-created', { userId: participantId, task: newTask, participants: newTask.participants })
+          
+          const notification = {
+            _id: `notif${Date.now()}${Math.random()}`,
+            userId: participantId,
+            type: 'task-added',
+            message: `${creatorName} added you to "${newTask.title}"`,
+            read: false,
+            createdAt: new Date().toISOString(),
+            taskId: newTask._id,
+            taskTitle: newTask.title,
+            taskDate: newTask.calendarDate
+          }
+          await notificationsCol.insertOne(notification)
+          broadcastSSE('notification', { userId: participantId, notification })
         })
       }
       return sendJson(response, 201, newTask)
@@ -1154,6 +1173,28 @@ async function handleApi(message, response) {
           broadcastSSE('calendar-created', { userId: participantId, task: { ...task, userId: newOwner, participants: remainingParticipants } })
         })
         
+        const usersCol = getCollection('users')
+        const notificationsCol = getCollection('notifications')
+        const leavingUser = await usersCol.findOne({ _id: requestUserId })
+        const leavingUserName = leavingUser ? (leavingUser.username || leavingUser.name || requestUserId) : requestUserId
+        
+        const allParticipants = [newOwner, ...remainingParticipants]
+        allParticipants.forEach(async participantId => {
+          const notification = {
+            _id: `notif${Date.now()}${Math.random()}`,
+            userId: participantId,
+            type: 'task-left',
+            message: `${leavingUserName} left the task "${task.title}"`,
+            read: false,
+            createdAt: new Date().toISOString(),
+            taskId: task._id,
+            taskTitle: task.title,
+            taskDate: task.calendarDate
+          }
+          await notificationsCol.insertOne(notification)
+          broadcastSSE('notification', { userId: participantId, notification })
+        })
+        
         return sendJson(response, 200, { deleted: false, removedFromEvent: true })
       } else {
         await tasksCol.deleteOne({ _id: taskId })
@@ -1173,6 +1214,28 @@ async function handleApi(message, response) {
         broadcastSSE('calendar-created', { userId: task.userId, task: { ...task, participants: updatedParticipants } })
         updatedParticipants.forEach(participantId => {
           broadcastSSE('calendar-created', { userId: participantId, task: { ...task, participants: updatedParticipants } })
+        })
+        
+        const usersCol = getCollection('users')
+        const notificationsCol = getCollection('notifications')
+        const leavingUser = await usersCol.findOne({ _id: requestUserId })
+        const leavingUserName = leavingUser ? (leavingUser.username || leavingUser.name || requestUserId) : requestUserId
+        
+        const allToNotify = [task.userId, ...updatedParticipants]
+        allToNotify.forEach(async participantId => {
+          const notification = {
+            _id: `notif${Date.now()}${Math.random()}`,
+            userId: participantId,
+            type: 'task-left',
+            message: `${leavingUserName} left the task "${task.title}"`,
+            read: false,
+            createdAt: new Date().toISOString(),
+            taskId: task._id,
+            taskTitle: task.title,
+            taskDate: task.calendarDate
+          }
+          await notificationsCol.insertOne(notification)
+          broadcastSSE('notification', { userId: participantId, notification })
         })
         
         return sendJson(response, 200, { deleted: false, removedFromEvent: true })
