@@ -7,7 +7,7 @@ function Task({ userId, apiUrl, expanded, onToggleExpand }) {
   useEffect(() => {
     fetchTasks()
     
-    const eventSource = new EventSource(`${apiUrl}/api/events`)
+    const eventSource = new EventSource(`${apiUrl}/api/events?userId=${userId}`)
     
     eventSource.addEventListener('todo-created', (e) => {
       const data = JSON.parse(e.data)

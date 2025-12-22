@@ -10,7 +10,7 @@ function Notifications({ userId, apiUrl, isMac = false, onFriendAcceptedRef }) {
     if (!userId) return
     fetchNotifications()
     
-    const eventSource = new EventSource(`${apiUrl}/api/events`)
+    const eventSource = new EventSource(`${apiUrl}/api/events?userId=${userId}`)
     
     eventSource.addEventListener('notification', (e) => {
       const data = JSON.parse(e.data)

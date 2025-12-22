@@ -50,16 +50,25 @@ async function handleUpdateUserSettings(userId, message, response) {
   const body = await parseBody(message)
   const usersCol = getCollection('users')
   
+  const user = await usersCol.findOne({ _id: userId })
+  if (!user) {
+    return sendJson(response, 404, { error: 'User not found' })
+  }
+  
   const updateFields = {}
   if (body.Theme !== undefined) updateFields['settings.Theme'] = body.Theme
+  
   if (body.appearOnline !== undefined) {
     updateFields['settings.appearOnline'] = body.appearOnline
     updateFields.isOnline = body.appearOnline
     broadcastSSE('status-change', { userId, isOnline: body.appearOnline })
   }
+  
   if (body.isOnline !== undefined) {
-    updateFields.isOnline = body.isOnline
-    broadcastSSE('status-change', { userId, isOnline: body.isOnline })
+    const appearOnline = body.appearOnline ?? user.settings?.appearOnline ?? true
+    const effectiveOnline = appearOnline && body.isOnline
+    updateFields.isOnline = effectiveOnline
+    broadcastSSE('status-change', { userId, isOnline: effectiveOnline })
   }
   
   const result = await usersCol.updateOne(

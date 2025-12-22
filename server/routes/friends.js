@@ -28,16 +28,21 @@ async function handleGetUserFriends(userId, response) {
     _id: { $in: friendIds }
   }).toArray()
   
-  const friendsData = friends.map(friend => ({
-    _id: friend._id,
-    name: friend.username,
-    level: friend.level,
-    email: friend.email,
-    xp: friend.xp,
-    photos: friend.photos || [],
-    profilePhoto: friend.settings && friend.settings.profilePhoto ? friend.settings.profilePhoto : null,
-    settings: friend.settings || {}
-  }))
+  const friendsData = friends.map(friend => {
+    const appearOnline = friend.settings?.appearOnline ?? true
+    const isOnline = appearOnline && (friend.isOnline === true)
+    return {
+      _id: friend._id,
+      name: friend.username,
+      level: friend.level,
+      email: friend.email,
+      xp: friend.xp,
+      photos: friend.photos || [],
+      profilePhoto: friend.settings && friend.settings.profilePhoto ? friend.settings.profilePhoto : null,
+      settings: friend.settings || {},
+      isOnline: isOnline
+    }
+  })
   
   return sendJson(response, 200, friendsData)
 }

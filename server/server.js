@@ -1,9 +1,9 @@
 const http = require('http')
 const { URL } = require('url')
-const { connect } = require('./db')
+const { connect, getCollection } = require('./db')
 
 const { sendJson } = require('./utils/helpers')
-const { sseClients } = require('./utils/sse')
+const { addSSEClient, removeSSEClient, isUserConnected, broadcastSSE } = require('./utils/sse')
 const { serveStatic } = require('./utils/static')
 
 const { handleRegister, handleLogin } = require('./routes/auth')
@@ -33,6 +33,8 @@ async function handleApi(message, response) {
   }
 
   if (url.pathname === '/api/events' && message.method === 'GET') {
+    const userId = url.searchParams.get('userId')
+    
     response.writeHead(200, {
       'Content-Type': 'text/event-stream',
       'Cache-Control': 'no-cache',
@@ -42,12 +44,25 @@ async function handleApi(message, response) {
 
     response.write('data: {"type":"connected"}\n\n')
 
-    sseClients.push(response)
+    addSSEClient(response, userId)
 
-    message.on('close', () => {
-      const index = sseClients.indexOf(response)
-      if (index !== -1) {
-        sseClients.splice(index, 1)
+    message.on('close', async () => {
+      const disconnectedUserId = removeSSEClient(response)
+      
+      if (disconnectedUserId && !isUserConnected(disconnectedUserId)) {
+        try {
+          const usersCol = getCollection('users')
+          const user = await usersCol.findOne({ _id: disconnectedUserId })
+          if (user) {
+            await usersCol.updateOne(
+              { _id: disconnectedUserId },
+              { $set: { isOnline: false } }
+            )
+            broadcastSSE('status-change', { userId: disconnectedUserId, isOnline: false })
+          }
+        } catch (err) {
+          console.error('Error updating user offline status:', err)
+        }
       }
     })
 
@@ -233,6 +248,17 @@ async function handleApi(message, response) {
 
 async function main() {
   await connect()
+
+  try {
+    const usersCol = getCollection('users')
+    await usersCol.updateMany(
+      { isOnline: true },
+      { $set: { isOnline: false } }
+    )
+    console.log('Cleaned up stale online statuses')
+  } catch (err) {
+    console.error('Error cleaning up online statuses:', err)
+  }
 
   const server = http.createServer(async (message, response) => {
     if (message.url.startsWith('/api/')) {
