@@ -8,12 +8,6 @@ NaNo is a productivity dashboard desktop application built with Electron, design
 ![Calendar Widget expanded](assets/CalendarTheme2.png)
 ![Profile expanded](assets/ProfileTheme5.png)
 
-<img src="./assets/DashboardTheme1.png" alt="Dashboard" width="400"/>
-<img src="./assets/DashboardTheme6.png" alt="Dashboard with different themes" width="400"/>
-<img src="./assets/Login.jpeg" alt="Login" width="400"/>
-<img src="./assets/CalendarTheme2.png" alt="Calendar Widget expanded" width="400"/>
-<img src="./assets/ProfileTheme5.png" alt="Profile expanded" width="400"/>
-
 ## Project Description
 NaNo is a comprehensive productivity platform that combines multiple essential tools into a single desktop application. The app provides users with:
 
