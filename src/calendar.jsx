@@ -299,7 +299,33 @@ function Calendar({ apiUrl, expanded, onToggleExpand, userId }) {
       }
     })
 
-    return items.map(it => ({ ...it }))
+    const overlaps = (a, b) => {
+      const aStart = a.topPercent
+      const aEnd = a.topPercent + a.heightPercent
+      const bStart = b.topPercent
+      const bEnd = b.topPercent + b.heightPercent
+      return aStart < bEnd && bStart < aEnd
+    }
+
+    const n = items.length
+    const adj = Array.from({ length: n }, () => [])
+
+    for (const i of items.keys()) {
+      for (const j of items.keys()) {
+        if (j <= i) continue
+        if (overlaps(items[i], items[j])) {
+          adj[i].push(j)
+          adj[j].push(i)
+        }
+      }
+    }
+
+    const visited = new Array(n).fill(false)
+    return items.map(it => ({
+      ...it,
+      leftPercent: it.leftPercent != null ? it.leftPercent : 0,
+      widthPercent: it.widthPercent != null ? it.widthPercent : 100
+    }))
     }
 
     const getDaysInMonth = (date) => {
@@ -489,21 +515,73 @@ function Calendar({ apiUrl, expanded, onToggleExpand, userId }) {
                     <div className="calendar-day-name">{weekDayNames[index]}</div>
                   </div>
                   <div className="calendar-events-container">
-                    {layoutedEvents.map((event, eventIndex) => (
-                      <div 
-                        key={eventIndex} 
-                        className={`calendar-event ${event.heightClass}`}
-                        onClick={() => setSelectedEventInfo(event)}
-                        onDragOver={handleEventDragOver}
-                        style={{ 
-                          backgroundColor: event.color || 'var(--graph-4)',
-                          top: `${event.topPercent}%`,
-                          height: `${event.heightPercent}%`,
-                          left: `${event.leftPercent != null ? event.leftPercent + '%' : '0.1rem'}`,
-                          width: `${event.widthPercent != null ? event.widthPercent + '%' : 'calc(100% - 0.2rem)'}`
-                        }}
-                      >
-                        <div className="calendar-event-title">{event.title}</div>
+                    {(() => {
+                      const groups = []
+                      const used = new Array(layoutedEvents.length).fill(false)
+                      for (const [i, a] of layoutedEvents.entries()) {
+                        if (used[i]) continue
+                        const group = [a]
+                        used[i] = true
+                        for (const [j, b] of layoutedEvents.entries()) {
+                          if (j <= i) continue
+                          if (used[j]) continue
+                          if (a.time && b.time && a.time === b.time) {
+                            group.push(b)
+                            used[j] = true
+                          }
+                        }
+                        groups.push(group)
+                      }
+
+                      return groups.map((group, gi) => {
+                        const first = group[0]
+                        if (group.length === 1) {
+                          const event = first
+                          return (
+                            <div
+                              key={`e-${event._id}`}
+                              className={`calendar-event ${event.heightClass}`}
+                              onClick={() => setSelectedEventInfo(event)}
+                              onDrop={(e) => handleEventDrop(e, event._id)}
+                              onDragOver={handleEventDragOver}
+                              style={{
+                                backgroundColor: event.color || 'var(--graph-4)',
+                                top: `${event.topPercent}%`,
+                                height: `${event.heightPercent}%`,
+                                left: `${event.leftPercent}%`,
+                                width: `${event.widthPercent}%`
+                              }}
+                            >
+                              <div className="calendar-event-title">{event.title}</div>
+                              {(() => {
+                                const parts = event.time && event.time.includes('-') ? event.time.split('-').map(p => p.trim()) : [event.time]
+                                return (
+                                  <div className="calendar-event-time">
+                                    <span className="calendar-event-time-line">{parts[0]}{parts[1] ? ' -' : ''}</span>
+                                    {parts[1] && <span className="calendar-event-time-line">{parts[1]}</span>}
+                                  </div>
+                                )
+                              })()}
+                              {event.userId && (
+                                <div className="calendar-event-avatar">
+                                  <div className="calendar-avatar-circle"></div>
+                                </div>
+                              )}
+                              <div className="event-sticker-anchor">
+                                {(() => {
+                                  const stickerId = eventStickers[event._id]
+                                  const sticker = availableStickers.find(s => s.id === stickerId)
+                                  return stickerId && sticker ? (
+                                    <div
+                                      className="event-sticker"
+                                      onClick={(e) => {
+                                        e.stopPropagation()
+                                        removeStickerFromEvent(event._id)
+                                      }}
+                                      dangerouslySetInnerHTML={{
+                                        __html: sticker.svg
+                                      }}
+                                    />
                                   ) : null
                                 })()}
                               </div>
@@ -525,6 +603,7 @@ function Calendar({ apiUrl, expanded, onToggleExpand, userId }) {
                           >
                             <div className="calendar-event-title">{first.title}</div>
                             {(() => {
+                              const parts = first.time && first.time.includes('-') ? first.time.split('-').map(p => p.trim()) : [first.time]
                               return (
                                 <div className="calendar-event-time">
                                   <span className="calendar-event-time-line">{parts[0]}{parts[1] ? ' -' : ''}</span>
@@ -536,30 +615,9 @@ function Calendar({ apiUrl, expanded, onToggleExpand, userId }) {
                           <div className="calendar-event-avatar">
                             <div className="calendar-avatar-circle"></div>
                           </div>
-                        )}
-                        <div className="event-sticker-anchor">
-                          {(() => {
-                            const stickerId = eventStickers[event._id]
-                            const sticker = availableStickers.find(s => s.id === stickerId)
-                            if (stickerId) {
-                              console.log('Rendering sticker for event', event._id, '- stickerId:', stickerId, 'sticker:', sticker)
-                            }
-                            return stickerId && sticker ? (
-                              <div 
-                                className="event-sticker"
-                                onClick={(e) => {
-                                  e.stopPropagation()
-                                  removeStickerFromEvent(event._id)
-                                }}
-                                dangerouslySetInnerHTML={{ 
-                                  __html: sticker.svg
-                                }}
-                              />
-                            ) : null
-                          })()}
-                        </div>
-                      </div>
-                    ))}
+                        )
+                      })
+                    })()}
                   </div>
                 </div>
               )
@@ -796,20 +854,23 @@ function Calendar({ apiUrl, expanded, onToggleExpand, userId }) {
                 <div className="calendar-day-name-compact">{weekDayNames[index]}</div>
               </div>
               <div className="calendar-events-container-compact">
-                {layoutedEvents.map((event, eventIndex) => (
-                  <div 
-                    key={eventIndex} 
-                    className={`calendar-event-compact ${event.heightClass}`}
-                    onClick={() => setSelectedEventInfo(event)}
-                    style={{ 
-                      backgroundColor: event.color || 'var(--graph-4)',
-                      top: `${event.topPercent}%`,
-                      height: `${event.heightPercent}%`
-                    }}
-                  >
-                    <div className="calendar-event-title-compact">{event.title}</div>
-                    {(() => {
-                      const parts = event.time && event.time.includes('-') ? event.time.split('-').map(p => p.trim()) : [event.time]
+                {(() => {
+                  const groups = []
+                  const used = new Array(layoutedEvents.length).fill(false)
+                  for (const [i, a] of layoutedEvents.entries()) {
+                    if (used[i]) continue
+                    const group = [a]
+                    used[i] = true
+                    for (const [j, b] of layoutedEvents.entries()) {
+                      if (j <= i) continue
+                      if (used[j]) continue
+                      if (a.time && b.time && a.time === b.time) {
+                        group.push(b)
+                        used[j] = true
+                      }
+                    }
+                    groups.push(group)
+                  }
                       return (
                         <div className="calendar-event-time-compact">
                           <span className="calendar-event-time-compact-line">{parts[0]}{parts[1] ? ' -' : ''}</span>
