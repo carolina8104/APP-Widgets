@@ -269,7 +269,6 @@
 }
 
 .friends-add-view {
-  padding: 1rem;
   gap: 1rem;
 }
 
@@ -460,4 +459,19 @@
   box-sizing: border-box !important;
   transform: translate(60%, 0%) !important;
   right: auto !important;
+}
+
+@media (max-width: 780px){
+  .widget.friends-add-expanded {
+    width: 60vw !important;
+    max-width: 60vw !important;
+    transform: translate(10%, 0%) !important;
+  }
+}
+
+
+@media (max-width: 1000px) {
+  .fw-add-input-container {
+    flex-direction: column;
+  }   
 }
