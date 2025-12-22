@@ -38,7 +38,7 @@
     font-size: 0.9rem;
     font-weight: 600;
     color: var(--text-accent-3);
-    margin: 0;
+    margin-bottom: 3vh;
     opacity: 0.9;
     text-align: center;
 }
@@ -46,7 +46,6 @@
 .progress-main {
     display: flex;
     flex-direction: column;
-    gap: 4.2rem;
     align-items: center;
     justify-content: flex-start;
     flex: 0 0 50%;
@@ -265,4 +264,38 @@
 
 .progress .expand-arrow{
     stroke: var(--text-accent-3);
+}
+
+.progress-weeknav {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+    justify-content: center;
+}
+
+.progress-weeknav-btn {
+    background: rgba(0, 0, 0, 0.1);
+    border: none;
+    border-radius: 6px;
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background 0.2s;
+    padding: 0;
+}
+.progress-weeknav-btn.hover,
+.progress-weeknav-btn:hover {
+    background: rgba(0, 0, 0, 0.2);
+}
+
+.progress-weeknav-label {
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--text-accent-3);
+    min-width: 80px;
+    text-align: center;
 }
