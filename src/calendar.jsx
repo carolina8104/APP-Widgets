@@ -37,6 +37,147 @@ const ParticipantsList = ({ participants, apiUrl, maxVisible = 2 }) => {
   )
 }
 
+const TabbedEvents = ({ events, apiUrl, eventStickers, availableStickers, removeStickerFromEvent, setSelectedEventInfo, handleEventDrop, handleEventDragOver, isCompact = false }) => {
+  if (events.length === 0) return null
+  
+  const first = events[0]
+  const numEvents = events.length
+  
+  if (numEvents === 1) {
+    const event = first
+    const classNames = isCompact 
+      ? `calendar-event-compact ${event.heightClass}`
+      : `calendar-event ${event.heightClass}`
+    
+    return (
+      <div
+        className={classNames}
+        onClick={() => setSelectedEventInfo(event)}
+        onDrop={isCompact ? undefined : (e) => handleEventDrop(e, event._id)}
+        onDragOver={isCompact ? undefined : handleEventDragOver}
+        style={{
+          backgroundColor: event.color || 'var(--graph-4)',
+          top: `${event.topPercent}%`,
+          height: `${event.heightPercent}%`,
+          ...(isCompact ? {} : {
+            left: `${event.leftPercent}%`,
+            width: `${event.widthPercent}%`
+          })
+        }}
+      >
+        <div className={isCompact ? "calendar-event-title-compact" : "calendar-event-title"}>{event.title}</div>
+        {(() => {
+          const parts = event.time && event.time.includes('-') ? event.time.split('-').map(p => p.trim()) : [event.time]
+          return (
+            <div className={isCompact ? "calendar-event-time-compact" : "calendar-event-time"}>
+              <span className={isCompact ? "calendar-event-time-compact-line" : "calendar-event-time-line"}>{parts[0]}{parts[1] ? ' -' : ''}</span>
+              {parts[1] && <span className={isCompact ? "calendar-event-time-compact-line" : "calendar-event-time-line"}>{parts[1]}</span>}
+            </div>
+          )
+        })()}
+        <ParticipantsList participants={event.participantPhotos} apiUrl={apiUrl} />
+        {!isCompact && (
+          <div className="event-sticker-anchor">
+            {(() => {
+              const stickerId = eventStickers[event._id]
+              const sticker = availableStickers.find(s => s.id === stickerId)
+              return stickerId && sticker ? (
+                <div
+                  className="event-sticker"
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    removeStickerFromEvent(event._id)
+                  }}
+                  dangerouslySetInnerHTML={{ __html: sticker.svg }}
+                />
+              ) : null
+            })()}
+          </div>
+        )}
+      </div>
+    )
+  }
+  
+  let firstEventWidth
+  let otherEventWidth
+  if (numEvents === 2) {
+    firstEventWidth = 56
+    otherEventWidth = 44
+  } else {
+    firstEventWidth = 40
+    otherEventWidth = (100 - firstEventWidth) / (numEvents - 1)
+  }
+  
+  return (
+    <div
+      className={`simultaneous-events-container ${events.length > 1 ? 'multiple' : ''}`}
+      style={{
+        position: 'absolute',
+        top: `${first.topPercent}%`,
+        height: `${first.heightPercent}%`,
+        ...(isCompact ? { width: '100%' } : { left: `0%`, width: `100%` })
+      }}
+    >
+      {events.map((event, idx) => {
+        const isFirst = idx === 0
+        const width = isFirst ? firstEventWidth : otherEventWidth
+        const left = isFirst ? 0 : firstEventWidth + (idx - 1) * otherEventWidth
+        
+        const classNames = isCompact 
+          ? `calendar-event-compact ${event.heightClass} ${!isFirst ? 'no-time' : ''}`
+          : `calendar-event ${event.heightClass} ${!isFirst ? 'no-time' : ''}`
+        
+        return (
+          <div
+            key={event._id}
+            className={classNames}
+            onClick={() => setSelectedEventInfo(event)}
+            onDrop={isCompact ? undefined : (e) => handleEventDrop(e, event._id)}
+            onDragOver={isCompact ? undefined : handleEventDragOver}
+            style={{
+              backgroundColor: event.color || 'var(--graph-4)',
+              position: 'absolute',
+              top: 0,
+              left: `${left}%`,
+              width: `${width}%`,
+              height: '100%'
+            }}
+          >
+            <div className={isCompact ? "calendar-event-title-compact" : "calendar-event-title"}>{event.title}</div>
+            {isFirst && (() => {
+              const parts = event.time && event.time.includes('-') ? event.time.split('-').map(p => p.trim()) : [event.time]
+              return (
+                <div className={isCompact ? "calendar-event-time-compact" : "calendar-event-time"}>
+                  <span className={isCompact ? "calendar-event-time-compact-line" : "calendar-event-time-line"}>{parts[0]}{parts[1] ? ' -' : ''}</span>
+                  {parts[1] && <span className={isCompact ? "calendar-event-time-compact-line" : "calendar-event-time-line"}>{parts[1]}</span>}
+                </div>
+              )
+            })()}
+            <ParticipantsList participants={event.participantPhotos} apiUrl={apiUrl} />
+            {!isCompact && (
+              <div className="event-sticker-anchor">
+                {(() => {
+                  const stickerId = eventStickers[event._id]
+                  const sticker = availableStickers.find(s => s.id === stickerId)
+                  return stickerId && sticker ? (
+                    <div
+                      className="event-sticker"
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        removeStickerFromEvent(event._id)
+                      }}
+                      dangerouslySetInnerHTML={{ __html: sticker.svg }}
+                    />
+                  ) : null
+                })()}
+              </div>
+            )}
+          </div>
+        )
+      })}
+    </div>
+  )
+}
 
 function Calendar({ apiUrl, expanded, onToggleExpand, userId }) {
     const EVENT_TYPES = [
@@ -334,7 +475,7 @@ function Calendar({ apiUrl, expanded, onToggleExpand, userId }) {
     })
 
 
-    const DAY_START = 5
+    const DAY_START = 0
 
     const items = sorted.map(event => {
       const duration = getEventDuration(event.time)
